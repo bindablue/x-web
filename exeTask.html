@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="msapplication-tap-highlight" content="no">
+    <meta name="viewport"
+        content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+
+    <title>我在用「极限任务」管理每一天，邀请你一起高效.【AI智能复盘】</title>
+
+    <link rel="stylesheet" type="text/css" href="mod/bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="css/common.css" />
+    <script src="js/jquery.min.js"></script>
+    <script src="js/common.js"></script>
+    <script src="mod/moment/moment.min.js"></script>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            background: #ffffff;
+            color: #1d2a3a;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", "PingFang SC", "Microsoft YaHei", sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* 顶部导航栏固定置顶，和前面页面统一 */
+        #hh {
+            position: fixed;
+            top: 0;
+            left: 1%;
+            width: 98%;
+            padding: 1%;
+            z-index: 10000;
+        }
+
+        #nav-left {
+            margin-top: 15px;
+            height: 40px;
+            width: 40px;
+            border: 1px solid #F5F5F5;
+            border-radius: 50%;
+            color: #606162;
+            background: #fff;
+        }
+
+        /* 内容容器统一边距 */
+        .container {
+            padding-left: 12px;
+            padding-right: 12px;
+        }
+
+        /* 任务卡片（沿用NFC页面同款渐变卡片风格） */
+        .taskInfo {
+            width: 100%;
+            max-width: 1000px;
+            margin: 0 auto 20px;
+            background: linear-gradient(135deg, #87d0f7 0%, #2574ed 100%);
+            border-radius: 24px;
+            padding: 20px;
+            color: #ffffff;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .taskInfo::before {
+            content: '';
+            position: absolute;
+            top: -100px;
+            right: -100px;
+            width: 100px;
+            height: 100px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+        }
+
+        .taskInfo::after {
+            content: '';
+            position: absolute;
+            bottom: -80px;
+            right: -80px;
+            width: 150px;
+            height: 150px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 50%;
+        }
+
+        .taskInfo .text-wrap>div:first-child {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .taskInfo .text-wrap>div:last-child {
+            font-size: 16px;
+            opacity: 0.92;
+        }
+
+        .taskInfo .play-btn {
+            font-size: 36px;
+            cursor: pointer;
+            z-index: 2;
+        }
+
+        /* 事件条目卡片 */
+        .eventInfo {
+            width: 100%;
+            max-width: 1000px;
+            margin: 0 auto 12px;
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+            padding: 16px 20px;
+        }
+
+        .eventInfo>div {
+            line-height: 1.55;
+            color: #333;
+        }
+
+        .eventInfo>div:nth-child(1),
+        .eventInfo>div:nth-child(2) {
+            color: #2574ed;
+            font-weight: 500;
+        }
+
+        /* 外部落地下载区块美化 */
+        #webContent {
+            margin-top: 40px;
+        }
+
+        #webContent img {
+            max-width: 160px;
+            width: 60%;
+        }
+
+        #webContent .btn-danger {
+            border-radius: 12px;
+            padding: 12px;
+            font-weight: 600;
+            transition: all 0.2s;
+            min-width: 160px;
+        }
+
+        #webContent .btn-danger:active {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(220, 53, 69, 0.18);
+        }
+
+        #webContent .panel-warning {
+            border-radius: 12px;
+            background: #fff9e6;
+            border: 1px solid #ffeeba;
+        }
+
+        #inviteCode {
+            margin-top: 12px;
+            color: #888;
+        }
+
+        @media (max-width:576px) {
+            .taskInfo .text-wrap>div:first-child {
+                font-size: 20px;
+            }
+
+            .taskInfo .play-btn {
+                font-size: 30px;
+            }
+        }
+    </style>
+</head>
+
+<body style="padding-bottom:100px;">
+    <div id="hh">
+        <button id="nav-left" type="button" class=" btn  pull-left" onclick="dismiss();">
+            <span class="glyphicon glyphicon-remove"></span>
+        </button>
+        <button id="btnShare" type="button" class="btn hide btn-primary pull-right" onclick="share();"> <span
+                class="LBL-WXSHR" style="padding-bottom:10px;">微信分享</span>
+        </button>
+    </div>
+    <div class="container">
+       
+        <div id="tplTask" class="hide">
+            <div class="taskInfo">
+                <div class="text-wrap">
+                    <div>#taskName#</div>
+                    <div>#exeName#</div>
+                </div>
+                <span class="glyphicon glyphicon-play-circle text-success play-btn" onclick="startTask()"></span>
+            </div>
+        </div>
+        <div id="tplEvent" class="hide">
+            <div class="eventInfo">
+                <div>#startTime#</div>
+                <div>#endTime#</div>
+                <div>#memo#</div>
+                <div>#eventStatus#</div>
+                <div>#spentTime#</div>
+            </div>
+        </div>
+        <div id="task"></div>
+        <div id="events"></div>
+
+        <div id="webContent" class="hide container text-center" style="padding: 20px;">
+            <div class="pull-center">
+                <div class="text-center">
+                    <div class="pull-center">
+                        <img src="https://dododido.cn/img/x.png" style="border-radius: 18px;" />
+                    </div>
+                    <div style="padding:15px;">
+                        <b>极限任务APP NFC</b>
+                    </div>
+                    <a class="btn btn-danger" style="width:30%;margin:30px;padding:10px;" onclick="goDownload()">
+                        点击下载</a><br />
+                    <div class="panel panel-warning " style="padding:20px;">若已安装，可以升级到最新版。</div>
+                </div>
+
+            </div>
+            <div id="inviteCode" class="small text-center"></div>
+        </div>
+      <div id="params" class="container" style="margin-top: 60px;text-align: center;font-size:10px; color:#AEAEB2;">
+
+        </div>
+    </div>
+    <script>
+        // 全局缓存当前taskId/exeId供开始按钮使用
+        let currentTaskId = '';
+        let currentExeId = '';
+        let task = {};
+
+        function loadOneTask(taskId, exeId) {
+            currentTaskId = taskId;
+            currentExeId = exeId;
+
+            var obj = {};
+
+            obj["Class"] = "CommonDataEngine";
+            obj["exeCode"] = "taskQueryOne";
+            obj["taskName"] = "";
+            obj["order"] = "PRIORITY_IMPORTANCE";
+            obj["groupType"] = "1";
+            obj["taskId"] = taskId
+
+
+            asyncommunicate(obj, function (data) {
+                tasks = JSON.parse(data)
+                if (tasks.length == 0 && !taskAlerted) {
+                    taskAlerted = true
+                    alert("当前任务不存在");
+                    return;
+                }
+
+
+                task = tasks[0]
+
+
+                let exeList = task.executeTimeList;
+
+
+
+                for (var i = 0; exeList && i < exeList.length; i++) {
+                    var exe = exeList[i];
+                    if (exe.exeId == exeId) {
+                        task["exeName"] = exe["exeName"]
+
+                    }
+                }
+
+                var tpl = $("#tplTask").html()
+                var one = tpl;
+                for (var key in task) {
+                    let regex = new RegExp("#" + key + "#", "gi");
+                    one = one.replace(regex, task[key]);
+                }
+
+                $("#task").html(one);
+
+                loadEvent(taskId, exeId);
+
+
+
+
+            });
+
+
+        }
+
+        function loadEvent(taskId, exeId) {
+
+
+            var obj = {};
+            const date = moment().format('YYYY-MM-DD')
+            obj["Class"] = "CommonDataEngine";
+            obj["exeCode"] = "eventQuery";
+            obj["taskName"] = "";
+            obj["order"] = "PRIORITY_IMPORTANCE";
+            obj["groupType"] = "1";
+            obj["taskId"] = taskId
+            obj["exeId"] = exeId;
+            obj["eventDate"] = date;
+
+
+            asyncommunicate(obj, function (data) {
+
+                var events = JSON.parse(data)
+                var eventHtml = []
+
+                for (var i = 0; i < events.length; i++) {
+
+                    var event = events[i]
+                    var tpl = $("#tplEvent").html();
+                    var one = tpl;
+                    for (var key in event) {
+                        let regex = new RegExp("#" + key + "#", "gi");
+
+                        one = one.replace(regex, event[key]);
+
+                    }
+                    eventHtml.push(one);
+                }
+                $("#events").html(eventHtml.join(""));
+
+                if (task["exeName"]) {
+                    errorMessage(task["exeName"]);
+                }
+
+            });
+
+
+        }
+
+        // 开始任务点击事件（你后续可以在这里填启动计时逻辑）
+        function startTask() {
+            console.log("开始任务", currentTaskId, currentExeId);
+            // 示例：可唤起app协议 dadadida://xxx
+            // location.href = `dadadida://task/start?taskId=${currentTaskId}&exeId=${currentExeId}`;
+        }
+        var alerted = false
+        var taskAlerted = false
+        function errorMessage(exeName) {
+
+            if (alerted) {
+                return;
+            }
+            alerted = true
+            var queryObj = GetRequest();
+            var eventId = queryObj["eventId"];
+            var mode = queryObj["m"];
+            var submode = queryObj["sm"];
+            if (mode == "a" && !eventId) {
+                alert("未自动执行事项【" + exeName + "】")
+            }
+            if (mode == "s" && submode == "a" && !eventId) {
+                alert("未自动开始事项【" + exeName + "】")
+            }
+
+            if (mode == "e" && submode == "a" && !eventId) {
+                alert("未自动结束事项【" + exeName + "】")
+            }
+        }
+        function firstcall() {
+
+            var queryObj = GetRequest();
+            $("#params").html(JSON.stringify(queryObj));
+
+
+            loadOneTask(queryObj.taskId, queryObj.exeId);
+        }
+        setTimeout(function () {
+            var isApp = isInApp();
+            if (!isApp) {
+                $("#webContent").removeClass("hide");
+            }
+        }, 1500)
+
+        function isInApp() {
+            var userAgent = navigator.userAgent.toLowerCase();
+            return userAgent.includes("dadadidaMobile".toLowerCase());
+        }
+
+        // 设置推荐码 Cookie（专门为 iOS 同源共享优化）
+        function setCookie(key, val) {
+            var domain = ".dododido.cn"; // 前面必须带点，支持主域+子域
+            var expires = 30; // 30天有效期
+
+            document.cookie = key + "=" + val +
+                "; domain=" + domain +
+                "; path=/" +
+                "; max-age=" + (expires * 24 * 60 * 60) +
+                "; secure" +
+                "; samesite=lax";
+        }
+
+
+
+
+
+        // 2. 生成一次性 32位 SID
+        function randomSID() {
+            let chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            let s = "";
+            for (let i = 0; i < 32; i++) {
+                s += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return s;
+        }
+
+        function clipboard(text) {
+
+            navigator.clipboard.writeText(text).then(() => {
+
+
+                console.log('Text copied to clipboard');
+                window.location.href = "https://itunes.apple.com/cn/app/ji-xian/id1190108058?mt=8"
+                // webGotoRemote("https://chat.deepseek.com/") //
+                // https://www.doubao.com/chat
+
+            }).catch(err => {
+
+
+                console.error('Error in copying text: ', err);
+
+
+            });
+        }
+
+        function goDownload() {
+
+            const sid = randomSID();
+
+
+            // 3. 存入当前Safari localStorage（关键，后面APP读这个）
+
+            setCookie("invite_sid", sid);
+            // 1. 从链接拿到推荐码 ?rc=INVITE123
+            const urlParams = new URLSearchParams(window.location.search);
+            var referCode = urlParams.get("rc");
+            if (!referCode) {//默认
+                referCode = "00033B58"
+            }
+            if (referCode) {
+                setCookie("invite_code", referCode);
+
+                clipboard(referCode);
+                //window.location.href = "https://itunes.apple.com/cn/app/ji-xian/id1190108058?mt=8";
+            }
+            console.log(sid + ":" + referCode);
+            $("#inviteCode").html(sid + ":" + referCode);
+            // var obj = GetRequest();
+            // var ID = obj["ID"];
+            // $("#im").attr("href", "dadadida://goal/get/" + ID);
+        }
+
+
+        var nologin = true;
+
+    </script>
+
+</body>
+
+</html>

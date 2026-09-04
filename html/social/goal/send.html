@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html>
+<head>
+<!--        <meta name="format-detection" content="telephone=no">-->
+<meta charset="UTF-8">
+<meta name="msapplication-tap-highlight" content="no">
+<meta name="viewport"
+	content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+
+<title>发送目标</title>
+
+<link rel="stylesheet" type="text/css" href="../../css/common.css" />
+<link rel="stylesheet" type="text/css"
+	href="../../mod/bootstrap/css/bootstrap.min.css" />
+
+<script src="../../js/jquery.min.js"></script>
+<script src="../../mod/swiper/swiper.min.js"></script>
+<script src="../../js/common.js"></script>
+<script type="text/javascript">
+                                //var nologin=true;
+                                    var webSocket =
+                                new WebSocket('ws://dadadida.cn/PlanX/websocket');
+                                
+                                webSocket.onerror = function(event) {
+                                    onError(event);
+                                };
+                            
+                            webSocket.onopen = function(event) {
+                                onOpen(event);
+                                start() ;
+
+
+                                
+                            };
+                            
+                            webSocket.onmessage = function(event) {
+                                onMessage(event);
+                            };
+                            
+                            
+                             var last={"TOPIC":"","OFFSET":""};
+                            function onMessage(event) {
+                                var dd={};
+                                try{
+                                    console.log(event.data);
+                                    dd=JSON.parse(event.data);
+                                    if(last["TOPIC"]==dd["TOPIC"]&&last["OFFSET"]==dd["OFFSET"]){
+                                        return;
+                                    }
+                                    
+                                    
+                                    document.getElementById('messages').innerHTML
+                                    
+                                    +="<br />【" +dd.TOPIC+"("+dd.OFFSET+")】:"+dd.VALUE.UNAME
+                                    +"<br/>&nbsp;&nbsp;"+dd.VALUE.CONTENT;
+                                    var oo=dd.VALUE;
+                                    $('#messages').scrollTop($('#messages')[0].scrollHeight);
+                                    if(dd.VALUE["TYPE"]=="NONE"){
+                                        return;
+                                    }
+                                    oo["TOPIC"]=dd["TOPIC"];
+                                    oo["OFFSET"]=dd["OFFSET"];
+                                    //saveData(oo);
+                                    last=dd;
+                                }catch(e){
+                                    alert(e);
+                                }
+                                
+                            }
+                            
+                            function  saveData(obj){
+                                
+                                obj["Class"]="CommonDataEngine";
+                                obj["O"]="A";
+                                obj["T"]="MSG";
+                                
+                                
+                                asyncommunicate(obj,callback);
+                            }
+                            
+                            function callback(data){
+                                
+                            }
+                            
+                            function onOpen(event) {
+                                document.getElementById('messages').innerHTML
+                                = 'Connection established';
+                                $(".btn").attr("disabled",false);
+                            }
+                            
+                            function onError(event) {
+                                alert(event.data);
+                            }
+                            
+                            function start() {
+                                var timestamp = Date.parse(new Date());
+                                webSocket.send("{'TYPE':'HELLO','gid':"+timestamp+"}");
+                                return false;
+                            }
+                            </script>
+
+<script>
+                                
+                                
+                               
+                                
+                                function send(goal){
+                                    
+                                    var obj={};
+                                    obj["TYPE"]="GOAL-REQ";
+                                    obj["TNAME"]=$("#tname").val();
+                                    obj["GOAL"]=goal;
+                                    
+                                    try{
+                                        webSocket.send(JSON.stringify(obj));
+                                    }
+                                    catch(e){
+                                        document.getElementById('messages').innerHTML
+                                        
+                                        += '<br /><span style="color:red;">&nbsp;&nbsp;'+e+'</span>';
+                                    }
+                                    
+                                    
+                                }
+                            
+                            
+                            function initFields(){
+                                
+                                var obj=document.getElementById('all');
+                                if(obj.options.length>0){return;}
+                                for(var i=0;i<goalSel.length;i++){
+                                    obj.options.add(new Option(goalSel[i]["v"],goalSel[i]["k"])); //这个兼容IE与firefox
+                                    
+                                }
+                                
+                            }
+                            
+                                
+                              var ID="";
+                            function firstcall(){
+                                initFields();
+                                var obj=GetRequest();
+                               
+                                if(obj){
+                                   ID=obj["ID"];
+                                   $("#tcontent").val(ID);
+                                }
+                         
+                            }
+                            function SG(){
+                                sendGoal(ID)
+                            }
+                            function sendGoal(id){
+                                if($("#tname").val()==""){
+                                    alert("接收人不能为空。");
+                                  return;
+                                }
+                                var obj={};
+                                obj["Class"]="CommonDataEngine";
+                                obj["C"]="ID,PID,LVL,RID,PSD,PFD,PE,AN,AD,ASD,AFD,AE,UNAME,MNAME,ISBRK,CSTS";
+                                obj["O"]="Q";
+                                obj["T"]="ACTIVITY";
+                                obj["W"]="ID='"+id+"'";
+                                
+                                asyncommunicate(obj,function(data){
+                                                
+                                                send(data);
+                                                
+                                                //发送子目标
+                                                if($("#all").val()=="0"){
+                                                 return;
+                                                }
+                                                var o={};
+                                                o["Class"]="CommonDataEngine";
+                                            o["C"]="ID,PID,LVL,RID,PSD,PFD,PE,AN,AD,ASD,AFD,AE,UNAME,MNAME,ISBRK,CSTS";
+                                                o["O"]="Q";
+                                                o["T"]="ACTIVITY";
+                                                o["W"]="PID='"+id+"'";
+                                               
+                                                asyncommunicate(o,function(dd){
+                                                                try{
+                                                                var list=JSON.parse(dd);
+                                                                for(var i=0;i<list.length;i++)
+                                                                 sendGoal(list[i]["ID"]);
+                                                                
+                                                                }catch(e){
+                                                                console.log(e);
+                                                                }
+                                                                
+                                                                
+                                                                
+                                                                });
+                                                
+                                                
+                                                
+                                                
+                                                });
+                            }
+                            
+       
+
+                        </script>
+<body>
+
+	<div id="hh">
+		<button type="button" class="btn btn-primary pull-left"
+			onclick="window.history.go(-1);">
+			<span class="glyphicon glyphicon-chevron-left"></span>
+		</button>
+	</div>
+
+
+
+	<div class="container">
+		<div
+			style="padding-top: 60px; padding-bottom: 0px; text-align: center;">
+
+			Communication</div>
+		<!--
+             <button type="button" class="btn btn-primary" onclick="dismiss();" > <span style="padding-bottom:10px;"  >&lt;&lt;</span> </button>
+             <button id="btnShare" type="button" class="btn btn-primary" style="float:right;" onclick="share();" > <span style="padding-bottom:10px;"  >微信好友分享</span> </button>-->
+		<form id="formid">
+			<div style="text-align: center; margin-top: 10px;">
+				<div style="width: 100%; text-align: center;">
+					<div id="messages" class="middle">
+						<img src="../../img/loading.gif" width="50" height="40" /><span
+							class="LBL-WAITING">等待连接... </span>
+
+					</div>
+					<input id="tname" type="text" placeholder="填写接收人用户名,请确保对方在线。"
+						class="PH-ONLINEREC" value=""> <select id="all">
+					</select>
+
+					<div
+						style="position: absolute; left: 5%; width: 90%; bottom: 40px;">
+
+
+						<textarea id="tcontent" style="display: none;" rows="4" cols="20"
+							name="tcontent" placeholder="信息" class="message"></textarea>
+
+
+						<div class="tAc mT20" style="margin-top: 5px;">
+							<button type="button" class="btn btn-primary btn-block " disabled
+								onclick="SG()">发送</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</form>
+
+	</div>
+
+
+</body>
+<style>
+input, select, textarea {
+	margin-top: 5px;
+	padding: 10px 0px;
+	line-height: 16px;
+	width: 100%;
+	-webkit-appearance: none;
+	border: 1px solid #87CEEB;
+}
+
+#ttime {
+	padding: 2px;
+}
+</style>
+</html>

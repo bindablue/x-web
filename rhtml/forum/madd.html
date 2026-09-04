@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <!--        <meta name="format-detection" content="telephone=no">-->
+        <meta charset="UTF-8">
+            <meta name="msapplication-tap-highlight" content="no">
+                <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+                    
+                    <title>新增话题</title>
+                   
+                         <link rel="stylesheet" type="text/css" href="../../mod/bootstrap/css/bootstrap.min.css"/>
+                           <link rel="stylesheet" type="text/css" href="../../css/nav.css"/>
+                    <link rel="stylesheet" href="../../plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css">
+                            <script src="../../js/jquery.min.js"></script>
+                        
+                            <script src="../../mod/bootstrap/js/bootstrap.min.js"></script>
+                          
+                            <script src="../../js/common.js"></script>
+                            <style>
+                            input,select,textarea {
+                                    
+                                    margin-top:5px;
+                                    padding:5px 0px;
+                                    line-height:16px;
+                                    width:100%;
+                                    -webkit-appearance:none;
+                                    border-radius:4px;
+                                    border:1px solid #87CEEB;
+                                }
+                            </style>
+                                <script>
+                                 
+                                var nologin=true;
+        function refreshData(){
+            firstcall();
+          
+        }
+ 
+    
+    
+    function loadSentence(){
+    	
+    	var obj = GetRequest();
+    	postData(obj, '/rest/forum/sentence', function(data) {
+
+			for ( var i in data) {
+				console.log(data[i]);
+                 for(var k in data[i]){
+                	 $("#"+k).val(data[i][k]);
+                 }
+				$("#title").val(data[i]["title"]);
+				 
+				var obj = $("iframe").contents().find("body");
+
+				$("iframe").contents().find("body").html(data[i]["content"]);	
+			}
+			
+			 
+		});
+		 
+    }
+    function firstcall(){
+        var id=GetRequest()["id"];
+        var sec=tasktype;
+        for(var i=0;i<sec.length;i++)
+        {
+        	$("#section").append("<option value='"+sec[i]["k"]+"'>"+sec[i]["v"]+"</option>");
+        	
+        }
+        console.log("id:"+id);
+        if(id){
+        	$("#id").val(id);
+        	loadSentence();
+        }
+        
+    }
+    
+ 
+    function submitForm(){
+        var obj=getFormJson("#formid");
+        if(!$("#content").val().trim()||!$("#title").val()){
+        	console.log("empty fields");
+        	return;
+        }
+        console.log(JSON.stringify(obj));
+        postData(obj,"/rest/forum/addmsg",function(data){
+        	  console.log(data);
+		        	if("0000"!=data["CODE"]){
+		            	alert(data["MSG"]);
+		            }else{
+		            	alert("操作成功！");
+		            	
+		            	var obj = $("iframe").contents().find("body");
+						
+		            	if(!GetRequest()["id"]){
+							$("iframe").contents().find("body").html("");
+							$("#title").val("");
+			            	$("#content").val("");
+						}else{
+							
+						}
+		            }
+                        
+                        });
+    }
+    
+        </script>
+ 
+    <body>
+        
+                       
+        
+        <div class="container" style="margin-top:10px;">
+      
+        <form id="formid">
+     
+         <div  class="form-group">
+          <select   id="section" name="section"  class="form-control"  ></select>
+         </div>
+         <div  class="form-group">
+          <input type="text" id="title" name="title" placeholder="标题" class="form-control" maxlength="32" value=""/>
+         </div>
+           <div  class="form-group">
+            <input id="id" type="hidden" name="id" value=""/>
+           <input type="hidden" name="upper" value=""/>
+            <textarea id="content" rows="5" name="content" style="width:100%;"  
+              class="wysihtml5 form-control"  placeholder="内容" 
+            class="form-control"  ></textarea>
+            </div>
+             <div  class="form-group">
+            <button id="btnSave" type="button" class="btn btn-primary  " onclick="submitForm()">
+                 <span class="">确认发布</span>
+             </button>
+             </div>
+              
+         </form>
+        
+      
+     
+          </div>
+    </body>
+ <script src="../../plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js"></script>
+<!-- Page Script -->
+ <script src="../../plugins/js/editor.js"></script>
+
+</html>

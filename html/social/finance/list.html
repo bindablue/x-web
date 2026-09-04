@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html>
+    <head>
+             <meta name="format-detection" content="telephone=no">
+        <meta charset="UTF-8">
+            <meta name="msapplication-tap-highlight" content="no">
+                <meta name="viewport"
+                    content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+                    
+                    <title>交易记录</title>
+                    
+                    <link rel="stylesheet" type="text/css" href="../../css/common.css" />
+                    <link rel="stylesheet" type="text/css"
+                    href="../../mod/bootstrap/css/bootstrap.min.css" />
+                    
+                    <script src="../../js/jquery.min.js"></script>
+                    
+                    <script src="../../mod/bootstrap/js/bootstrap.min.js"></script>
+                    <script src="../../js/common.js"></script>
+                    <script src="../../js/meta.js"></script>
+                    
+                    <style>
+                        
+                    </style>
+                    <body>
+                        
+                        <div id="hh" >
+                            <button type="button" class="btn btn-primary pull-left" onclick="backgo();">
+                               <span  class="glyphicon glyphicon-chevron-left"></span>
+                            </button>
+                            交易记录
+                            <button type="button" class="btn btn-primary pull-right" onclick="$('.search').toggle();">
+                                <span   class="glyphicon glyphicon-search " ></span>
+                            </button>
+                            
+                        </div>
+                        <div class="container">
+                            
+                            <form class="form-horizontal search" style="margin-top:80px" id="formid" role="form">
+                                
+                                <div class="form-group" style="display:none;">
+                                    <!--				<label for="ID" class="col-sm-2 control-label">目标编号</label>-->
+                                    <div class="col-sm-10">
+                                        <input type="text" readonly class="form-control PH-TARGET" style='font-size:10px;' name="ID" id="ID"
+                                            >
+                                            </div>
+                                </div>
+                                <div class="form-group" id="lpid">
+                                    <!--				<label for="PID" class="col-sm-2 control-label">父目标编号</label>-->
+                                    <div class="col-sm-10">
+                                        <input type="text" readonly class="form-control PH-PTARGET" style='font-size:10px;' id="PID"
+                                            placeholder="交易记录">
+                                            </div>
+                                </div>
+                                
+        
+                                
+                                <div class="form-group" >
+                                    <!--                <label for="lastname" class="col-sm-2 control-label">目标内容</label>-->
+                                    <div class="col-sm-10">
+                                        <select class="form-control" id="ACCTNO" name="ACCTNO" >
+                                            <option value="">全部</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                
+                            
+                                
+                                
+                               
+                                
+                                <div class="form-group">
+                                    <!--                <label class="col-sm-2 control-label">状态</label>-->
+                                    <div class="col-sm-10">
+                                        <input type="datetime-local"   class="form-control PH-MNAME" name="SDTE" id="SDTE"
+                                            placeholder="开始日期">
+                                            </div>
+                                </div>
+                                
+                                
+                                <div class="form-group">
+                                    <!--                <label class="col-sm-2 control-label">状态</label>-->
+                                    <div class="col-sm-10">
+                                        <input type="datetime-local"   class="form-control PH-MNAME" name="EDTE" id="EDTE"
+                                            placeholder="截止日期">
+                                            </div>
+                                </div>
+                                 </form>
+                                <div class="form-group search">
+                                    <!--                <label class="col-sm-2 control-label">状态</label>-->
+                                    <div class="col-sm-10">
+                                        <button type="submit" class=" btn btn-primary btn-default btn-block  " onclick="search()">
+                                            <span class="LBL-SEARCH">查询</span></button>
+                                            </div>
+                                </div>
+                                
+                                
+                                <table class="table"  style="margin-top:40px;" id="lst">
+                                    
+                                </table>
+                                
+                                <input id="CURRENCY" type="hidden" name="CURRENCY" value=""/>
+                                <input type="hidden" name="O" value="A"/>
+                                <input type="hidden" name="T" value="TRANS"/>
+                                <div class="form-group">
+                                    
+                                </div>
+                                
+                                
+                           
+                            
+                            
+                            
+                        </div>
+                        
+                        
+                        
+                        
+                    </body>
+                    <script>
+                        
+                        
+                        
+                        
+                        
+                        
+                        function backgo(){
+                            
+                            
+                            window.history.go(-1);
+                            
+                        }
+                    
+                    function refreshData(){
+                        
+                        
+                        // loadSubGoals();
+                    }
+                    
+                    
+                    
+                    
+                    
+                    function loadAccts(){
+                        var obj={};
+                        obj["Class"]="CommonDataEngine";
+                        obj["C"]="ID,UNAME,ACCTNO,ORG";
+                        obj["O"]="Q";
+                        obj["T"]="ACCT";
+                        obj["W"]="1=1 AND CSTS!='D'";
+                        
+                        asyncommunicate(obj,function(data){
+                                        var list=JSON.parse(data);
+                                        var obj=document.getElementById('ACCTNO');
+                                        //if(obj.options.length>0){return;}
+                                        for(var i=0;i<list.length;i++){
+                                        obj.options.add(new Option(list[i]["UNAME"],list[i]["ID"])); //这个兼容IE与firefox
+                                        
+                                        }
+                                        });
+                    }
+                    
+                    
+                    
+                    
+                    function firstcall(){
+                        var dte=localdatetime();
+                        $("#SDTE").val(localdatetime(-7));
+                        $("#EDTE").val(dte);
+                        loadAccts();
+                        
+                        
+                        
+                    }
+                    
+                    
+                    function delFno(fno){
+                        var obj={};
+                        obj["Class"]="CommonDataEngine";
+                        obj["O"]="D";
+                        obj["W"]="fno='"+fno+"'";
+                        obj["T"]="TRANS";
+                        if(!confirm("确认删除["+fno+"]?")){
+                            return;
+                        }
+                        asyncommunicate(obj,function(data){
+                                        try{
+                                        var j=JSON.parse(data);
+                                        if(j["CODE"]=="0000"){
+                                         //search();
+                                         $("#e"+fno).remove();
+                                        }
+                                        }catch(e){
+                                        console.log(e);
+                                        }
+                                        
+                                        });
+                                        
+                                        
+
+                        
+                        
+                    }
+                    
+                    
+                    function search(){
+                    var acctno="";
+                    var isacc=false;
+                    if($("#ACCTNO").val()){
+                        isacc=true;
+                        acctno=" left join (select  fno  as ffno from trans where acctid='"+$("#ACCTNO").val()+"') cc on a.fno=cc.ffno   ";
+                    }
+                    var time="AND datetime(dte) between datetime('"+$("#SDTE").val()+"') AND datetime('"+$("#EDTE").val()+"')";
+                    var s="(select t.fno,t.dte,t.mark,t.amt,t.memo,t.acctid,t.cnt,t.price,case when at.name is null and a.uname is null then t.acctid when a.uname is null then '' else a.uname end as uname,case when at.name is null then '' else at.name end as name, case when a.uname is not null then 'ACCT'  when at.name is not null then 'ASSET'  else 'OTHER' end AS TYP from trans t left join acct  a on t.acctid=a.id left join asset at on t.acctid=at.id where t.csts!='D' AND 1=1 "+time+"order by dte,fno) a";
+                    s+=acctno;
+                    
+                                        
+                                        var obj={};
+                                        obj["Class"]="CommonDataEngine";
+                                        obj["C"]="acctid,fno,dte,mark,amt,cnt,price,uname,name,typ,memo";
+                                        obj["O"]="Q";
+                                        obj["T"]=s;
+                                        obj["W"]="1=1";
+                                        //obj["W"]+="  AND ";
+                                        if($("#ACCTNO").val()){
+                                          obj["W"]+=" AND  cc.ffno is not null ";
+                                        }
+                                        $("#lst").html("");
+                                        asyncommunicate(obj,function(data){
+                                                        
+                                                        var income=0.0;
+                                                        var outcome=0.0;
+                                                        var html=[];
+                                                        var list=JSON.parse(data);
+                                                       
+                                                        var tmpl='#name##uname#:#mark##amt#&nbsp;<br/>';
+                                                        var fno="";
+                                                        var one="";
+                                                        for(var i=0;i<list.length;i++){
+                                                        //count
+                                                        
+                                                        if(list[i]["mark"]=="-"&&list[i]["acctid"]==$("#ACCTNO").val()){
+                                                        outcome+=parseFloat(list[i]["amt"]);
+                                                        }
+                                                        if(list[i]["mark"]=="+"&&list[i]["acctid"]==$("#ACCTNO").val()){
+                                                        income+=parseFloat(list[i]["amt"]);
+                                                        }
+                                                        
+                                                        //end count
+                                                        
+                                                        if(fno!=list[i]["fno"]){
+                                                        fno=list[i]["fno"];
+                                                        one+="</td></tr>";
+                                                        html.push(one);
+                                                        one="<tr id='e"+fno+"'><td>"+fno+"<br/>"+list[i]["dte"]+"&nbsp;&nbsp;"+list[i]["memo"]+"<br/><span class='pull-right glyphicon glyphicon-remove' onclick='delFno(\""+fno+"\")'></span>";
+                                                        }
+                                                        record=tmpl;
+                                                       
+                                                        if(fno==list[i]["fno"]){
+                                                        if(list[i]["typ"]=="ASSET"&&list[i]["acctid"]!="JYYJ"){
+                                                         tmpl='#name##uname#:#mark##amt#&nbsp;#cnt#&nbsp;#price#<br/>';
+                                                            }else{
+                                                        tmpl='#name##uname#:#mark##amt#&nbsp;<br/>'
+
+                                                       
+                                                        }
+                                                        for(var key in list[i]){
+                                                        
+                                                        var regex=new RegExp("#"+key+"#","gi");
+                                                        
+                                                        record=record.replace(regex,list[i][key]);
+                                                        
+                                                        }
+                                                        one+=record;
+                                                        
+                                                        
+                                                        
+                                                        }
+                                                       
+                                                       
+                                                        
+                                                        }
+                                                         html.push(one);
+                                                        if(list.length>0){
+                                                        var ave=income-outcome;
+                                                        html.unshift("<tr><td>*:"+ave.toFixed(2)+"<br/>+:"+income.toFixed(2)+";<br/>-:"+outcome.toFixed(2)+"</td></tr>");
+                                                        //document.getElementById("events").innerHTML+=html.join("");
+                                                        document.getElementById("lst").innerHTML=html.join("");
+                                                        }
+                                                        
+                                                        });
+                                        
+                    }
+                    
+                    
+                    
+                    
+                    
+                        </script>
+                    
+</html>

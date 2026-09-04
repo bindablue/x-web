@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="format-detection" content="telephone=no">
+<meta charset="UTF-8">
+<meta name="msapplication-tap-highlight" content="no">
+<meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+
+<title>商户提现</title>
+
+	
+<link rel="stylesheet" type="text/css" href="../../mod/swiper/swiper.min.css">       
+ 
+ <!-- bootstrap & fontawesome -->
+		
+		<link rel="stylesheet" href="../../assets/font-awesome/4.5.0/css/font-awesome.min.css" />
+ <link rel="stylesheet" href="../../assets/css/bootstrap.min.css" />
+		<!-- page specific plugin styles -->
+
+		<!-- text fonts -->
+		<link rel="stylesheet" href="../../assets/css/fonts.googleapis.com.css" />
+
+		<!-- ace styles -->
+		<link rel="stylesheet" href="../../assets/css/ace.min.css" class="ace-main-stylesheet" id="main-ace-style" />
+       
+		
+		<!--[if lte IE 9]>
+			<link rel="stylesheet" href="../../assets/css/ace-part2.min.css" class="ace-main-stylesheet" />
+		<![endif]-->
+		<link rel="stylesheet" href="../../assets/css/ace-skins.min.css" />
+		<link rel="stylesheet" href="../../assets/css/ace-rtl.min.css" />
+
+		<!--[if lte IE 9]>
+		  <link rel="stylesheet" href="../../assets/css/ace-ie.min.css" />
+		<![endif]-->
+
+		<!-- inline styles related to this page -->
+
+		<!-- ace settings handler -->
+		<script src="../../assets/js/ace-extra.min.js"></script>
+
+		<!-- HTML5shiv and Respond.js for IE8 to support HTML5 elements and media queries -->
+
+		<!--[if lte IE 8]>
+		<script src="../../assets/js/html5shiv.min.js"></script>
+		<script src="../../assets/js/respond.min.js"></script>
+		<![endif]-->
+ 
+ <!-- basic scripts -->
+
+		<!--[if !IE]> -->
+		<script src="../../assets/js/jquery-2.1.4.min.js"></script>
+
+		<!-- <![endif]-->
+
+		<!--[if IE]>
+<script src="../../assets/js/jquery-1.11.3.min.js"></script>
+<![endif]-->
+<script src="../../assets/js/bootstrap.min.js"></script>
+
+ <script src="../../js/common.js"></script>
+<script src="../../js/page.js"></script>
+ 
+<style>
+ 
+
+.red {
+	color: #FF0000;
+}
+
+.green {
+	color: #00a65a;
+}
+
+.yellow {
+	color: #f39c12;
+}
+.content-header{
+padding-top:25px;
+padding-bottom:35px;
+}
+.clearfix{
+
+clear:both;
+width:100%;
+}
+html{
+overflow-x:hidden;
+}
+.recInfo{
+border:1px solid #EEE;
+border-radius:5px;
+padding:10px;
+margin:10px;
+}
+select,input{
+  appearance: none;
+        -moz-appearance: none;
+        -webkit-appearance: none;
+        font-size:12px;
+}
+
+</style>
+<script>
+          
+       
+        </script>
+</head>
+<body  >
+	<section class="page-header">
+
+		<ol class="breadcrumb">
+			<li><a href="#"><i class="fa fa-dashboard"></i>提现管理</a></li>
+			<li class="active">提现申请</li>
+		</ol>
+	</section>
+	<div class="main-container">
+		<div class="panel">
+			<div class="panel-header"> </div>
+			<div class="panel-body">
+			
+			 <div class="text-center"> 
+				<div class="col-md-3 col-sm-6 col-xs-6">
+					
+					<span class="btn btn-app btn-lg btn-primary no-hover"> 
+					<span class="line-height-1 smaller-90 white">  <span
+								  id="income">¥0.00</span> </span> 
+					<br> 
+					<span
+						class="line-height-2 smaller-90"><i
+							class="fa fa-money"></i>  总收入 </span>
+					</span>
+					
+			 
+				</div>
+				<div class="col-md-3 col-sm-6 col-xs-6">
+				
+				  <span class="btn btn-app btn-lg btn-success no-hover"> 
+					<span class="line-height-1 smaller-90 white">  <span
+								 id="outcome">¥0.00</span></span> 
+					<br> 
+					<span
+						class="line-height-2 smaller-90"><i
+							class="fa fa-upload"></i> 费用支出 </span>
+					</span>
+					
+					 
+				</div>
+
+				<div class="col-md-3 col-sm-6 col-xs-6">
+				  <span class="btn btn-app btn-lg btn-danger no-hover"> 
+					<span class="line-height-2 smaller-90 white">  <span
+								class="  " id="netincome">¥0.00</span></span> 
+					<br> 
+					<span
+						class="line-height-1 smaller-90"><i
+							class="fa  fa-download"></i> 净收入 </span>
+					</span>
+			 		 
+				</div>
+
+				<div class="col-md-3 col-sm-6 col-xs-6">
+				
+				 <span class="btn btn-app btn-lg btn-yellow no-hover"> 
+				 <span
+						class="line-height-1 smaller-90">
+				 <small>（含提现中）</small>
+				 </span>
+				 <br/>
+					<span class="line-height-1 smaller-90 white">  <span
+								class="  " id="drawedinc">¥0.00</span></span> 
+					<br> 
+					<span
+						class="line-height-1 smaller-90"><i
+							class="fa fa-credit-card"></i> <small>已提现</small> </span>
+					</span>
+				 
+				</div>
+				</div><!-- end finance display -->
+   <div class="clearfix" >
+	<form id="drawForm" role="form" class="form-horizontal" style="margin-top:10px;">
+			<div class="form-group">
+				<label class="col-sm-4 col-xs-12 control-label" for="ttime">最大可提现金额（元）</label>
+
+				<div class="col-sm-3 col-xs-6">
+					<input id="leftcom" name="leftcom" value="" placeholder="最大可提现"
+						class="form-control" />
+				</div>
+			 
+				<div class="col-sm-4 col-xs-6">
+					<button type="button" class=" btn btn-danger btn-sm pull-center"
+						onclick="draw()">
+						<span class="LBL-ADD">确认申请提现</span>
+					</button>
+				</div>
+			</div>
+			 
+		
+		</form>
+			<div class="alert   alert-danger">
+			1.申请通过15天后，系统自动发起支付;
+			 <br/>
+			2.付款到账实效为1-3日，最快次日到账;
+			 <br/>
+            3.每笔按付款金额收取手续费，按金额0.1%收取，最低1元，最高25元;
+             <br/>
+            4.每天限额5万 ;
+            </div>
+</div>
+
+			</div>
+		</div>
+	
+	</div>
+	<form id="qryForm" class=" text-center form-horizontal">
+
+		<div class="form-group">
+			<label class="col-sm-2  col-xs-3 control-label" for="ttime">提现日期</label>
+			<div class="col-sm-4 col-xs-4">
+				<input id="stime" name="startDate" class="form-control" type="date" />
+
+			</div>
+			<div class="col-sm-4 col-xs-4">
+
+				<input id="etime" name="endDate" class="form-control" type="date" />
+			</div>
+
+		</div>
+
+		<div class="form-group">
+			 <div class="col-sm-2 col-xs-3 control-label"></div>
+			<div class="col-sm-4 col-xs-2">
+				<select class="form-control " name="status" id="selsts">
+					<option value="">全部</option>
+					<option value="T">待审核</option>
+					<option value="C">待转账</option>
+					<option value="W">转账中</option>
+					<option value="Y">已转账</option>
+					<option value="R">已拒绝</option>
+					<option value="F">转账失败</option>
+				</select>
+
+			</div>
+			<div class="col-sm-4 col-xs-3">
+				<input id="sname" name="uid" placeholder="账号" class="form-control" />
+			</div>
+			<div class="col-sm-2 col-xs-3">
+				<button type="button"
+					class=" btn btn-primary  btn-sm pull-right"
+					onclick="page.loadPage(1)">
+					<span class="LBL-ADD">查询</span>
+				</button>
+			</div>
+		</div>
+	</form>
+
+
+
+	<a id="tips"
+		style="float: left; width: 100%; text-align: center; margin-top: 20px;"></a>
+	<!-- <table class="table table-bordered table-hover" id="response"
+		style="width: 100%; margin-top: 40px;">
+	</table> -->
+	<table id="response" class="table" style="width:100%; margin-top:55px;padding:0 10px;"></table>
+	<div id="jiazai" class="text-center">
+		 
+	</div>
+	<div id="foot">
+	<div class="text-center    pull-right">
+		每页<select name="ps" onchange="setPageSize(this.value)">
+
+			<option value="10">10</option>
+			<option value="40">40</option>
+			<option value="100">100</option>
+		</select> 条， 共 <span class="badge" id="tt">#TT#</span>页,共 <span class="badge"
+			id="trec">0</span>条
+	</div>
+	<div class="text-center ">
+		<ul id="pp" class="pagination pagination-sm"></ul>
+	</div>
+	</div>
+	<script>
+      var sts={"T":"待审核","C":"待转账","W":"转账中","Y":"已转账","R":"已拒绝","F":"转账失败"};
+      var drawtypes={"WEIXIN":"<i class='fa fa-wechat text-success'></i> ","BANK":"<i class='fa fa-credit-card text-danger'></i>"};//{"WEIXIN":"微信零钱","BANK":"银行卡"};
+      var page=new Page();
+      page.cntreq="/rest/product/countdraw"; 
+      page.listreq="/rest/product/alldraw";
+      page.qryForm="qryForm";
+      page.tmpl="<tr><td>#appkey#</td><td>#uid#</td><td>#sts#</td><td>#orgamt#</td><td>#amt#</td><td>#prefee#</td><td>#drawtype#<td>#createtime#</td><td>#truename#</td><td>#bankname#</td><td>#bankno#</td><td>#err_code#:#err_code_des#</td> </tr>";
+      page.header="<tr><td>商户号</td><td>账号</td><td>状态</td><td>提现金额</td><td>实际提现金额</td><td>手续费</td><td>提现方式</td><td>申请时间</td><td>收款人</td><td>收款行</td><td>收款账号</td><td>微信转账信息</td><td></td></tr>";
+      
+     if(isMobile()){
+       setScroll();
+       $("#foot").hide();
+       page.header="";
+       page.tmpl="<div class='recInfo'>  商户号/用户号:<b>#appkey#/#uid#</b> <br/>#sts# <span class='text-primary'><b>#orgamt#</b></span>-<span class='text-success'>#prefee#</span>= <span class='text-danger  '>  <b>#amt#</b>  </span> <br/> #drawtype#  #truename#  #bankname#  #bankno#  #err_code# #err_code_des#  <br/> #createtime#      </div>";
+     }	 
+       page.recompose=function(record,one,idx){
+    	  
+    	  for(var key in record){
+        	  if(key=="sts"){
+        		  var v="<span class='badge #class#'>"+sts[record[key]]+" </span>";
+        		  if(record[key]=="T"||record[key]=="C"){
+        			  v=v.replace("#class#","label-warning");
+        		  }else if(record[key]=="Y"||record[key]=="W"){
+        			  v=v.replace("#class#","label-success");
+        			  
+        		  } 
+        		  else if(record[key]=="F"||record[key]=="R"){
+        			  v=v.replace("#class#","label-danger");
+        		  }
+        		  one=one.replace("#"+key+"#",v);
+        		  
+        	  }else if(key=="createtime"||key=="paytime"){
+	              	var v="";
+	              	if(record[key]){
+	                   var time=record[key].time;
+	              	   v=new Date(time).toLocaleString();
+	              	}
+	              	 one=one.replace("#"+key+"#",v);
+	           }else if (key=="amt"||key=="orgamt"||key=="prefee"){
+	            	  var cc=parseFloat(record[key])/100;
+	                  one=one.replace("#"+key+"#","¥"+cc.toFixed(2));
+	              }else if(key=="drawtype"){
+	            	   one=one.replace("#"+key+"#",drawtypes[record[key]]);
+	            	  if(record[key]=="WEIXIN"){
+	            		  record["bankno"]="";
+	            		  record["bankname"]="";
+	            	  }
+	               }
+               
+            }
+      	return one;
+      	
+      }
+         
+      function firstcall(){
+    	  getMerincome();
+          page.loadPage(1);
+          
+     }
+      function draw(){
+    	  var obj=getFormJson("#drawForm");
+    	  var leftcom=obj["leftcom"];
+    	   leftcom=100*leftcom;
+    	   obj["leftcom"]=leftcom;
+    	  
+    	  postData(obj,"/rest/product/draw",function(data){
+    	     console.log("drawed");
+    	     if(data.CODE!="0000"){
+    	    	 alert(data.MSG);
+    	     }else{
+    	    	  firstcall();
+    	     }
+    	    
+    	   
+          });
+      }
+     
+      function getMerincome(){
+    	  
+    	  postData({},"/rest/product/mymerincome",function(data){
+    		  console.log(data);
+    		  var income=0.00;
+    		  var netincome=0.00;
+    		  var outcome=0.00;
+    		  if(data.allmerinc){
+    			    income=parseFloat(data.allmerinc.orgamt/100).toFixed(2);
+        		    netincome=parseFloat(data.allmerinc.amt/100).toFixed(2);
+        		    outcome=parseFloat((data.allmerinc.orgamt-data.allmerinc.amt)/100).toFixed(2);
+        	
+    		  }
+    		  var drawedinc=parseFloat(data.drawedinc/100).toFixed(2);
+    		  var leftinc=parseFloat(data.leftinc/100).toFixed(2);
+    		  $("#income").html("¥"+income);
+    		  $("#netincome").html("¥"+netincome);
+    		  $("#outcome").html("¥"+outcome);
+    		  $("#drawedinc").html("¥"+drawedinc);
+    		  $("#leftcom").val(leftinc);
+    	  });
+    	  
+      }
+      
+      
+      
+      function confirmdraw(drawid,uid,sts){
+    	  
+    	  var msg="确认通过?";
+    	  if(sts=='R') msg="确认拒绝?";
+    	  
+    	  var ret=confirm(msg);
+    	 
+    	  if(!ret){
+    		  
+    		  return;
+    	  }
+    	  var val='';
+    	  if(sts=='R'){ 
+    	   val=prompt("请输入拒绝原因","不通过的原因"); 
+          }
+    	  var obj={"drawid":drawid,"uid":uid,"sts":sts,checkmemo:val};
+    	  
+    	  postData(obj,"/rest/product/confirmdraw",function(data){
+    		  console.log(data);
+    		  
+    	  });
+    		  
+    		  
+    		  
+    	  }
+    	  
+   
+      </script>
+
+
+
+
+</body>
+</html>

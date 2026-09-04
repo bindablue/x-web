@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <title>世界地图 - 轨迹</title>
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    .filter-bar {
+      position: fixed;
+      top: 10px;
+      left: 10px;
+      right: 10px;
+      z-index: 9999;
+      background: #fff;
+      padding: 8px 12px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .filter-bar input {
+      padding: 6px 8px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      outline: none;
+      flex: 0 1 auto;
+      min-width: 140px;
+    }
+
+    .filter-bar button {
+      padding: 6px 12px;
+      background: #1890ff;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .filter-bar button:hover {
+      background: #40a9ff;
+    }
+
+    .loading {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.4);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 99999;
+      color: #fff;
+      font-size: 16px;
+    }
+
+    #map {
+      width: 100vw;
+      height: 100vh;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="loading" id="loading">数据加载中...</div>
+
+  <div class="filter-bar">
+    <span>开始时间：</span>
+    <input type="datetime-local" id="beginTime">
+    <span>结束时间：</span>
+    <input type="datetime-local" id="endTime">
+    <button id="queryBtn">查询</button>
+    <button id="selectAllBtn">全选</button>
+    <button id="unselectAllBtn">全不选</button>
+  </div>
+
+  <div id="map"></div>
+
+  <script>
+    const myChart = echarts.init(document.getElementById('map'));
+    const loadingEl = document.getElementById('loading');
+    let deviceData = [];
+    let currentLegendNames = [];
+
+    const formatDateTime = (date) => {
+      const y = date.getFullYear();
+      const m = String(date.getMonth() + 1).padStart(2, '0');
+      const d = String(date.getDate()).padStart(2, '0');
+      const h = String(date.getHours()).padStart(2, '0');
+      const min = String(date.getMinutes()).padStart(2, '0');
+      return `${y}-${m}-${d}T${h}:${min}`;
+    };
+
+    const beginDefault = new Date();
+    beginDefault.setHours(0, 0, 0, 0);
+    document.getElementById('beginTime').value = formatDateTime(beginDefault);
+    document.getElementById('endTime').value = formatDateTime(new Date());
+
+    document.getElementById('queryBtn').addEventListener('click', () => {
+      loadData();
+    });
+
+    // 全选
+    document.getElementById('selectAllBtn').addEventListener('click', () => {
+      if (!currentLegendNames.length) return;
+      currentLegendNames.forEach(name => {
+        myChart.dispatchAction({ type: 'legendSelect', name: name });
+      });
+    });
+
+    // 全不选
+    document.getElementById('unselectAllBtn').addEventListener('click', () => {
+      if (!currentLegendNames.length) return;
+      currentLegendNames.forEach(name => {
+        myChart.dispatchAction({ type: 'legendUnSelect', name: name });
+      });
+    });
+
+    function loadData() {
+      const beginTime = document.getElementById('beginTime').value.replace('T', ' ') + ':00';
+      const endTime = document.getElementById('endTime').value.replace('T', ' ') + ':00';
+
+      loadingEl.style.display = 'flex';
+
+      fetch('/service/user/userLog/list', {
+        method: "POST",
+        body: JSON.stringify({ beginTime, endTime }),
+        headers: { 'Content-Type': 'application/json' }
+      })
+        .then(res => res.json())
+        .then(list => {
+          deviceData = (list.data || []).filter(item => item.latitude && item.longitude);
+          renderMap();
+        })
+        .catch(err => {
+          console.error('数据加载失败', err);
+        })
+        .finally(() => {
+          loadingEl.style.display = 'none';
+        });
+    }
+
+    fetch('world.json')
+      .then(res => res.json())
+      .then(worldJson => {
+        echarts.registerMap('world', worldJson);
+        loadData();
+      })
+      .catch(err => {
+        console.error('地图加载失败', err);
+      });
+
+    function generateColor(exeName) {
+      const str = exeName;
+      let hash = 0;
+      for (let i = 0; i < str.length; i++) {
+        hash = str.charCodeAt(i) + ((hash << 5) - hash);
+      }
+      hash = hash & hash;
+      const hue = Math.abs(hash) % 360;
+      const saturation = 55 + (Math.abs(hash >> 4) % 20);
+      const lightness = 45 + (Math.abs(hash >> 6) % 20);
+      return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+    }
+
+    function renderMap() {
+      const deviceMap = {};
+      deviceData.forEach(item => {
+        if (!deviceMap[item.deviceId]) deviceMap[item.deviceId] = [];
+        deviceMap[item.deviceId].push(item);
+      });
+
+      Object.values(deviceMap).forEach(points => {
+        points.sort((a, b) => new Date(a.createTime) - new Date(b.createTime));
+      });
+
+      const seriesList = [];
+      const legendData = [];
+
+      Object.entries(deviceMap).forEach(([did, points]) => {
+        const color = generateColor(did);
+        const coords = points.map(p => [p.longitude, p.latitude]);
+        const sdid = did.substring(0, 8);
+        legendData.push(sdid);
+
+        if (coords.length > 1) {
+          seriesList.push({
+            name: sdid,
+            type: 'lines',
+            coordinateSystem: 'geo',
+            polyline: true,
+            data: [{
+              coords: coords,
+              lineStyle: { color, width: 2 }
+            }],
+            zlevel: 1,
+            effect: { show: true, period: 6, symbol: 'arrow', symbolSize: 5 }
+          });
+        }
+
+        const scatterData = [];
+        if (points.length > 1) {
+          const start = points[0];
+          scatterData.push({
+            name: sdid,
+            value: [start.longitude, start.latitude, start.createTime],
+            itemStyle: { color }
+          });
+        }
+        const last = points[points.length - 1];
+        scatterData.push({
+          name: sdid,
+          value: [last.longitude, last.latitude, last.createTime],
+          itemStyle: { color }
+        });
+
+        seriesList.push({
+          name: sdid,
+          type: 'effectScatter',
+          coordinateSystem: 'geo',
+          data: scatterData,
+          symbolSize: 5,
+          symbol: 'circle',
+          rippleEffect: { scale: 3, brushType: 'stroke' },
+          zlevel: 11,
+          label: { show: true, position: 'right', formatter: '{b}' }
+        });
+      });
+
+      currentLegendNames = legendData;
+
+      const option = {
+        tooltip: {
+          trigger: 'item',
+          formatter: p => {
+            if (p.seriesType === 'effectScatter') {
+              const lng = p.value[0];
+              const lat = p.value[1];
+              const time = p.value[2];
+              return `设备：${p.name}<br>时间：${time}<br>经纬度：${lat}, ${lng}`;
+            }
+            return `设备：${p.seriesName}`;
+          }
+        },
+        legend: {
+          data: legendData,
+          top: 70,
+          left: 'center'
+        },
+        geo: {
+          map: 'world',
+          roam: true,
+          itemStyle: { areaColor: '#f3f4f6', borderColor: '#d1d5db' },
+          emphasis: { disabled: true }
+        },
+        series: seriesList
+      };
+
+      myChart.setOption(option, true);
+    }
+
+    window.addEventListener('resize', () => myChart.resize());
+  </script>
+</body>
+
+</html>

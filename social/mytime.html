@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        
+        <!--        <meta name="format-detection" content="telephone=no">-->
+        <meta charset="UTF-8">
+            <meta name="msapplication-tap-highlight" content="no">
+                <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+                    
+                    <title>时间指数</title>
+                    <link rel="stylesheet" type="text/css" href="../../mod/swiper/swiper.min.css">
+                        
+                        <link rel="stylesheet" type="text/css" href="../../mod/bootstrap/css/bootstrap.min.css"/>
+                        <link rel="stylesheet" type="text/css" href="../../css/common.css"/>
+                        <script src="../../mod/swiper/swiper.min.js"></script>
+                        <script src="../../js/jquery.min.js"></script>
+                        <script src="../../js/common.js"></script>
+                        <script src="../../js/echarts.min.js"></script>
+                        <script src="../../mod/moment/moment.min.js"></script>
+                        <script src="../../mod/bootstrap/js/bootstrap.min.js"></script>
+                        <script>
+                            var nologin=true;
+                            
+                            
+                            function firstcall(){
+                                if(!byApp()){
+                                    $("#btnShare").hide();
+                                }
+                                
+                               
+                                taskline(1,'weeks');
+                                
+                            }
+                        
+                        function loadData(){
+                            
+                            
+                            console.log("开始更新。。。");
+                            
+                            
+                        }
+                        
+                        function refreshData(){
+                            setTimeout(function(){firstcall();},500);
+                        }
+                        
+                        function  scroll(id) {
+                            var scroll_offset =$(id).offset(); //得到pos这个div层的offset，包含两个值，top和left
+                            $("body,html").animate({
+                                                   scrollTop:scroll_offset.top //让body的scrollTop等于pos的top，就实现了滚动
+                                                   },0);
+                        }
+                        
+                            </script>
+                        <style>
+                            .swiper-container, {
+                                width: 100%;
+                                height: 600px;
+                                position:absolute;
+                                bottom:10px;
+                                
+                            }
+                      
+                            </style>
+                        </head>
+    <body>
+     
+        
+        <div id="hh" style="">
+            <button id ="nav-left" type="button" class=" btn  pull-left" onclick="dismiss();" >
+                <span  class="glyphicon glyphicon-remove"></span>
+            </button>
+             <button id="btnShare" type="button"  class="btn hide btn-primary pull-right"    onclick="share();" > <span class="LBL-WXSHR" style="padding-bottom:10px;">微信分享</span>
+             </button>
+        </div>
+        <input id="data" type="hidden" value="" />
+       
+            <!-- Swiper -->
+            <div class="swiper-container">
+                
+                    
+                   
+                   <div id="tline"   style="height:600px;width:100%;margin-top:30px;"></div>
+                   <div style="text-align: center;">
+                       <div class="btn-group  pull-center">
+                           <button onclick="taskline(1,'weeks')" class="btn  btn-priamry  ">
+                               <span class=" ">周</span>
+                           </button>
+                           <button onclick="taskline(2,'weeks')" class="btn   btn-danger  ">
+                               <span class=" ">两周</span>
+                           </button>
+
+                           <button onclick="taskline(1,'months')" class="btn   btn-warning ">
+                               <span class=" ">月</span>
+                           </button>
+                           <button onclick="taskline(3,'months')" class="btn   btn-info ">
+                               <span class=" ">三月</span>
+                           </button>
+
+                           <button onclick="taskline(1,'years')" class=" btn   btn-gray ">
+                               <span class=" ">年</span>
+                           </button>
+                       </div>
+                   </div>
+                
+            </div>
+            
+       
+        
+ 
+        
+    </body>
+    
+    <script>
+          function share(){
+              var idx=0;//swiper.activeIndex;
+            console.log("swipe idx:"+idx);
+            var obj={};
+            //obj["URL"]=domain+webapp+"/html/social/share.html";
+           // obj["PARAM"]=$("#data").val();
+            obj["IMG"]=swipers[idx].getDataURL();
+            obj["op"]="wximgshare";
+            obj["TITLE"]=titles[idx];
+            obj["DESC"]="";
+            obj["scene"]=1;
+            obj["Class"]="TaskDataEngine";
+            asyncommunicate(obj,function(data){
+                            });
+                          // window.location.href="http:share.html?RESULT="+encodeURI(lineChart.getDataURL());
+                          // console.log(lineChart.getDataURL());
+        }
+        function getTmpl(){
+            
+            return "<tr><td>#LOC#</td><td>#CNT#</td></tr>";
+        }
+    
+        var swipers=[];
+        var titles=[];
+       
+       var tdom=document.getElementById("tline");
+       var tChart=echarts.init(tdom);
+       swipers.push(tChart);
+       titles.push("时间都去哪儿了");
+       
+    
+    //create type
+    function taskline(total,period){
+        
+        var  endTime=moment().format("YYYY-MM-DD");
+        var  startTime=moment().subtract(total, period).format("YYYY-MM-DD");
+        var obj={"startTime":startTime,"endTime":endTime};
+        obj["Class"]="CommonDataEngine";
+        obj["exeCode"]="timeGroupName";
+        
+        asyncommunicate(obj,function(data){
+                        // try{
+                        var tdata=JSON.parse(data);
+                        
+                        var tnames=tdata.map(function(tt){return tt["taskName"];});
+                        var ttimes=tdata.map(function(o){
+                                             var d=o["spentTime"]/1440;
+                                             return d.toFixed(2);});
+                        var avgs=tdata.map(function(o){
+                                           var d=o["avgTime"]/60;
+                                           return d.toFixed(2);});
+                        //alert(data);
+                        option = {
+                        title: {
+                        top:40,
+                        text: lanMap["TASKDIST"],
+                        subtext: lanMap["TASKSTAT"],
+                        x: 'center',
+                        y:'bottom'
+                        },
+                        tooltip: {
+                        trigger: 'axis',
+                        axisPointer: {
+                        animation: false
+                        }
+                        },
+                        grid:{
+                        left:'20%',
+                        top:'100'
+                        
+                        },
+                        legend: {
+                        
+                        data:[lanMap["TOTALSPEND"],lanMap["AVGSPEND"]],
+                        x: 'right',
+                        
+                        y:'bottom'
+                        
+                       
+
+                        },
+                        
+                        xAxis : [
+                                 {
+                                 name : '',//lanMap["TOTALSPEND"],
+                                 type : 'value',
+                                 scale:  0.1
+                                 }
+                                 ],
+                        yAxis : [
+                                 {
+                                 type : 'category',
+                                 boundaryGap : false,
+                                 axisLine: {onZero: false},
+                                 data:tnames
+                                 }
+                                 ],
+                        series : [
+                                  {
+                                  name:lanMap["TOTALSPEND"],
+                                  type:'bar',
+                                  data:ttimes
+                                  },
+                                  {
+                                  name:lanMap["AVGSPEND"],
+                                  type:'line',
+                                  data:avgs
+                                  }
+                                  ]
+                        };
+                        
+                        
+                        
+                        
+                        
+                        tChart.setOption(option, true);
+                        
+                        //}catch(e){
+                        //alert(e);
+                        
+                        //}
+                        
+                        
+                        });
+                        
+    }
+
+    
+    
+    
+    
+    
+    
+        </script>
+    
+</html>

@@ -1,0 +1,1 @@
+var messages="<span onclick=\"webGotoRemote('https://dododido.cn/service/timeView.html')\">新功能:时间块分布图<i class='glyphicon glyphicon-hand-right'>点击体验</i></span>";

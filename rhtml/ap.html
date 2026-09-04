@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        
+        <!--        <meta name="format-detection" content="telephone=no">-->
+        <meta charset="UTF-8">
+            <meta name="msapplication-tap-highlight" content="no">
+                <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+                     <meta name="keywords" content="嗒嗒嘀嗒 时间管理 软件专家 微信群发软件 时间管理软件 dadadida  dadadida.cn Task Plan Log Goal Management Time Money Finance">
+                        <meta name="description" content="嗒嗒嘀嗒 时间管理 软件专家 ！欢迎定制个性化服务软件:iOS app ，安卓app，微信小程序，微信公众号，网站，window软件 。请联系QQ客服【115-1590-110】 dadadida.cn dadadida  ">
+                   
+                    <title>x1.0</title>
+                      <link rel="stylesheet" type="text/css" href="../mod/swiper/swiper.min.css">
+                        
+                        <link rel="stylesheet" type="text/css" href="../mod/bootstrap/css/bootstrap.min.css"/>
+                        <link rel="stylesheet" type="text/css" href="../css/common.css"/>
+                        <script src="../mod/swiper/swiper.min.js"></script>
+                        <script src="../js/jquery.min.js"></script>
+                        <script src="../js/common.js"></script>
+                        <script type="text/javascript" src="../rmod/echarts/echarts-all-3.js"></script>
+                        <script type="text/javascript" src="../rmod/echarts/extension/dataTool.min.js"></script>
+                        <script type="text/javascript" src="../rmod/echarts/map/js/china.js"></script>
+                        <script type="text/javascript" src="../rmod/echarts/map/js/world.js"></script>
+                        <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=5TVTI5H2Ra4zkP7sdG2EuGWEf43GCiQs"></script>
+                        <script type="text/javascript" src="../mod/echarts/extension/bmap.min.js"></script>
+                        
+                        <script src="../mod/bootstrap/js/bootstrap.min.js"></script>
+                        <script>
+                            //var nologin=true;
+                            function loadData(){
+                            
+                            
+                            console.log("开始更新。。。");
+                            
+                            
+                        }
+                        
+                        function refreshData(){
+                            setTimeout(function(){firstcall();},500);
+                        }
+                        
+                        function  scroll(id) {
+                            var scroll_offset =$(id).offset(); //得到pos这个div层的offset，包含两个值，top和left
+                            $("body,html").animate({
+                                                   scrollTop:scroll_offset.top //让body的scrollTop等于pos的top，就实现了滚动
+                                                   },0);
+                        }
+                        
+                            </script>
+                        <style>
+                            
+                            </style>
+                        </head>
+    <body>
+        <div id="hh" style="margin-bottom:50px;width:40px;" >
+            
+            <div class="btn-group-vertical pull-left" role="group" aria-label="...">
+                <button type="button" class="btn btn-primary btn-sm pull-left" onclick="window.history.go(-1);">
+                    <span style="padding-bottom: 10px;">返回</span>
+                </button>
+                <button type="button" class="btn btn-success btn-sm pull-left" onclick="client2();">
+                    <span style="padding-bottom: 10px;">客户端访问</span>
+                </button>
+                <button type="button" class="btn btn-success btn-sm pull-left" onclick="client();">
+                    <span style="padding-bottom: 10px;">客户端访问2.0.3后</span>
+                </button>
+                <button type="button" class="btn btn-info btn-sm pull-left" onclick="all();">
+                    <span style="padding-bottom: 10px;">所有访问量</span>
+                </button>
+                <button type="button" class="btn btn-warning btn-sm " onclick="zoom(true)">
+                    <span class="glyphicon glyphicon-resize-full"  ></span>
+                </button>
+                <button type="button" class="btn btn-danger btn-sm " onclick="zoom(false)">
+                    <span   class="glyphicon glyphicon-resize-small"></span>
+                </button>
+            </div>
+            
+            
+        </div>
+        
+        <div class="container" style="height:80%;">
+            
+            
+                         <form class="form-horizontal" id="qryForm" >
+              
+                  <div class="form-group">
+               <label class="col-sm-2 control-label"  for="sname"> </label> 
+                <div class="col-sm-4">
+                     <input  id="sname" name="TITLE" class="form-control"   placeholder="关键字" 
+                  class="sname PH-KEYWORD" oninput="loadPage(1)" />  
+                    
+                </div>
+               
+                <div class="col-sm-2">
+                     <select class="form-control " name="history" onchange="showDays(this.value)"  >
+                      <option value="">全部</option> 
+                     <option value="-1">昨天</option> 
+                      <option value="-7">过去7天</option> 
+                       <option value="-15">过去15天</option> 
+                        <option value="-30">过去30天</option> 
+                    </select>  
+                    
+                </div>
+                 
+                </div>
+                   
+                <div class="form-group">
+               <label class="col-sm-2 control-label"  for="ttime"></label> 
+                <div class="col-sm-3">
+                    <input id="stime" name="StartDate"  class="form-control"   placeholder="执行时间" 
+                    type="date"/>  
+                     
+                </div>
+                <div class="col-sm-3">
+                    
+                     <input id="etime" name="EndDate"  class="form-control"   placeholder="执行时间" 
+                    type="date"/>  
+                </div>
+                 
+              </div>
+                
+             </form>
+             <div id="container" style="width:90%;height:500px;"> </div>
+            <table class="table" id="tcnt"></table>
+            
+        </div>
+        
+    </body>
+    
+    <script>
+    function showDays(days){
+   	     $("#stime").val(getToday8(days));
+    	 $("#etime").val(getToday8());
+   	  
+     }
+        var nologin=true;
+        var where=" 1=1 ";
+       
+       
+       function client2(){
+           where=" tcontent like '%tick%'";
+           firstcall2();
+       }
+    
+       function client(){
+           where=" tcontent like '%devToken%'";
+           firstcall2();
+       }
+        
+       function condition(){
+       	   var where=" AND 1= 1";
+            if($("#stime").val()!=''){
+            	where+= " AND ctime>='"+$("#stime").val()+" 00:00:00'";
+            }
+            if($("#etime").val()!=''){
+            	where+= " AND ctime<='"+$("#etime").val()+" 23:59:59'";
+            }
+             return where;
+       }
+       function all(){
+    	   
+    	   where="1=1";
+           firstcall2();
+    	   
+       }
+        function firstcall(){
+        	showDays(-7);
+             where="1=1";
+             firstcall2();
+
+            return;
+            var ob={};
+            ob["Class"]="CommonDataEngine";
+            ob["T"]="(SELECT c.LAT,c.LNG,c.CITY,strftime('%Y%m%d',ctime,'"+timefixed+"') AS DTE,strftime('%H:%M:%S',ctime,'"+timefixed+"') AS TIM,TCONTENT FROM LOG l left join ip_map m on m.ip=l.tip left join city c on m.city=c.city WHERE 1=1  "+condition()+" ORDER BY CTIME DESC)";
+            ob["O"]="Q";
+            ob["db"]="db";
+            ob["dn"]="log.db";
+            ob["C"]="CITY,LAT,LNG,DTE,TIM,TCONTENT";
+            ob["W"]="1=1";
+            asyncommunicate(ob,function(data){
+                            
+                            //console.log(data);
+                            showChart(data);
+                            });
+                            
+                            
+        }
+    
+    var dat=0;
+    var counter=0;
+    function firstcall2(){
+        
+       
+        var ob={};
+        ob["Class"]="CommonDataEngine";
+        ob["T"]="(SELECT count(1) AS CNT,c.LAT,c.LNG,CASE WHEN c.CITY IS NULL OR c.CITY='' THEN '其他' ELSE c.CITY END  AS CITY,strftime('%Y%m%d',ctime,'"+timefixed+"') AS DTE  FROM LOG l left join ip_map m on m.ip=l.tip left join city c on m.city=c.city WHERE  "+where+" "+condition()+" GROUP BY c.LAT,c.LNG,c.CITY,strftime('%Y%m%d',ctime,'"+timefixed+"') ORDER BY strftime('%Y%m%d',ctime,'"+timefixed+"'))";
+        ob["O"]="Q";
+        ob["db"]="db";
+        ob["dn"]="log.db";
+        ob["C"]="CITY,LAT,LNG,DTE,CNT";
+        ob["W"]="1=1";
+        asyncommunicate(ob,function(data){
+                        
+                        //console.log(data);
+                        var list=JSON.parse(data);
+                      //  dat=list.length;
+                        
+                        showChart2(list);
+                       
+                        
+                        });
+                        
+                        
+    }
+    
+    function showChart2(dd){
+        console.log(dd);
+        var list=dd;
+        var all={};
+        var data=[];
+        var center=[];
+        var geoCoordMap={};
+        var tt=0;
+        
+        for(var i=0;i<list.length;i++){
+            
+            if(typeof all[list[i]["DTE"]] == "undefined"){
+                
+                all[list[i]["DTE"]]=[];
+                
+                
+                
+            }
+            
+           var obj={"name":list[i]["DTE"]+"-"+list[i]["CITY"]+"("+list[i]["CNT"]+")","value":[parseFloat(list[i]["LNG"]),parseFloat(list[i]["LAT"]),parseInt(list[i]["CNT"])]};
+                
+                tt+=parseInt(list[i]["CNT"]);
+             
+           
+                 all[list[i]["DTE"]].push(obj);
+           
+             
+            if(center.length==0){
+                center.push(list[i]["LNG"]);
+                center.push(list[i]["LAT"]);
+            }
+            
+            // data.push({name:list[i]["STREET"],value:20});
+            //geoCoordMap[list[i]["STREET"]]=[list[i]["LNG"],list[i]["LAT"]];
+            
+        }
+        
+        var series=[];
+        var lgd=[];
+        var idx=0;
+        var len=0;
+        for(var k in all){
+            len++;
+        }
+        
+        var hStep = 300 / (len - 1);
+        
+        for (var key in all){
+            idx++;
+            var c ='#'+(Math.random()*0xffffff<<0).toString(16);
+            
+           
+           
+                                                  
+                                                  
+                                                  lgd.push(key);
+                                               
+                                                  
+                                                  var one={
+                                                      name: key,
+                                                      type:'effectScatter',//'scatter',
+                                                      coordinateSystem: 'bmap',
+                                                      data: all[key],
+                                                      symbol:'emptyCircle',
+                                                      symbolSize: function (val) {
+                                                          return  5+val[2]*1.00/10000;
+                                                          if(val[2]/10<1) return 8;
+                                                          if(val[2]/10>20) return 20;
+                                                          return val[2]/10;
+                                                      },
+                                                      effect:{
+                                                          show:true,
+                                                          showdowBlur:0
+                                                      },
+                                                      rippleEffect:{
+                                                          period:4,
+                                                          scale:6,
+                                                          brushType:'stroke'
+                                                          
+                                                      },
+                                                      
+                                                      label: {
+                                                          normal: {
+                                                              formatter: '{b}',
+                                                              position: 'right',
+                                                              show: false
+                                                          },
+                                                          emphasis: {
+                                                              show: true
+                                                          }
+                                                      }/*,
+                                                      itemStyle: {
+                                                          normal: {
+                                                              color: c
+                                                          }
+                                                      }*/
+                                                  };
+                                                  
+                                                  series.push(one);
+                                                  
+        }
+        
+        option = {
+            title: {
+                text: '总访问量('+tt+')',
+                subtext: 'data from dadadida.cn',
+                sublink: 'http://dadadida.cn',
+                left: 'center'
+            },
+            tooltip : {
+                trigger: 'item'
+            },
+            dataRange: {
+                min : 0,
+                max : 1000,
+                calculable : true,
+                color: ['#ff3333', 'orange', 'yellow','lime','aqua'],
+                textStyle:{
+                    color:'#fff'
+                }
+                
+            },
+            legend: {
+                
+                data:lgd,
+                top:'80',
+                //itemGap:5,
+                //itemHeight:10,
+                x: 'right',
+                //align:'left',
+                y:'bottom',
+                orient:'vertical'
+            },
+            bmap: {
+                center: [104.114129, 37.550339],//center
+                zoom: num,//15,//5,
+                roam: true,
+                mapStyle:nightMap
+            },
+            series :series
+            
+        };;
+        if (option && typeof option === "object") {
+            myChart.setOption(option, true);
+        }
+        
+        
+    }
+
+    var dom = document.getElementById("container");
+    var myChart = echarts.init(dom);
+    var app = {};
+    option = null;
+    
+    var num=5;
+    function zoom(ok){
+        
+        if(ok){
+            if(num>20){
+                return ;
+            }
+            num++;
+        }else{
+            if(num<2){
+                return;
+            }
+            num--;
+            
+        }
+        
+        myChart.setOption({bmap:{zoom:num}});
+    }
+    function showChart(dd){
+        console.log(dd);
+        var list=JSON.parse(dd);
+        
+        var all={};
+        var data=[];
+        var center=[];
+        var geoCoordMap={};
+        
+        for(var i=0;i<list.length;i++){
+            
+            if(typeof all[list[i]["DTE"]] == "undefined"){
+                
+                all[list[i]["DTE"]]=[];
+                // all[list[i]["CTIME"]]]["value"]=[];
+                
+                
+                
+            }
+            
+            var content=list[i]["TCONTENT"];
+            if(content["lat"]&&content["lng"]){
+                if(content["lat"]=="(null)"){
+                    continue;
+                }
+                
+              var obj={"name":list[i]["TIM"]+"*"+list[i]["CITY"],"value":[parseFloat(list[i]["TCONTENT"]["lng"]),parseFloat(list[i]["TCONTENT"]["lat"]),100]};
+            }else if(list[i]["LAT"]){
+                if(center.length==0){
+                    center.push(list[i]["LNG"]);
+                    center.push(list[i]["LAT"]);
+                }
+              var obj={"name":list[i]["TIM"]+"-"+list[i]["CITY"],"value":[parseFloat(list[i]["LNG"]),parseFloat(list[i]["LAT"]),100]};
+                
+                
+            }else{
+                //continue;
+                var obj={"name":list[i]["TIM"]+"-"+list[i]["CITY"],"value":[25,118,100]};
+                
+            }
+            
+            all[list[i]["DTE"]].push(obj);
+            
+            
+            
+            // data.push({name:list[i]["STREET"],value:20});
+            //geoCoordMap[list[i]["STREET"]]=[list[i]["LNG"],list[i]["LAT"]];
+            
+        }
+        
+        var series=[];
+        var lgd=[];
+        var idx=0;
+        var len=0;
+        for(var k in all){
+            len++;
+        }
+        
+        var hStep = 300 / (len - 1);
+        
+        for (var key in all){
+            idx++;
+            var c ='#'+(Math.random()*0xffffff<<0).toString(16);
+            
+            
+                                                  
+                                                lgd.push(key);
+                                                  
+                                                  
+                                                  var one={
+                                                      name: key,
+                                                      type:'effectScatter',//'scatter',
+                                                      coordinateSystem: 'bmap',
+                                                      data: all[key],
+                                                      symbolSize: function (val) {
+                                                          return 5;//val[2] / 10;
+                                                      },
+                                                      
+                                                      label: {
+                                                          normal: {
+                                                              formatter: '{b}',
+                                                              position: 'right',
+                                                              show: false
+                                                          },
+                                                          emphasis: {
+                                                              show: true
+                                                          }
+                                                      },
+                                                      itemStyle: {
+                                                          normal: {
+                                                              color: c
+                                                          }
+                                                      }
+                                                  };
+                                                  
+                                                  series.push(one);
+                                                  
+        }
+        
+        option = {
+            title: {
+                text: '总访问量('+list.length+')',
+                subtext: 'data from dadadida.cn',
+                sublink: 'http://dadadida.cn',
+                left: 'center'
+            },
+            tooltip : {
+                trigger: 'item'
+            },
+            legend: {
+                
+                data:lgd,
+                top:'50',
+                //itemGap:5,
+                //itemHeight:10,
+                x: 'right',
+                //align:'left',
+                y:'bottom',
+                orient:'vertical'
+            },
+            bmap: {
+                center: center,//[104.114129, 37.550339],
+                zoom: num,//15,//5,
+                roam: true,
+                mapStyle:dayMap
+            },
+            series :series
+            
+        };;
+        if (option && typeof option === "object") {
+            myChart.setOption(option, true);
+        }
+        
+        
+    }
+    
+    
+    var dayMap= {
+        styleJson: [{
+                    'featureType': 'water',
+                    'elementType': 'all',
+                    'stylers': {
+                    'color': '#d1d1d1'
+                    }
+                    }, {
+                    'featureType': 'land',
+                    'elementType': 'all',
+                    'stylers': {
+                    'color': '#f3f3f3'
+                    }
+                    }, {
+                    'featureType': 'railway',
+                    'elementType': 'all',
+                    'stylers': {
+                    'visibility': 'off'
+                    }
+                    }, {
+                    'featureType': 'highway',
+                    'elementType': 'all',
+                    'stylers': {
+                    'color': '#fdfdfd'
+                    }
+                    }, {
+                    'featureType': 'highway',
+                    'elementType': 'labels',
+                    'stylers': {
+                    'visibility': 'off'
+                    }
+                    }, {
+                    'featureType': 'arterial',
+                    'elementType': 'geometry',
+                    'stylers': {
+                    'color': '#fefefe'
+                    }
+                    }, {
+                    'featureType': 'arterial',
+                    'elementType': 'geometry.fill',
+                    'stylers': {
+                    'color': '#fefefe'
+                    }
+                    }, {
+                    'featureType': 'poi',
+                    'elementType': 'all',
+                    'stylers': {
+                    'visibility': 'off'
+                    }
+                    }, {
+                    'featureType': 'green',
+                    'elementType': 'all',
+                    'stylers': {
+                    'visibility': 'off'
+                    }
+                    }, {
+                    'featureType': 'subway',
+                    'elementType': 'all',
+                    'stylers': {
+                    'visibility': 'off'
+                    }
+                    }, {
+                    'featureType': 'manmade',
+                    'elementType': 'all',
+                    'stylers': {
+                    'color': '#d1d1d1'
+                    }
+                    }, {
+                    'featureType': 'local',
+                    'elementType': 'all',
+                    'stylers': {
+                    'color': '#d1d1d1'
+                    }
+                    }, {
+                    'featureType': 'arterial',
+                    'elementType': 'labels',
+                    'stylers': {
+                    'visibility': 'off'
+                    }
+                    }, {
+                    'featureType': 'boundary',
+                    'elementType': 'all',
+                    'stylers': {
+                    'color': '#fefefe'
+                    }
+                    }, {
+                    'featureType': 'building',
+                    'elementType': 'all',
+                    'stylers': {
+                    'color': '#d1d1d1'
+                    }
+                    }, {
+                    'featureType': 'label',
+                    'elementType': 'labels.text.fill',
+                    'stylers': {
+                    'color': '#999999'
+                    }
+                    }]
+    };
+    
+    var nightMap= {
+        'styleJson': [
+                      {
+                      'featureType': 'water',
+                      'elementType': 'all',
+                      'stylers': {
+                      'color': '#031628'
+                      }
+                      },
+                      {
+                      'featureType': 'land',
+                      'elementType': 'geometry',
+                      'stylers': {
+                      'color': '#000102'
+                      }
+                      },
+                      {
+                      'featureType': 'highway',
+                      'elementType': 'all',
+                      'stylers': {
+                      'visibility': 'off'
+                      }
+                      },
+                      {
+                      'featureType': 'arterial',
+                      'elementType': 'geometry.fill',
+                      'stylers': {
+                      'color': '#000000'
+                      }
+                      },
+                      {
+                      'featureType': 'arterial',
+                      'elementType': 'geometry.stroke',
+                      'stylers': {
+                      'color': '#0b3d51'
+                      }
+                      },
+                      {
+                      'featureType': 'local',
+                      'elementType': 'geometry',
+                      'stylers': {
+                      'color': '#000000'
+                      }
+                      },
+                      {
+                      'featureType': 'railway',
+                      'elementType': 'geometry.fill',
+                      'stylers': {
+                      'color': '#000000'
+                      }
+                      },
+                      {
+                      'featureType': 'railway',
+                      'elementType': 'geometry.stroke',
+                      'stylers': {
+                      'color': '#08304b'
+                      }
+                      },
+                      {
+                      'featureType': 'subway',
+                      'elementType': 'geometry',
+                      'stylers': {
+                      'lightness': -70
+                      }
+                      },
+                      {
+                      'featureType': 'building',
+                      'elementType': 'geometry.fill',
+                      'stylers': {
+                      'color': '#000000'
+                      }
+                      },
+                      {
+                      'featureType': 'all',
+                      'elementType': 'labels.text.fill',
+                      'stylers': {
+                      'color': '#857f7f'
+                      }
+                      },
+                      {
+                      'featureType': 'all',
+                      'elementType': 'labels.text.stroke',
+                      'stylers': {
+                      'color': '#000000'
+                      }
+                      },
+                      {
+                      'featureType': 'building',
+                      'elementType': 'geometry',
+                      'stylers': {
+                      'color': '#022338'
+                      }
+                      },
+                      {
+                      'featureType': 'green',
+                      'elementType': 'geometry',
+                      'stylers': {
+                      'color': '#062032'
+                      }
+                      },
+                      {
+                      'featureType': 'boundary',
+                      'elementType': 'all',
+                      'stylers': {
+                      'color': '#465b6c'
+                      }
+                      },
+                      {
+                      'featureType': 'manmade',
+                      'elementType': 'all',
+                      'stylers': {
+                      'color': '#022338'
+                      }
+                      },
+                      {
+                      'featureType': 'label',
+                      'elementType': 'all',
+                      'stylers': {
+                      'visibility': 'off'
+                      }
+                      }
+                      ]
+    };
+    
+        </script>
+    
+</html>

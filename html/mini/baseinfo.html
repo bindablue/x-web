@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html>
+    <head>
+       <meta name="format-detection" content="telephone=no"> 
+        <meta charset="UTF-8"> 
+        <meta name="msapplication-tap-highlight" content="no">
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+       
+        <title>首页信息设置</title>
+        	
+<link rel="stylesheet" type="text/css" href="../../mod/swiper/swiper.min.css">       
+ 
+ <!-- bootstrap & fontawesome -->
+		<link rel="stylesheet" href="../../assets/css/bootstrap.min.css" />
+		
+		<link rel="stylesheet" href="../../assets/font-awesome/4.5.0/css/font-awesome.min.css" />
+
+		<!-- page specific plugin styles -->
+
+		<!-- text fonts -->
+		<link rel="stylesheet" href="../../assets/css/fonts.googleapis.com.css" />
+
+		<!-- ace styles -->
+		<link rel="stylesheet" href="../../assets/css/ace.min.css" class="ace-main-stylesheet" id="main-ace-style" />
+
+		<!--[if lte IE 9]>
+			<link rel="stylesheet" href="../../assets/css/ace-part2.min.css" class="ace-main-stylesheet" />
+		<![endif]-->
+		<link rel="stylesheet" href="../../assets/css/ace-skins.min.css" />
+		<link rel="stylesheet" href="../../assets/css/ace-rtl.min.css" />
+
+		<!--[if lte IE 9]>
+		  <link rel="stylesheet" href="../../assets/css/ace-ie.min.css" />
+		<![endif]-->
+
+		<!-- inline styles related to this page -->
+
+		<!-- ace settings handler -->
+		<script src="../../assets/js/ace-extra.min.js"></script>
+
+		<!-- HTML5shiv and Respond.js for IE8 to support HTML5 elements and media queries -->
+
+		<!--[if lte IE 8]>
+		<script src="../../assets/js/html5shiv.min.js"></script>
+		<script src="../../assets/js/respond.min.js"></script>
+		<![endif]-->
+ 
+ <!-- basic scripts -->
+
+		<!--[if !IE]> -->
+		<script src="../../assets/js/jquery-2.1.4.min.js"></script>
+
+		<!-- <![endif]-->
+
+		<!--[if IE]>
+<script src="../../assets/js/jquery-1.11.3.min.js"></script>
+<![endif]-->
+<script src="../../assets/js/bootstrap.min.js"></script>
+       
+        <script src="../../js/common.js"></script>
+         <script src="../../js/page.js"></script>
+      
+        <script>
+          
+       
+        </script> 
+ <style>
+        html{
+overflow-x:hidden;
+}
+ .record{
+  padding:10px;
+  border:#EEE 1px solid;
+  margin:10px;
+  border-radius:10px;
+}
+select,input{
+  appearance: none;
+        -moz-appearance: none;
+        -webkit-appearance: none;
+        font-size:12px;
+}
+
+</style>
+    </head>
+    <body>
+    <section class="page-header">
+       
+      <ol class="breadcrumb">
+        <li><a href="baseinfo.html"><i class="fa fa-dashboard"></i>首页管理</a></li>
+        <li class="active">信息配置</li>
+      </ol>
+    </section>
+      <div class="main-container">  
+    <div class=" dialog">
+        <div class="content">
+            
+            <div class="body"> 
+  
+            		<form class="form-horizontal" style="margin-top:20px;" id="pform" role="form">
+                   <div id="kwgrp" class="form-group">
+      			<label   class="col-sm-2 col-xs-3 control-label">微信公众号二维码链接</label>
+				<div class="col-sm-8 col-xs-8">
+					<input type="text" autocomplete="off"   class="form-control" 
+					 style='font-size:10px;' name="qrcode" id="qrcode" maxlength="128"  
+						 >
+					 
+				</div>
+				</div>
+				
+                <div class="form-group" >
+      			<label   class="col-sm-2 col-xs-3 control-label">联系电话</label>
+				<div class="col-sm-9 col-xs-9">
+					<input type="text"  autocomplete="off"   class="form-control PH-TARGET" 
+					 style='font-size:10px;' name="phone" id="phone" maxlength="12"  
+					 placeholder="联系电话">
+				</div>
+			    </div>
+			     <div class="form-group" >
+      			<label   class="col-sm-2 col-xs-3 control-label">公司图片</label>
+				<div class="col-sm-9 col-xs-9">
+					<input type="text"  autocomplete="off" 
+					  class="form-control " 
+					 name="infoimg" id="infoimg"  
+					 placeholder="公司图片路径"/>
+				</div>
+			    </div>
+			       
+			     
+			     
+			     <div class="form-group" >
+      			<label   class="col-sm-2 col-xs-3 control-label">公司介绍</label>
+				<div class="col-sm-9 col-xs-9">
+					<textarea   
+					  class="form-control " 
+					 name="introduce" id="introduce"  
+					 placeholder="公司介绍"></textarea>
+				</div>
+			    </div>
+			         <div class="form-group" >
+      			<label   class="col-sm-2 col-xs-3 control-label">商户入驻合同路径</label>
+				<div class="col-sm-9 col-xs-9">
+					<input type="text"  autocomplete="off" 
+					  class="form-control " 
+					 name="contract" id="contract"  
+					 placeholder=""/>
+				</div>
+			    </div>
+			      <div class="form-group" >
+      			<label   class="col-sm-2 col-xs-3 control-label">首页宣传视频路径</label>
+				<div class="col-sm-9 col-xs-9">
+					<input type="text"   
+					  class="form-control " 
+					 name="video" id="video"  
+					 placeholder="首页宣传视频路径"/> 
+				</div>
+			    </div>
+			    <span>【拓展分区】</span><span style="color:red;font-size:10px;">分区代码请使用大写英文（LIMIT为限时秒杀，GROUP为拼团，THEME为主题商城）</span><span class='btn btn-success btn-sm'onclick="addarea()">添加</span>
+			     <div id="area"class="form-horizontal" >
+			   
+			   </div>
+			    <span>【Banner区域】 </span><span class='btn btn-success btn-sm'onclick="addban()">添加</span>
+			   <div id="banner" class="form-horizontal" >
+			   
+			   </div>
+			   <span>【导航区域】</span>
+			   <div id="nav" class="form-horizontal">
+			   
+			   </div>
+			   <div class="form-group" >
+			 <div class="col-sm-3">
+                         <button type="button" 
+                         class="btn btn-primary btn-default pull-right"
+                          onclick="saveInfo()"><span  >保存信息</span></button>
+    
+                   </div>
+                   </div>
+	              
+		</form>
+            
+        
+            </div>
+            <div class="modal-footer">
+           
+              </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+
+
+
+		<div class="modal fade" id="eventModal" tabindex="-1" role="dialog"
+			aria-labelledby="myModalLabel" aria-hidden="false">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+
+						<h4 class="modal-title">图片预览</h4>
+					</div>
+					<div class="modal-body text-center">
+						<img id="imgpre"></img>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default pull-left"
+							data-dismiss="modal">
+							<span class="LBL-CLOSE">关闭</span>
+						</button>
+
+					</div>
+				</div>
+				<!-- /.modal-content -->
+			</div>
+			<!-- /.modal -->
+
+			 
+		 
+		</div>
+		<script>
+			var banner = "<div class='record'><div class='form-group' ><span  class='btn btn-sm  btn-danger col-sm-3 col-xs-3'  onclick='rmObj(this)'><i class='fa fa-remove'> </i></span>  <a  class='btn-warning btn btn-sm col-sm-4 col-xs-4' onclick=\"check(this,'MoveUp')\">上移</a>&nbsp;&nbsp;<a class=' btn-primary btn btn-sm col-sm-4 col-xs-4 ' onclick=\"check(this,'MoveDown')\">下移</a></div><div class='form-group'> <label class='col-sm-3 col-xs-3'></label> <div class='col-sm-9 col-xs-9'><img src='#img#' style='width:100%;'/></div></div> <div class='form-group'><label class='col-sm-3 col-xs-3'>图片链接</label> <div class='col-sm-9 col-xs-9'> <textarea class='form-control'  name='banimg' onblur='prevImg(this)' >#img#</textarea></div></div><div class='form-group'><label class='col-sm-3 col-xs-3'>小程序跳转链接</label> <div class='col-sm-9 col-xs-9'> <input class='form-control' name='banlink' value='#link#'/></div> </div><div class='form-group'><label  class='col-sm-3 col-xs-3'>网页跳转链接</label> <div class='col-sm-9 col-xs-9'><input class='form-control' name='banlinkweb' value='#linkweb#'/></div></div> </div>";
+			var nav = "<div class='record '> <div class='form-group'><div class='col-sm-3 col-xs-3' > <img src='#logo#' style='width:40px;40px;'/></div><div class='col-sm-9 col-xs-9'> <textarea class='form-control'  name='navimg' onblur='prevImg(this)' >#logo#</textarea></div></div> <div class='form-group'> <input class='form-control'  name='navtitle' value='#title#'/></div> <div class='form-group'> <input class='form-control'  name='navtype' value='#type#'/> </div> <div class='form-group'> <input class='form-control'  name='navval' value='#val#'/></div> </div>";
+			var area = "<div class='record'><div class='form-group'><span  class='btn btn-sm btn-danger col-sm-3 col-xs-3' onclick='rmObj(this)'>X</span><a   class='btn btn-sm btn-warning col-sm-3 col-xs-3'  onclick=\"check(this,'MoveUp')\">上移</a>&nbsp;&nbsp;<a  class='btn btn-sm btn-primary col-sm-3 col-xs-3' onclick=\"check(this,'MoveDown')\">下移</a> </div><div class='form-group'> <label class='col-sm-3 col-sm-3'>分区代码</label> <div class='col-sm-9 col-xs-9'><input name='areacode' class='form-control' value='#areacode#' placeholder='分区代码'/></div></div> <div class='form-group'><label class='col-sm-3 col-xs-3'>分区名称 </label><div class='col-sm-9 col-xs-9'> <input class='form-control' name='areaname' value='#areaname#' placeholder='分区名称'/> </div> </div ><div class='form-group' ><div  class='col-sm-3 col-xs-3'><img src='#areaimg#' alt='预览区域' style='width:80px;60px;'/> </div><div class='col-sm-9 col-xs-9'> <input class='form-control'  name='areaimg' placeholder='图片路径' onblur='prevImg(this)' value='#areaimg#' /> </div> </div> <div class='form-group'> <label class='col-sm-3 col-xs-3'>跳转链接</label><div class='col-sm-9 col-xs-9'> <input class='form-control' name='arealink' value='#arealink#' placeholder='跳转链接'/></div> </div> <div class='form-group' ><label class='col-sm-3 col-xs-3'></label><div class='col-sm-9 col-xs-9'> <input class='form-control' name='arealinkweb' value='#arealinkweb#' placeholder='网页跳转链接'/></div> </div> </div>";
+
+			function addarea() {
+				$("#area").prepend(area);
+
+			}
+			function addban() {
+				$("#banner").prepend(banner);
+
+			}
+			function rmObj(that) {
+				var ret = confirm("确认删除？");
+				if (!ret) {
+					return;
+				}
+				$(that).parent().remove();
+			}
+			function prevImg(that) {
+				var obj = $(that).parent().prev().find("img").attr("src",
+						that.value);
+
+			}
+			function loadBaseinfo() {
+				var obj = {};
+				postData(obj, "/rest/product/baseinfo",
+						function(data) {
+
+							console.log(data);
+							for ( var k in data) {
+								if (k == 'nav') {
+									var tab = "";//"<tr><td>图片</td><td>图片路径</td><td>标题</td><td>类型</td><td>值</td><td></td></tr>";
+									for ( var i in data["nav"]) {
+										var one = nav;
+										for ( var key in data["nav"][i]) {
+											var reg = new RegExp("#" + key
+													+ "#", "gi");
+											v = data["nav"][i][key];
+
+											one = one.replace(reg, v);
+										}
+										tab += one;
+
+									}
+									$("#nav").html(tab);
+								} else if (k == "banner") {
+									var tab = "";//"<tr><td>删除</td><td>图片</td><td>图片路径</td><td>小程序跳转链接</td><td>网页跳转链接</td></tr>";
+									for ( var i in data["banner"]) {
+										var one = banner;
+										for ( var key in data["banner"][i]) {
+											var reg = new RegExp("#" + key
+													+ "#", "gi");
+											one = one.replace(reg,
+													data["banner"][i][key]);
+										}
+										tab += one;
+
+									}
+									$("#banner").html(tab);
+
+								} else if (k == "area") {
+									var tab = "";//"<tr><td>删除</td><td>分区代码</td><td>分区名称</td><td>图片</td><td>图片路径</td><td>小程序跳转链接</td><td>网页跳转链接</td></tr>";
+									for ( var i in data["area"]) {
+										var one = area;
+										for ( var key in data["area"][i]) {
+											var reg = new RegExp("#" + key
+													+ "#", "gi");
+											one = one.replace(reg,
+													data["area"][i][key]);
+										}
+										tab += one;
+
+									}
+									$("#area").html(tab);
+
+								}
+
+								else {
+
+									$("#" + k).val(data[k]);
+								}
+
+							}
+
+						});
+
+			}
+			//加载子类别
+			function loadSubtype(code) {
+
+				postData(
+						{},
+						'/rest/product/allsubtype?tcode=' + code,
+						function(data) {
+							console.log("subtypes");
+							console.log(data);
+							console.log(data);
+							var options = "";
+							for ( var i in data) {
+								options += "<option value='"+data[i]["code"]+"'>"
+										+ data[i]["name"] + "</option>";
+							}
+							$("#subtype").html(options);
+
+						}
+
+				);
+
+			}
+
+			function viewimg(imgid) {
+				$("#eventModal").modal('show');
+				$("#imgpre").attr("src", $("#" + imgid).val());
+
+			}
+
+			function firstcall() {
+
+				var obj = GetRequest();
+				loadBaseinfo();
+
+			}
+
+			function showBox() {
+				$('#eventModal').modal('show');
+			}
+
+			function saveInfo() {
+
+				var obj = getFormJson("#pform");
+				console.log(obj);
+
+				//banner区域
+				var banimg = obj["banimg"];
+				var banlink = obj["banlink"];
+				var banlinkweb = obj["banlinkweb"];
+				var banner = [];
+				if (isArray(banimg)) {
+					for (var i = 0; i < banimg.length; i++) {
+						console.log(i + ":" + banimg[i]);
+						banner.push({
+							"img" : banimg[i],
+							"link" : banlink[i],
+							"linkweb" : banlinkweb[i]
+						});
+					}
+				} else {
+					banner.push({
+						"img" : banimg,
+						"link" : banlink,
+						"linkweb" : banklinkweb
+					});
+				}
+				obj["banner"] = banner;
+
+				//导航区域
+				var navtitle = obj["navtitle"];
+				var navimg = obj["navimg"];
+				var navtype = obj["navtype"];
+				var navval = obj["navval"];
+				var nav = [];
+				if (isArray(navtitle)) {
+					for (var i = 0; i < navtitle.length; i++) {
+						nav.push({
+							"logo" : navimg[i],
+							"type" : navtype[i],
+							"title" : navtitle[i],
+							"val" : navval[i]
+						});
+
+					}
+				} else {
+					nav.push({
+						"logo" : navimg,
+						"type" : navtype,
+						"title" : navtitle,
+						"val" : navval
+					});
+				}
+				obj["nav"] = nav;
+
+				//分区
+				var areacode = obj["areacode"];
+				var areaname = obj["areaname"];
+				var areaimg = obj["areaimg"];
+				var arealink = obj["arealink"];
+				var arealinkweb = obj["arealinkweb"];
+				var area = [];
+				if (isArray(areacode)) {
+					for (var i = 0; i < areacode.length; i++) {
+						area.push({
+							"areaimg" : areaimg[i],
+							"areacode" : areacode[i],
+							"areaname" : areaname[i],
+							"arealink" : arealink[i],
+							"arealinkweb" : arealinkweb[i]
+						});
+
+					}
+				} else {
+					area.push({
+						"areaimg" : areaimg,
+						"areacode" : areacode,
+						"areaname" : areaname,
+						"arealink" : arealink,
+						"arealinkweb" : arealinkewb
+					});
+				}
+
+				obj["area"] = area;
+
+				//清理变量
+				delete obj.areacode;
+				delete obj.areaname;
+				delete obj.areaimg;
+				delete obj.arealink;
+				delete obj.arealinkweb;
+				delete obj.navtitle;
+				delete obj.navimg;
+				delete obj.navtype;
+				delete obj.navval;
+
+				delete obj.banimg;
+				delete obj.banlink;
+
+				console.log(obj);
+
+				var url = "/rest/product/setbaseinfo";
+
+				postData({
+					baseinfo : JSON.stringify(obj)
+				}, url, function(data) {
+					console.log(data);
+
+				});
+
+			}
+
+			function check(t, oper) {
+				var data_tr = $(t).parent().parent(); //获取到触发的tr
+				if (oper == "MoveUp") { //向上移动
+					if ($(data_tr).prev().html() == null) { //获取tr的前一个相同等级的元素是否为空
+						alert("已经是最顶部了!");
+						return;
+					}
+					{
+						$(data_tr).insertBefore($(data_tr).prev()); //将本身插入到目标tr的前面 
+					}
+				} else {
+					if ($(data_tr).next().html() == null) {
+						alert("已经是最低部了!");
+						return;
+					}
+					{
+						$(data_tr).insertAfter($(data_tr).next()); //将本身插入到目标tr的后面 
+					}
+				}
+			}
+		</script>
+       <script src="../../plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js"></script>
+<!-- Page Script -->
+ <script src="../../plugins/js/editor.js"></script>
+        </div>
+
+    </body>
+</html>

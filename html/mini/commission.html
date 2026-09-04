@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="format-detection" content="telephone=no">
+<meta charset="UTF-8">
+<meta name="msapplication-tap-highlight" content="no">
+<meta name="viewport"
+	content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+
+<title>佣金查询</title>
+
+
+<link rel="stylesheet" type="text/css"
+	href="../../mod/swiper/swiper.min.css">
+
+<!-- bootstrap & fontawesome -->
+<link rel="stylesheet" href="../../assets/css/bootstrap.min.css" />
+
+<link rel="stylesheet"
+	href="../../assets/font-awesome/4.5.0/css/font-awesome.min.css" />
+
+<!-- page specific plugin styles -->
+
+<!-- text fonts -->
+<link rel="stylesheet" href="../../assets/css/fonts.googleapis.com.css" />
+
+<!-- ace styles -->
+<link rel="stylesheet" href="../../assets/css/ace.min.css"
+	class="ace-main-stylesheet" id="main-ace-style" />
+
+<!--[if lte IE 9]>
+			<link rel="stylesheet" href="../../assets/css/ace-part2.min.css" class="ace-main-stylesheet" />
+		<![endif]-->
+<link rel="stylesheet" href="../../assets/css/ace-skins.min.css" />
+<link rel="stylesheet" href="../../assets/css/ace-rtl.min.css" />
+
+<!--[if lte IE 9]>
+		  <link rel="stylesheet" href="../../assets/css/ace-ie.min.css" />
+		<![endif]-->
+
+<!-- inline styles related to this page -->
+
+<!-- ace settings handler -->
+<script src="../../assets/js/ace-extra.min.js"></script>
+
+<!-- HTML5shiv and Respond.js for IE8 to support HTML5 elements and media queries -->
+
+<!--[if lte IE 8]>
+		<script src="../../assets/js/html5shiv.min.js"></script>
+		<script src="../../assets/js/respond.min.js"></script>
+		<![endif]-->
+
+<!-- basic scripts -->
+
+<!--[if !IE]> -->
+<script src="../../assets/js/jquery-2.1.4.min.js"></script>
+
+<!-- <![endif]-->
+
+<!--[if IE]>
+<script src="../../assets/js/jquery-1.11.3.min.js"></script>
+<![endif]-->
+<script src="../../assets/js/bootstrap.min.js"></script>
+<script src="../../js/common.js"></script>
+<script src="../../js/page.js"></script>
+ 
+<style>
+select, input {
+	appearance: none;
+	-moz-appearance: none;
+	-webkit-appearance: none;
+	font-size: 12px;
+}
+html {
+oveflow-x:hidden;
+}
+.record{
+  padding:10px;
+  border:#EEE 1px solid;
+  margin:10px;
+  border-radius:10px;
+}
+
+</style>
+</head>
+<body>
+	<section class="page-header">
+
+		<ol class="breadcrumb">
+			<li><a href="#"><i class="fa fa-dashboard"></i>佣金管理</a></li>
+			<li class="active">已结算佣金查询</li>
+		</ol>
+	</section>
+	<div class="main-container">
+		<form id="qryForm" class="form-horizontal">
+
+			<div class="form-group">
+				<label class=" col-sm-3 control-label col-xs-3 "  >结算日期</label>
+				<div class="col-sm-4 col-xs-4 ">
+					<input id="stime" name="startDate" class="form-control" type="date" />
+
+				</div>
+				<div class="col-sm-4 col-xs-4 ">
+
+					<input id="etime" name="endDate" class="form-control" type="date" />
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label class="col-sm-2  col-xs-3 control-label">佣金类型</label>
+				<div class="col-sm-4 col-xs-3 ">
+					<select class="form-control " name="feeType" id="selsts"
+						onchange="setOrdersts(this.value)">
+						<option value="">全部</option>
+						<option value="comfee">直接佣金</option>
+						<option value="upfee">下级抽成</option>
+					</select>
+
+				</div>
+				<div class="col-sm-4 col-xs-3 ">
+					<input id="sname" name="uid" placeholder="账号" class="form-control" />
+				</div>
+				<div class="col-sm-1 col-xs-2">
+					<button type="button"
+						class=" btn btn-primary btn-sm pull-right"
+						onclick="page.loadPage(1)">
+						<span class="LBL-ADD">查询</span>
+					</button>
+				</div>
+			</div>
+		</form>
+
+
+
+		<a id="tips"
+			style="float: left; width: 100%; text-align: center; margin-top: 20px;"></a>
+		<table class="table table-bordered table-hover" id="response"
+			style="width: 100%; margin-top: 40px;">
+		</table>
+		<div id="foot">
+			<div class="text-center pull-right">
+				每页<select name="ps" onchange="setPageSize(this.value)">
+
+					<option value="10">10</option>
+					<option value="40">40</option>
+					<option value="100">100</option>
+				</select> 条， 共 <span class="badge" id="tt">#TT#</span>页,共 <span class="badge"
+					id="trec">0</span>条
+			</div>
+			<div class="text-center">
+				<ul id="pp" class="pagination pagination-sm"></ul>
+			</div>
+		</div>
+		<script>
+      var sts={"comfee":"直接佣金","upfee":"下级抽成","mcomfee":"直接佣金收回","mupfee":"下级抽成收回","leaderfee":"推荐奖励"};
+      var page=new Page();
+      page.cntreq="/rest/product/countcom"; 
+      page.listreq="/rest/product/allcom";
+      page.qryForm="qryForm";
+      page.tmpl="<tr><td>#uid#</td><td>#feeType#</td><td>#amt#</td><td>#settleDate#</td><td>#createtime#</td> </tr>";
+      page.header="<tr><td>账号</td><td>佣金类型</td><td>金额</td><td>结算日</td><td>统计时间</td></tr>";
+      if(isMobile()){
+  		setScroll();
+  	    page.header="";
+  	    page.tmpl="<div class='record'> <b>#settleDate#</b> #feeType#  #createtime# </br> <i class='fa fa-user'> #uid#</i>  <b>#amt# </b> <br/></div>";
+  	    $("#foot").hide();
+      }
+      page.recompose=function(record,one,idx){
+    	  
+    	  for(var key in record){
+        	  if(key=="feeType"){
+        		  var v="<span class='badge #class#'>"+sts[record[key]]+" </span>";
+        		  if(record[key]=="comfee"){
+        			  v=v.replace("#class#","label-warning");
+        		  }else if(record[key]=="upfee"){
+        			  v=v.replace("#class#","label-success");
+        			  
+        		  }else {
+        			  v=v.replace("#class#","label-danger");
+        		  }
+        		  one=one.replace("#"+key+"#",v);
+        		  
+        	  }else if(key=="createtime"||key=="paytime"){
+	              	var v="";
+	              	if(record[key]){
+	                   var time=record[key].time;
+	              	 v=new Date(time).toLocaleString();
+	              	}
+	              	 one=one.replace("#"+key+"#",v);
+	              }else if (key=="amt"){
+	            	  var cc=parseFloat(record["amt"])/100;
+	                  one=one.replace("#amt#","<span class='text-danger'>¥"+cc.toFixed(2)+"</span>");
+	              }
+               
+         }
+      	return one;
+      	
+      }
+        
+      
+      
+      
+      
+       
+        
+      function firstcall(){
+     	 
+          page.loadPage(1);
+          
+     }
+      
+      
+     
+      </script>
+
+	</div>
+
+
+</body>
+</html>

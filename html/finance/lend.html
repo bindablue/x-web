@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <!--        <meta name="format-detection" content="telephone=no">-->
+        <meta charset="UTF-8">
+            <meta name="msapplication-tap-highlight" content="no">
+                <meta name="viewport"
+                    content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+                    
+                    <title>借出</title>
+                    
+                    <link rel="stylesheet" type="text/css" href="../../css/common.css" />
+                    <link rel="stylesheet" type="text/css"
+                    href="../../mod/bootstrap/css/bootstrap.min.css" />
+                    
+                    <script src="../../js/jquery.min.js"></script>
+                    
+                    <script src="../../mod/bootstrap/js/bootstrap.min.js"></script>
+                    <script src="../../js/common.js"></script>
+                    <script src="../../js/meta.js"></script>
+                    
+                    <style>
+                        
+                        </style>
+                    <body>
+                        
+                        <div id="hh" >
+                            <button type="button" class="btn btn-primary pull-left" onclick="backgo();">
+                               <span  class="glyphicon glyphicon-chevron-left"></span>
+                            </button>
+                            借出
+                            <button type="submit" class=" btn btn-primary btn-default pull-right" onclick="submitForm()"><span class="LBL-SAVE">保存</span></button>
+                        </div>
+                        <div class="container">
+                            
+                            <form class="form-horizontal" style="margin-top:80px" id="formid" role="form">
+                                
+                                <div class="form-group" style="display:none;">
+                                    <!--				<label for="ID" class="col-sm-2 control-label">目标编号</label>-->
+                                    <div class="col-sm-10">
+                                        <input type="text" readonly class="form-control PH-TARGET" style='font-size:10px;' name="ID" id="ID"
+                                            >
+                                            </div>
+                                </div>
+                                <div class="form-group" id="lpid">
+                                    <!--				<label for="PID" class="col-sm-2 control-label">父目标编号</label>-->
+                                    <div class="col-sm-10">
+                                        <input type="text" readonly class="form-control PH-PTARGET" style='font-size:10px;' id="PID"
+                                            placeholder="借出">
+                                            </div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <!--                <label class="col-sm-2 control-label">是否可分解</label>-->
+                                    <div class="col-sm-10 ">
+                                        <select class="form-control" id="ASSETNO" name="ASSETNO">
+                                            
+                                            
+                                        </select>
+                                        
+                                    </div>
+                                </div>
+                                
+                                
+                                <div class="form-group">
+                                    <!--                <label for="MNAME" class="col-sm-2 control-label">负责人</label>-->
+                                    <div class="col-sm-10">
+                                        <input type="text"   class="form-control PH-MNAME" name="AMT" id="AMT"
+                                            placeholder="借出金额">
+                                            </div>
+                                    
+                                </div>
+                                
+                                
+                                
+                                <div class="form-group">
+                                    <!--                <label for="lastname" class="col-sm-2 control-label">目标内容</label>-->
+                                    <div class="col-sm-10">
+                                        <select class="form-control" id="ACCTNO" name="ACCTNO" >
+                                        </select>
+                                    </div>
+                                </div>
+                                
+                                
+                                
+                                
+                                <div class="form-group">
+                                    <!--                <label class="col-sm-2 control-label">状态</label>-->
+                                    <div class="col-sm-10">
+                                        
+                                        <input type="text"   class="form-control PH-MNAME" name="MEMO" id="MEMO"
+                                            placeholder="备注">
+                                            </div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <!--                <label class="col-sm-2 control-label">状态</label>-->
+                                    <div class="col-sm-10">
+                                        <input type="datetime-local"   class="form-control PH-MNAME" name="DTE" id="DTE"
+                                            placeholder="日期">
+                                            </div>
+                                </div>
+                                
+                                
+                                
+                                
+                                
+                                <input id="CURRENCY" type="hidden" name="CURRENCY" value=""/>
+                                <input type="hidden" name="O" value="A"/>
+                                <input type="hidden" name="T" value="TRANS"/>
+                                <div class="form-group">
+                                    
+                                </div>
+                                
+                                
+                            </form>
+                            
+                            
+                            
+                        </div>
+                        
+                        
+                        
+                        
+                    </body>
+                    <script>
+                        
+                        
+                        
+                        
+                        
+                        
+                        function backgo(){
+                            
+                            
+                            window.history.go(-1);
+                            
+                        }
+                    
+                    function refreshData(){
+                        
+                        
+                        // loadSubGoals();
+                    }
+                    
+                    
+                    
+                    
+                    
+                    function loadAccts(){
+                        var obj={};
+                        obj["Class"]="CommonDataEngine";
+                        obj["C"]="ID,UNAME,ACCTNO,ORG";
+                        obj["O"]="Q";
+                        obj["T"]="ACCT";
+                        obj["W"]="1=1 AND CSTS!='D' AND (ATYPE ='OTHER' OR ATYPE='DEBIT' OR ATYPE='CREDIT')";
+                        
+                        asyncommunicate(obj,function(data){
+                                        var list=JSON.parse(data);
+                                        var obj=document.getElementById('ACCTNO');
+                                        //if(obj.options.length>0){return;}
+                                        for(var i=0;i<list.length;i++){
+                                        obj.options.add(new Option(list[i]["UNAME"],list[i]["ID"])); //这个兼容IE与firefox
+                                        
+                                        }
+                                        });
+                    }
+                    
+                    function loadOutComes(){
+                        var obj={};
+                        obj["Class"]="CommonDataEngine";
+                        obj["C"]="ID,UNAME,ACCTNO,ORG";
+                        obj["O"]="Q";
+                        obj["T"]="ACCT";
+                        obj["W"]="1=1 AND CSTS!='D' AND ATYPE='USER' ";
+                        
+                        asyncommunicate(obj,function(data){
+                                        var list=JSON.parse(data);
+                                        
+                                        var obj=document.getElementById('ASSETNO');
+                                        //if(obj.options.length>0){return;}
+                                        for(var i=0;i<list.length;i++){
+                                        obj.options.add(new Option(list[i]["UNAME"],list[i]["ID"])); //这个兼容IE与firefox
+                                        
+                                        }
+                                        });
+                    }
+                    
+                    
+                    function firstcall(){
+                        $("#DTE").val(localdatetime());
+                        loadAccts();
+                        loadOutComes();
+                        
+                        
+                    }
+                    
+                    
+                    function submitForm(){
+                        var obj=getFormJson("#formid");
+                        
+                        obj["Class"]="CommonDataEngine";
+                        console.log((obj));
+                        var uuid=generateUUID();
+                        var amt=parseFloat(obj["AMT"]);
+                        
+                        
+                        var outcome={};
+                        outcome["FNO"]=uuid;
+                        outcome["ACCTID"]=obj["ASSETNO"];
+                        outcome["DTE"]=obj["DTE"];
+                        outcome["AMT"]=amt;
+                        outcome["MARK"]="+";
+                        outcome["Class"]="CommonDataEngine";
+                        outcome["T"]="TRANS";
+                        outcome["O"]="A";
+                        outcome["MEMO"]=obj["MEMO"];
+                        
+                        var acct={};
+                        
+                        acct["FNO"]=uuid;
+                        acct["ACCTID"]=obj["ACCTNO"];
+                        acct["DTE"]=obj["DTE"];
+                        acct["MARK"]="-";
+                        acct["AMT"]=amt;
+                        acct["Class"]="CommonDataEngine";
+                        acct["T"]="TRANS";
+                        acct["O"]="A";
+                        acct["MEMO"]=obj["MEMO"];
+                        
+                        
+                        
+                        
+                        
+                        asyncommunicate(acct,function(data){
+                                        console.log(data)
+                                        var j=JSON.parse(data);
+                                        if(j["CODE"]!="0000"){
+                                        alert("账户扣款失败");
+                                        }
+                                        asyncommunicate(outcome,function(data1){
+                                                        console.log(data1);
+                                                        var j1=JSON.parse(data1);
+                                                        if(j1["CODE"]!="0000"){
+                                                        alert("借款登记失败");
+                                                        }else{
+                                                        dismiss();
+                                                        }
+                                                        
+                                                        
+                                                        
+                                                        });
+                                        
+                                        
+                                        
+                                        });
+                    }
+                    
+                    
+                    
+                        </script>
+                    
+</html>

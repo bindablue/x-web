@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html>
+    <head>
+       <meta name="format-detection" content="telephone=no"> 
+        <meta charset="UTF-8"> 
+        <meta name="msapplication-tap-highlight" content="no">
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+       
+        <title>属性类型</title>
+         <link rel="stylesheet" type="text/css" href="../../mod/swiper/swiper.min.css">       
+ 
+ <!-- bootstrap & fontawesome -->
+		<link rel="stylesheet" href="../../assets/css/bootstrap.min.css" />
+		
+		<link rel="stylesheet" href="../../assets/font-awesome/4.5.0/css/font-awesome.min.css" />
+
+		<!-- page specific plugin styles -->
+
+		<!-- text fonts -->
+		<link rel="stylesheet" href="../../assets/css/fonts.googleapis.com.css" />
+
+		<!-- ace styles -->
+		<link rel="stylesheet" href="../../assets/css/ace.min.css" class="ace-main-stylesheet" id="main-ace-style" />
+
+		<!--[if lte IE 9]>
+			<link rel="stylesheet" href="../../assets/css/ace-part2.min.css" class="ace-main-stylesheet" />
+		<![endif]-->
+		<link rel="stylesheet" href="../../assets/css/ace-skins.min.css" />
+		<link rel="stylesheet" href="../../assets/css/ace-rtl.min.css" />
+
+		<!--[if lte IE 9]>
+		  <link rel="stylesheet" href="../../assets/css/ace-ie.min.css" />
+		<![endif]-->
+
+		<!-- inline styles related to this page -->
+
+		<!-- ace settings handler -->
+		<script src="../../assets/js/ace-extra.min.js"></script>
+
+		<!-- HTML5shiv and Respond.js for IE8 to support HTML5 elements and media queries -->
+
+		<!--[if lte IE 8]>
+		<script src="../../assets/js/html5shiv.min.js"></script>
+		<script src="../../assets/js/respond.min.js"></script>
+		<![endif]-->
+ 
+ <!-- basic scripts -->
+
+		<!--[if !IE]> -->
+		<script src="../../assets/js/jquery-2.1.4.min.js"></script>
+
+		<!-- <![endif]-->
+
+		<!--[if IE]>
+<script src="../../assets/js/jquery-1.11.3.min.js"></script>
+<![endif]-->
+<script src="../../assets/js/bootstrap.min.js"></script>
+   
+     
+        <script src="../../js/common.js"></script>
+        <style>
+            div.progress{
+                position:relative;
+                top:8px;
+                left:0px;
+                
+            }
+        </style>
+        <script>
+          
+       
+        </script> 
+    </head>
+    <body>
+    <section class="page-header">
+       
+      <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i>属性管理</a></li>
+        <li class="active">属性类型</li>
+      </ol>
+    </section>
+          <div class="main-container"  >  
+                <div class="form-group">
+                 <div class="col-sm-3 col-xs-3">
+                  <input  id="sname" name="keyword"  placeholder="关键字" 
+                  class="form-control" oninput="loadPage(1)" />  
+                  </div>
+                   <div class="col-sm-7 col-xs-3">
+                      <button type="button" class=" btn  btn-sm btn-primary   pull-right" 
+                      onclick="showDetail()">
+                      <span class="LBL-ADD">添加</span></button>
+                     </div>
+               </div>
+          
+        <form id="formid">
+        
+       </form>
+        <input id="csts" type="hidden" value="1"/>
+         <a id="tips" style="float:left;width:100%;text-align:center;margin-top:20px;"></a>
+    <table class="table"  id="response" style="width:100%;margin-top:40px;">
+    </table>
+        
+        
+
+ <input type="hidden" id="SELPID" value="">
+ <input type="hidden" id="SELRID" value="">
+ <input type="hidden" id="SELLVL" value="">
+ <input type="hidden" id="MYPID" value="">
+<!-- 模态框（Modal） -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title" id="myModalLabel">属性类型</h4>
+            </div>
+            <div class="modal-body"> 
+  
+            		<form class="form-horizontal" style="margin-top:20px;" id="attrform" role="form">
+                    
+                <div class="form-group" >
+      			<label   class="col-sm-3 control-label">属性类型编码</label>
+				<div class="col-sm-3">
+					<input type="text"  autocomplete="off"   class="form-control PH-TARGET" 
+					 style='font-size:10px;' name="code" id="code" maxlength="32"  
+						placeholder="属性类型编码">
+				</div>
+			</div>
+			 <div class="form-group" >
+          <label   class="col-sm-3 control-label">属性类型名称</label>
+                <div class="col-sm-3">
+                    <input type="text" class="form-control PH-TARGET" name="name" id="name"
+                     maxlength="32"
+                         >
+                        </div>
+            </div>
+			
+			<div class="form-group" id="lpid">
+          <label class="col-sm-3 control-label">属性类型说明</label> 
+				<div class="col-sm-9">
+					<textarea  class="form-control  " style='font-size:10px;' id="memo"
+						  name="memo" placeholder="属性类型说明"></textarea>
+				</div>
+		 
+               
+            </div>
+  
+               <div class="form-group">
+               <div class="col-sm-12">
+               <button id="btnaddav" type="button" class="btn btn-default btn-sm  " onclick="showBox()">
+  <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> 添加属性值
+</button>
+               <table class="table" style="margin-top:15px;" >
+               <tbody id="attrvalue">
+               
+               </tbody>
+               
+               </table>
+               </div>
+               
+               </div>
+               
+		</form>
+            
+        
+            </div>
+            <div class="modal-footer">
+            <button type="button" class=" btn btn-primary btn-default pull-right"
+             onclick="saveAttr()">
+            <span class="LBL-SAVE">保存</span></button>
+    
+                <button type="button" class="btn btn-default pull-left"  data-dismiss="modal">关闭</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+
+  
+             <div class="modal fade" id="eventModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                       
+                        <h4 class="modal-title" >添加属性值</h4>
+                    </div>
+                    <div class="modal-body text-center">
+                    
+            		<form class="form-horizontal" style="margin-top:20px;" id="avform" role="form">
+                    
+                <div class="form-group" >
+      			<label   class="col-sm-3 control-label">属性值ID</label>
+				<div class="col-sm-3">
+					<input type="text"  autocomplete="off"   class="form-control  " 
+					 style='font-size:10px;' name="id" id="id" maxlength="32"  
+						placeholder="属性值ID">
+				</div>
+			</div>
+			 <div class="form-group" >
+          <label   class="col-sm-3 control-label">属性值</label>
+                <div class="col-sm-3">
+                    <input type="text" class="form-control" name="val"  value="" id="val"
+                     maxlength="32"
+                         >
+                        </div>
+            </div>
+			
+			<div class="form-group" id="lpid">
+          <label class="col-sm-3 control-label">属性值说明</label> 
+				<div class="col-sm-9">
+					<textarea  class="form-control  " style='font-size:10px;' id="amemo"
+						  name="memo" placeholder="属性值说明"></textarea>
+				</div>
+		 
+               
+            </div>
+  
+               
+               
+		</form>
+                    </div>
+                    <div class="modal-footer">
+                     <button type="button" class=" btn btn-primary btn-default pull-right" onclick="addAV()"><span>添加</span></button>
+    
+                     <button type="button" class="btn btn-default pull-left" data-dismiss="modal"><span class="LBL-CLOSE">关闭</span></button>
+                       
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal -->
+        </div>
+     
+      <script>
+       function firstcall(){
+     	 
+          loadPage(1);
+     }
+       function getTmpl(){
+           var tmpl="<tr id='attr\"#code#\"'><td>#code#</td><td>#name#</td><td>#memo#</td> <td onclick=\"showDetail('#code#');\"><a href=\"#\">查看&nbsp;</a></td><td onclick=\"rmAttr('#code#');\"><a href=\"#\">删除&nbsp;</a></td></tr>";    
+           return  tmpl;
+           
+       }
+        
+       
+       
+    
+   var localData=[];
+   function callback(data){
+       try{
+           
+           
+           console.log(data);
+           var list=data;//JSON.parse(data);
+           localData=data;
+           var html="";
+           html+="<tr><td>属性类型代码</td><td>属性类型名称</td><td>属性备注</td><td>操作</td></tr>";
+           var tmpl=getTmpl();
+           var regex;
+           for (var i in list){
+               var one=tmpl;
+              
+               for(var key in list[i]){
+                   regex=new RegExp("#"+key+"#","gi");
+                   one=one.replace(regex,list[i][key]);         
+               }
+               html+=one;
+           }
+           $("#response").html(html);  
+       }catch(ex){
+           $("#response").html(ex);
+       }
+       
+
+   }
+  
+   function saveAttr(){
+	   
+	   var obj=getFormJson("#attrform");
+		 var url="/rest/product/addattr";
+		 if(gcode){
+			 url="/rest/product/updateattr";
+		 }
+		   postData(obj,url,function(data){
+			   console.log(data);
+			   //关闭弹出，或者toast
+		    	 loadPage(1); 		
+		      }	
+		    );  
+		    }
+   //addAV
+   function addAV(){
+	   var id=$("#id").val();
+	   console.log(id);
+	   if($("#av"+id).length>0){
+		  var v=$("#av"+id+" td:nth-child(3)").html();
+		  console.log(v);
+		    v=$("#av"+id+" td:nth-child(2)").html();
+		    console.log(v);
+		   alert("已存在相同ID的记录");
+		   return;
+	   }else{
+		   
+		  var obj=getFormJson("#avform");
+		  obj["acode"]=$("#code").val();
+		   postData(obj,"/rest/product/addav",function(data){
+		    	  $("#attrvalue").append("<tr id='av"+id+"'><td>"+id+"</td><td>"+$("#val").val()+"</td><td>"+$("#amemo").val()+"</td><td onclick='rm(\""+id+"\")'>删除</td></tr>");
+		    		
+		      }	
+		    );  
+		    }
+   }
+   
+   function rmAttr(code){
+	   console.log(code);
+	      postData({code:code},"/rest/product/delattr",function(data){
+		    	 loadPage(1);	
+		      }	
+		    ); 
+	  
+   }
+   function rm(id){
+	   console.log(id);
+	 //postData rmav
+	 var obj={"id":id};
+	 postData(obj,"/rest/product/delav",function(data){
+		 console.log("result:"+id);
+		 $("#av"+id).remove();
+	 }); 
+   }
+   
+   function loadPage(idx){
+       var obj={};
+       postData(obj,'/rest/product/allattr',callback);
+   }
+    
+     var avs=[];
+     function displayav(data){
+    	
+    	 var html="<tr><td>属性ID</td><td>属性值</td><td>说明</td><td>操作</td></tr>"
+   		  var one="";
+   		  for (var i=0;i<data.length;i++){
+   			  one="<tr id='av"+data[i]["id"]+"'><td>"+data[i]["id"]+"</td><td>"+data[i]["val"]+"</td><td>"+data[i]["memo"]+"</td><td onclick='rm(\""+data[i]["id"]+"\")'>删除</td></tr>";
+   			   
+   			  html+=one;  
+   		  }
+   		  $("#attrvalue").html(html);
+     }
+    
+      function loadValues(code){
+    	  
+    	  var obj={"code":code};
+    	  $("#attrvalue").html("");
+    	  postData(obj,'/rest/product/attrval',function(data){
+    		  console.log(data);
+    		  avs=data;
+    		  displayav(data); 
+    		  
+    	  })
+      }
+      var gcode="";
+      function showDetail(code){
+    	  gcode=code;
+    	  if(code){
+    		  $("#btnaddav").show();
+    		  loadValues(code);  
+    		  $("#code").attr("readonly",true);
+    		  for(var i in localData){
+    			  if(localData[i]["code"]==code){
+    				  for(var key in localData[i]){
+    					  $("#"+key).val(localData[i][key]);
+    					  
+    				  }
+    			  }
+    		  }
+    	  }else{
+    		  $("#btnaddav").hide();
+    		  $("#code").attr("readonly",false);
+    		  $("#attrvalue").html("");
+    		  $("#code").val("");
+    		  $("#memo").val("");
+    		  $("#name").val("");
+    		  $("#val").val("");
+    	  }
+    	
+    	  $('#myModal').modal('show');
+    	  // loadAttr(code);
+      }
+     
+     function showBox(code){
+    	 $('#eventModal').modal('show');
+    	
+    	
+    }
+
+     
+      </script>
+        </div>
+
+    </body>
+</html>

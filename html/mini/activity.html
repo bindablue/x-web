@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="format-detection" content="telephone=no">
+<meta charset="UTF-8">
+<meta name="msapplication-tap-highlight" content="no">
+<meta name="viewport"
+	content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+
+<title>营销活动查询</title>
+	
+<link rel="stylesheet" type="text/css" href="../../mod/swiper/swiper.min.css">       
+ 
+ <!-- bootstrap & fontawesome -->
+		<link rel="stylesheet" href="../../assets/css/bootstrap.min.css" />
+		
+		<link rel="stylesheet" href="../../assets/font-awesome/4.5.0/css/font-awesome.min.css" />
+
+		<!-- page specific plugin styles -->
+
+		<!-- text fonts -->
+		<link rel="stylesheet" href="../../assets/css/fonts.googleapis.com.css" />
+
+		<!-- ace styles -->
+		<link rel="stylesheet" href="../../assets/css/ace.min.css" class="ace-main-stylesheet" id="main-ace-style" />
+
+		<!--[if lte IE 9]>
+			<link rel="stylesheet" href="../../assets/css/ace-part2.min.css" class="ace-main-stylesheet" />
+		<![endif]-->
+		<link rel="stylesheet" href="../../assets/css/ace-skins.min.css" />
+		<link rel="stylesheet" href="../../assets/css/ace-rtl.min.css" />
+
+		<!--[if lte IE 9]>
+		  <link rel="stylesheet" href="../../assets/css/ace-ie.min.css" />
+		<![endif]-->
+
+		<!-- inline styles related to this page -->
+
+		<!-- ace settings handler -->
+		<script src="../../assets/js/ace-extra.min.js"></script>
+
+		<!-- HTML5shiv and Respond.js for IE8 to support HTML5 elements and media queries -->
+
+		<!--[if lte IE 8]>
+		<script src="../../assets/js/html5shiv.min.js"></script>
+		<script src="../../assets/js/respond.min.js"></script>
+		<![endif]-->
+ 
+ <!-- basic scripts -->
+
+		<!--[if !IE]> -->
+		<script src="../../assets/js/jquery-2.1.4.min.js"></script>
+
+		<!-- <![endif]-->
+
+		<!--[if IE]>
+<script src="../../assets/js/jquery-1.11.3.min.js"></script>
+<![endif]-->
+<script src="../../assets/js/bootstrap.min.js"></script>
+
+ <script src="../../js/common.js"></script>
+<script src="../../js/page.js"></script>
+ 
+<style>
+div.progress {
+	position: relative;
+	top: 8px;
+	left: 0px;
+}
+#actname{
+ font-size:20px;
+ font-family:bold;
+
+}
+a{
+ text-decoration:none;
+  out-line: none;
+}
+.activity{
+ border:#EEE 1px  solid;
+ padding:5px;
+ 
+  border-radius:5px;
+  width:25%;
+  float:left;
+  box-shadow:0 0 8px rgba(81, 81,81,0.8);
+  background:rgba(15,34,43,0.8);
+  color:#FFF;
+  /*#E0EEEE; #BFEFFF;*/ 
+}
+
+.activity>*{
+margin:5px;
+}
+.op-item{
+ border:1px #FFF solid;
+ padding:3px;
+ border-radius:3px;
+}
+.actname{
+ font-size:20px;
+ font-family: STXihei, "华文细黑", "Microsoft YaHei", "微软雅黑";
+ position:relative;
+
+}
+.memo,.actname{
+overflow:hidden;
+white-space: nowrap;
+text-overflow:ellipsis;
+}
+</style>
+<script>
+    var subscribe={"0":"无需关注","1":"需关注"};
+    var hittype={"REALTIME":"直接点击抽奖","SCREEN":"大屏抽奖","ONCE":"一次性抽奖"};
+    var acttype={"SHAKEIN":"线下摇一摇","ONLINE":"线上活动"};
+    var prizetype={"STOCK":"默认","REDPACK":"微信红包"};
+    var dict={};
+    dict["subscribe"]=subscribe;
+    dict["hittype"]=hittype;
+    dict["acttype"]=acttype;
+    dict["prizetype"]=prizetype;
+        </script>
+</head>
+<body>
+	<section class="page-header">
+
+		<ol class="breadcrumb">
+			<li><a href="#"><i class="fa fa-dashboard"></i>活动管理</a></li>
+			<li class="active">活动查询</li>
+		</ol>
+	</section>
+	<div class="main-container">
+		<form id="qryForm" class="form-horizontal">
+       <input id="actids"  name="id"  type="hidden" />
+			<div class="form-group">
+			 
+				<label class="col-sm-2 control-label" for="ttime">名称</label>
+				<div class="col-sm-3">
+					<input   name="name" class="form-control" type="text" />
+
+				</div>
+				 <div class="col-sm-7">
+				<button type="button"
+					class=" btn btn-primary btn-default pull-right"
+					onclick="showDetail()">
+					<span class="LBL-ADD">添加</span>
+				</button>
+			</div>
+			</div>
+		</form>
+
+
+
+		<a id="tips"
+			style="float: left; width: 100%; text-align: center; margin-top: 20px;"></a>
+		<table class="table table-bordered table-hover" id="response"
+			style="width: 100%; margin-top: 40px;">
+		</table>
+		<div class="text-center pull-right">
+			每页<select name="ps" onchange="setPageSize(this.value)">
+
+				<option value="10">12</option>
+				<option value="40">48</option>
+				<option value="100">120</option>
+			</select> 条， 共 <span class="badge" id="tt">#TT#</span>页,共 <span class="badge"
+				id="trec">0</span>条
+		</div>
+		<div class="text-center">
+			<ul id="pp" class="pagination pagination-sm"></ul>
+		</div>
+		
+		
+		
+		
+		
+			<!-- 模态框（Modal） -->
+		<div class="modal fade" id="myModal" tabindex="-1" role="dialog"
+			aria-labelledby="myModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"
+							aria-hidden="true">×</button>
+						<h4 class="modal-title" id="myModalLabel">活动详情</h4>
+					</div>
+					<div class="modal-body">
+
+						<form class="form-horizontal" style="margin-top: 20px;"
+							id="actform" role="form">
+                           
+								 <input type="hidden"   autocomplete="off"
+										class="form-control  "  
+										name="id" id="id" maxlength="32" placeholder="">
+								 
+							<div class="form-group">
+								<label class="col-sm-3 control-label">活动名称</label>
+								<div class="col-sm-9">
+									<input type="text" autocomplete="off"
+										class="form-control PH-TARGET"  
+										name="name" id="name" maxlength="128" placeholder="">
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-3 control-label">活动说明</label>
+								<div class="col-sm-9">
+									<textarea   class="form-control  "
+									 name="memo" id="memo" placeholder="活动说明"
+										 >  </textarea>
+								</div>
+							</div>
+							
+							<div class="form-group">
+								<label class="col-sm-3 control-label">活动人数</label>
+								<div class="col-sm-3">
+									<input type= "text"   class="form-control  "
+									 name="users" id="users" value="20" 
+									  placeholder="活动人数限制"
+										maxlength="4"/>  
+								</div>
+							 
+								<label class="col-sm-3 control-label">资格</label>
+								<div class="col-sm-3">
+									<select class="form-control" id="subscribe" name="subscribe" >
+										<option value="0">不需要公众号</option>
+										<option value="1">需要公众号</option>
+										 
+										 </select>
+								</div>
+							</div>
+
+							<div class="form-group"  >
+								<label class="col-sm-3 control-label">开始日期</label>
+								<div class="col-sm-3">
+									<input class="form-control" type="text" style='font-size: 10px;'
+										id="startDate" name="startDate" placeholder="开始日期 yyyy-MM-dd HH:mm:ss"> 
+								</div>
+							
+								<label class="col-sm-3 control-label">结束日期</label>
+								<div class="col-sm-3">
+									<input type="text"  class="form-control  " style='font-size: 10px;'
+										id="endDate" name="endDate" placeholder="结束日期 yyyy-MM-dd HH:mm:ss" > 
+								</div>
+
+
+							</div>
+							<div class="form-group"  >
+								<label class="col-sm-3 control-label">活动地址</label>
+								<div class="col-sm-9">
+									<input class="form-control" type="text" style='font-size: 10px;'
+										id="addr" name="addr" placeholder="活动地址"> 
+								</div>
+							</div>
+							<div class="form-group"  >
+								<label class="col-sm-3 control-label">活动图片链接</label>
+								<div class="col-sm-9">
+									<input class="form-control" type="text" style='font-size: 10px;'
+										id="banner" name="banner" placeholder="活动图片链接"> 
+								</div>
+							</div>
+							 <div class="form-group"  >
+								<label class="col-sm-3 control-label">选项（#为分隔符）</label>
+								<div class="col-sm-9">
+									<input class="form-control" type="text" style='font-size: 10px;'
+										id="items" name="items" placeholder="可空"> 
+								</div>
+							</div>
+							<div class="form-group"  >
+								<label class="col-sm-3 control-label">活动类型</label>
+								<div class="col-sm-9">
+									<select class="form-control" id="acttype" name="acttype" onchange="acttypeChange(this.value)" >
+										<option value="SHAKEIN">线下摇一摇</option>
+										<option value="ONLINE">线上活动</option>
+										 
+										 </select>
+								</div>
+							</div>
+							<div class="form-group acttype-item"  >
+								<label class="col-sm-3 control-label">Beacon设备ID</label>
+								<div class="col-sm-9">
+									<input class="form-control" type="text" style='font-size: 10px;'
+										id="beaconid" name="beaconid" placeholder="beacon设备ID "> 
+								</div>
+							</div>
+							<div class="form-group acttype-item"  >
+								<label class="col-sm-3 control-label">距离多远有效（米）</label>
+								<div class="col-sm-9">
+									<input class="form-control" type="text" style='font-size: 10px;'
+										id="distance" name="distance" placeholder="距离多远有效 "> 
+								</div>
+							</div>
+							
+							<div class="form-group"  >
+								<label class="col-sm-3 control-label">出奖方式</label>
+								<div class="col-sm-9">
+									<select class="form-control" id="hittype" name="hittype" >
+										<option value="REALTIME">用户点击抽奖</option>
+										<option value="SCREEN">主持人大屏抽奖</option>
+								    <!-- 	<option value="ONCE">一次性出奖</option>  -->
+									</select>
+								</div>
+							</div>
+							
+							
+							 <div class="form-group"  >
+								<label class="col-sm-3 control-label">状态</label>
+								<div class="col-sm-9">
+									<select class="form-control" id="status" name="status" >
+										<option value="0">草稿</option>
+										<option value="1">上线</option>
+										<option value="3">下线</option>
+										<option value="2">删除</option>
+										 </select>
+								</div>
+							</div>
+
+						 
+
+						</form>
+
+
+					</div>
+					<div class="modal-footer">
+						<button type="button"
+							class=" btn btn-primary btn-default pull-right"
+							onclick="saveAct()">
+							<span class="LBL-SAVE">保存</span>
+						</button>
+
+						<button type="button" class="btn btn-default pull-left"
+							data-dismiss="modal">关闭</button>
+					</div>
+				</div>
+				<!-- /.modal-content -->
+			</div>
+			<!-- /.modal-dialog -->
+		</div>
+		<!-- /.modal -->
+		
+		
+		
+			<!-- 模态框（Modal） -->
+		<div class="modal fade" id="prizeModal" tabindex="-1" role="dialog"
+			aria-labelledby="myModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"
+							aria-hidden="true">×</button>
+						<h4 class="modal-title" id="myModalLabel"><span id="actname"></span>奖项设置</h4>
+					</div>
+					<div class="modal-body">
+
+						<form class="form-horizontal" style="margin-top: 20px;"
+							id="prizeform" role="form">
+                           
+								 <input type="hidden"   autocomplete="off"
+										 
+										name="id" id="prizeid" maxlength="32" placeholder="">
+								 <input type="hidden"   autocomplete="off"
+										 
+										name="actid" id="actid" maxlength="32" placeholder="">
+										<input type="hidden"   autocomplete="off"
+										 
+										name="gotcount" id="gotcount" value="0" maxlength="32" placeholder="">
+								 
+							
+							<div class="form-group"  >
+								<label class="col-sm-3 control-label">等级（0表示不中奖）</label>
+								<div class="col-sm-5">
+									<select class="form-control" id="level" name="level" >
+										<option value="0">0</option>
+										<option value="1">1</option>
+										<option value="2">2</option>
+										<option value="3">3</option>
+										<option value="4">4</option>
+										<option value="5">5</option>
+										<option value="6">6</option>
+										<option value="7">7</option>
+										<option value="8">8</option>
+									 </select>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-3 control-label">等级名称</label>
+								<div class="col-sm-3">
+									<input type="text" autocomplete="off"
+										class="form-control PH-TARGET" style='font-size: 10px;'
+										name="levelname" id="levelname" maxlength="32" placeholder="">
+								</div>
+							</div>
+						<div class="form-group"  >
+								<label class="col-sm-3 control-label">奖品类型</label>
+								<div class="col-sm-5">
+									<select class="form-control" id="prizetype" name="prizetype" onchange="prizetypeChange(this.value)" >
+										<option value="STOCK">默认</option>
+										<option value="REDPACK">微信红包</option>								 
+									 </select>
+								</div>
+							</div>
+							<div   class="form-group  prizetype-item" style="display:none;">
+								<label class="col-sm-3 control-label">红包金额（分）</label>
+								<div class="col-sm-3">
+									<input type="text" autocomplete="off"
+										class="form-control PH-TARGET" style='font-size: 10px;'
+										name="amt" id="amt" maxlength="3" value="0" placeholder="">
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-3 control-label">奖品名称</label>
+								<div class="col-sm-3">
+									<input type="text" autocomplete="off"
+										class="form-control PH-TARGET" style='font-size: 10px;'
+										name="prizename" id="prizename" maxlength="32" placeholder="">
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-3 control-label">奖品个数</label>
+								<div class="col-sm-9">
+									<input   class="form-control  "
+									 name="hitcount" id="hitcount" placeholder="奖品个数"
+										maxlength="4">  
+								</div>
+							</div>
+							  		 
+							<div class="form-group once-item"  >
+								<label class="col-sm-3 control-label">占比（整数）</label>
+								<div class="col-sm-9">
+									<input class="form-control" type="text" style='font-size: 10px;'
+										id="ratio" name="ratio"  value="0" placeholder="直接抽奖类型（概率） "> 
+								</div>
+							</div>
+						</form>
+						<div> 
+						<button type="button"
+							class=" btn btn-primary pull-right  "
+							onclick="savePrize()">
+							<span  >保存</span>
+						</button>
+						<button type="button"
+							class=" btn btn-success pull-left  "
+							onclick="$('#prizeid').val('')">
+							<span  >新增</span>
+						</button>
+						</div>
+
+
+                     <table class="table table-hovered">
+                     <caption>奖品列表</caption>
+                     <tbody id="prizelist">
+                     
+                     </tbody>
+                     
+                     </table>
+					</div>
+					<div class="modal-footer">
+						
+						<button type="button" class="btn btn-default pull-left"
+							data-dismiss="modal">关闭</button>
+					</div>
+				</div>
+				<!-- /.modal-content -->
+			</div>
+			<!-- /.modal-dialog -->
+		</div>
+		<!-- /.modal -->
+		
+		<div id='acttpl' class='hide'>
+		
+		<div class='activity'>
+		  
+		   <div  class="actname" > <span>#name#</span>    <span class='badge label-warning' style="position:absolute;top:3px;right:0px;"onclick='edit("#id#")'>编辑</span> 
+		   </div>
+		   <div>
+		   <span class='badge'>#acttype#</span>  #status#  <i class="badge fa fa-weixin #ison#"> #subscribe#</i>（#appkey#）
+		   </div>
+		    <div ><i class="fa fa-users"></i>已参与/活动人数上限：
+		     <i class='badge label-danger '> #hasin#</i>
+		     /<i class="badge label-success ">#users#</i>
+		     </div>
+		   <div class="creator">
+		   <i class='fa fa-user'>创建人：#creator#</i> 
+		  
+		    </div>
+		    <div class="validate-date">
+		     <i class="fa fa-calendar"></i>开始日期：#startDate# 
+		    </div>
+		     <div class="validate-date">
+		       <i class="fa fa-calendar"></i>结束日期： #endDate# 
+		    </div>
+		   
+		    
+		   
+		    <div> <i class="fa fa-tags"></i> 出奖方式 #hittype#  </div>
+		   <div class='op-item'> 
+		   <span class='badge label-success' onclick='showPrize("#id#")'>设置奖项 </span>
+		  <span class='badge label-danger' onclick="down('#id#')">下载名单</span>  
+		
+		  <span class='badge label-primary' onclick='window.open("../../activity.html?id=#id#")'>
+		  活动链接</span> 
+		  <span class='badge label-info'  onclick='window.open("activityonlive.html?id=#id#")'>
+		  大屏抽奖</span> 
+		  </div>
+		    <div class='memo'><i class='fa fa-cog'></i>说明： 
+		    <span class="text-small"> (#id#)</span></br><i>#memo#</i> </div></div>
+		
+		 </div>
+		<script>
+		function prizetypeChange(type){
+			if(type=="REDPACK"){
+				$(".prizetype-item").show();
+			}else{
+				$(".prizetype-item").hide();
+			}
+			
+		}
+		function acttypeChange(acttype){
+			if(acttype=="SHAKEIN"){
+				$(".acttype-item").show();
+			}else{
+				$(".acttype-item").hide();
+				
+			}
+			
+			
+			 
+		}
+		
+		function edit(id){
+			
+			var record;
+			var data=page.data;
+			for(var i=0;i<data.length;i++){
+				if(data[i]["id"]==id){
+					record=data[i];
+					break;
+				}
+				
+			}
+			if(record){
+				
+				for(var k in record){
+					$("#"+k).val(record[k]);
+				}
+				 $("#myModal").modal("show");
+			}
+		}
+			
+		 function showDetail(){
+			 $("#id").val("")
+			 $("#myModal").modal("show");
+			 
+		 }
+		 var prizeTpl="<tr id='prize#level#'><td>#level#</td><td>#levelname#</td><td>#prizetype#</td><td>#prizename#</td><td>#hitcount#</td><td>#gotcount#</td><td>#amt#</td><td onclick='setPrize(\"#id#\")'>编辑</td></tr>";
+		 var prizes=[];
+		 function setPrize(prizeid){
+			 for(var i=0;i<prizes.length;i++){
+				 if(prizeid==prizes[i]["id"]){
+					
+					 for(var k in prizes[i]){
+						 if(k=="id"){
+							 $("#prizeid").val(prizes[i][k]);
+						 }else{
+							 $("#"+k).val(prizes[i][k]);
+						 }
+					 }
+					 break;
+				 }
+			 }
+		 }
+		 function showPrize(actid){
+			 var act;
+			 $("#actid").val(actid);
+			 for(var i=0;i<page.data.length;i++){
+				 
+				 if(page.data[i]["id"]==actid){
+					 act=page.data[i];
+					 
+					 break;
+				 }
+			 }
+			 
+			 if(act["hittype"]=="REALTIME"){ 
+				 
+				 $(".once-item").show();
+			 }else{
+				 $(".once-item").hide();
+			 }
+			 
+			 $("#actname").html("【"+act["name"]+"】");
+			 postData(act,"/rest/product/getPrizes",function(data){
+	    		  console.log(data);
+	    		 prizes=data;
+	    		  $("#prizelist").html("<tr><td>等级</td><td>等级名称</td><td>奖品类型</td><td>奖品名称</td><td>奖品个数</td><td>已中奖个数</td><td>金额（分）</td><td>操作</td></tr>");
+	    		  for(var i=0;i<data.length;i++){
+	    			  var one=prizeTpl;
+	    			  var record=data[i];
+	    			  for(var key in record){
+	    				  if(key=="prizetype"){
+	    	    			  one=one.replace("#"+key+"#",dict[key][record[key]]);
+	    	    			  
+	    	    		  }
+	    				  regex=new RegExp("#"+key+"#","gi");
+	                       one=one.replace(regex,record[key]);
+	    			  }
+	    			  $("#prizelist").append(one);
+	    		  }
+	    		  
+	    		  
+	    	  });
+			 $("#prizeModal").modal("show");
+			 
+		 }
+		 
+		 function savePrize(){
+			 
+			 var obj=getFormJson("#prizeform");
+			 if(obj["level"]>0&&$("#prize"+obj["level"]).length>0&&!obj["id"]){
+				 alert("该等级已经存在！");
+				 return;
+			 }
+			 if(obj["gotcount"]>obj["hitcount"]){
+				 alert("中奖人数不能少于已中奖人数");
+				 return;
+			 }
+			 var ok=true;
+			 for(var k in obj){
+				 if(!obj[k].trim()&&k!="id"){
+					 ok=false;
+					 break;
+				 }
+				
+			 }
+			 if(!ok){
+				 alert("所有输入项不能为空")
+				 return;
+			 }
+			 postData(obj,"/rest/product/savePrize",function(data){
+	    		  console.log(data);
+	    		  if(data["CODE"]!="0000"){
+	    			  alert(data["MSG"]);
+	    		  }else{
+	    			  alert(data["MSG"]);
+	    			  showPrize($("#actid").val());
+	    		  }
+			 });
+			 
+		 }
+		
+      var sts={"1":"上线","0":"编辑","2":"删除","3":"下线"};
+     
+      var page=new Page();
+      page.cntreq="/rest/product/miniactcnt"; 
+      page.listreq="/rest/product/miniact";
+      page.qryForm="qryForm";
+      page.tmpl=$("#acttpl").html();
+      page.pageSize=8;
+      page.header="";//"<tr><td>操作</td><td>创建人ID</td><td>活动人数上限</td> <td>已加入人数</td><td>活动名称</td><td>活动类型</td><td>关注公众号</td><td>出奖方式</td><td>商户号</td><td>状态</td> <td>开始时间<br/>结束时间</td><td>说明</td>  </tr>";
+      page.afterLoaded=function(data){
+    	  
+    	  $("[data-toggle='popover']").popover();
+      };
+      page.recompose=function(record,one,idx){
+    	  
+    	  for(var key in record){
+    		  if(key=="hittype"||key=="subscribe"||key=="acttype"){
+    			  if(key=="subscribe"&&record[key]=="1"){
+       			   one=one.replace("#ison#","label-success");
+       		        }
+    			  one=one.replace("#"+key+"#",dict[key][record[key]]);
+    			  
+    		  }else
+        	  if(key=="status"){
+        		  var v="<span class='badge   #class#'>"+sts[record[key]]+" </span>";
+        		  if(record[key]=="0"){
+        			  v=v.replace("#class#","label-warning ");
+        		  }else if(record[key]=="1"){
+        			  v=v.replace("#class#","label-success ");
+        			  
+        		  } 
+        		  
+        		  else if(record[key]=="3"){
+        			  v=v.replace("#class#","label-danger");
+        		  }
+        		  one=one.replace("#"+key+"#",v);
+        		  
+        	  }else if(key=="createtime"){
+	              	var v="";
+	              	if(record[key]){
+	                   var time=record[key].time;
+	              	   v=new Date(time).toLocaleString();
+	              	}
+	              	 one=one.replace("#"+key+"#",v);
+	           } 
+        	   
+    		         
+    		  
+                 
+            }  
+      	return one;
+      	
+      }
+         
+      function firstcall(){
+     	 
+          page.loadPage(1);
+          
+     }
+      function down(id){
+    	  
+    	  
+        	  $("#actids").val(id);
+        	  $("#qryForm").attr("action",webapp+"/rest/product/downapplicants");
+        	  $("#qryForm").attr("target","_blank");
+        	  $("#qryForm").submit();
+         
+      }
+      function saveAct(){
+    	  
+    	   
+    	  var obj=getFormJson("#actform");
+    	 
+    	  if(obj["status"]=="2"){
+    		  
+    		  var ok=confirm("确定删除？");
+    		  if(!ok){
+    			  return;
+    		  }
+    		  
+    	  }
+    	 
+    	  postData(obj,"/rest/product/saveAct",function(data){
+    		  console.log(data);
+    		  firstcall();
+    		  
+    	  });
+    		  
+    		  
+    		  
+    	  }
+    	  
+   
+      </script>
+
+	</div>
+
+
+</body>
+</html>

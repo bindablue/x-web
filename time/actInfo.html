@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>活动优惠码领取</title>
+    <!--[if !IE]> -->
+    <script src="../assets/js/jquery-2.1.4.min.js"></script>
+    <script src="../js/common.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background-color: #f7f8fa;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            padding-bottom: env(safe-area-inset-bottom);
+            padding-top: env(safe-area-inset-top);
+        }
+        .container {
+            max-width: 640px;
+            margin: 0 auto;
+            min-height: 100vh;
+        }
+        .poster-wrap {
+            position: relative;
+            overflow: hidden;
+        }
+        .poster-img {
+            width: 100%;
+            height: 224px;
+            object-fit: cover;
+            display: block;
+        }
+        .poster-mask {
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            height: 80px;
+            background: linear-gradient(to top, rgba(0,0,0,0.4), transparent);
+        }
+        .status-tag {
+            position: absolute;
+            top:16px;
+            right:16px;
+            padding:4px 12px;
+            border-radius: 999px;
+            color:#fff;
+            font-size:14px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+        }
+        .content-wrap {
+            margin-top: -24px;
+            position: relative;
+            z-index: 10;
+            padding:0 20px;
+        }
+        .card {
+            background:#ffffff;
+            border-radius:20px;
+            padding:20px;
+            box-shadow: 0 4px 20px rgba(99, 102, 241, 0.08);
+        }
+        .card-mt {
+            margin-top:20px;
+        }
+        .title {
+            font-size:20px;
+            font-weight:bold;
+            color:#1f2937;
+        }
+        .time-row {
+            display:flex;
+            align-items:center;
+            font-size:14px;
+            color:#6b7280;
+            margin-top:8px;
+        }
+        .time-row svg {
+            width:16px;
+            height:16px;
+            margin-right:4px;
+            fill:none;
+            stroke:currentColor;
+            stroke-width:2;
+        }
+        .desc-text {
+            font-size:14px;
+            color:#4b5563;
+            line-height:1.6;
+            margin-top:12px;
+        }
+        .countdown-box {
+            margin-top:16px;
+            background-color:#f5f3ff;
+            border-radius:16px;
+            padding:14px;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+        }
+        .countdown-box svg {
+            width:16px;
+            height:16px;
+            margin-right:8px;
+            fill:none;
+            stroke:#8b5cf6;
+            stroke-width:2;
+        }
+        .countdown-text {
+            font-size:14px;
+            color:#6d28d9;
+        }
+        .mt24 {
+            margin-top:24px;
+        }
+        .btn-primary {
+            width:100%;
+            background: linear-gradient(135deg,#6366f1 0%,#8b5cf6 100%);
+            color:#ffffff;
+            border:none;
+            border-radius:16px;
+            padding:14px;
+            font-size:16px;
+            font-weight:500;
+            box-shadow: 0 8px 20px rgba(99,102,241,0.2);
+            transition: transform 0.2s ease;
+        }
+        .btn-primary:active {
+            transform: scale(0.98);
+        }
+        .tip-small {
+            text-align:center;
+            font-size:12px;
+            color:#9ca3af;
+            margin-top:8px;
+        }
+        .state-card-success {
+            background-color:#f0fdf4;
+            border:1px solid #dcfce7;
+            border-radius:20px;
+            padding:20px;
+            text-align:center;
+        }
+        .icon-circle {
+            width:40px;
+            height:40px;
+            border-radius:50%;
+            display:inline-flex;
+            align-items:center;
+            justify-content:center;
+            margin-bottom:12px;
+        }
+        .icon-success {
+            background-color:#dcfce7;
+        }
+        .icon-success svg {
+            width:20px;
+            height:20px;
+            stroke:#16a34a;
+            fill:none;
+            stroke-width:2;
+        }
+        .text-success-title {
+            font-size:16px;
+            font-weight:500;
+            color:#15803d;
+        }
+        .code-block {
+            margin-top:16px;
+            background:#fff;
+            border:2px dashed #ddd6fe;
+            border-radius:16px;
+            padding:16px 12px;
+            font-family:Menlo,Monaco,monospace;
+            font-size:16px;
+            font-weight:bold;
+            color:#6d28d9;
+            letter-spacing:3px;
+        }
+        .btn-row {
+            display:grid;
+            grid-template-columns:1fr 1fr;
+            gap:12px;
+            margin-top:20px;
+        }
+        .btn-outline {
+            border:1px solid #8b5cf6;
+            color:#7c3aed;
+            background:#fff;
+            border-radius:12px;
+            padding:10px;
+            font-size:14px;
+            font-weight:500;
+        }
+        .btn-solid {
+            background-color:#7c3aed;
+            color:#fff;
+            border:none;
+            border-radius:12px;
+           
+            font-size:14px;
+            font-weight:500;
+            transition: transform 0.2s ease;
+        }
+        .btn-solid:active {
+            transform: scale(0.97);
+        }
+        .note-text {
+            margin-top:16px;
+            font-size:12px;
+            color:#9ca3af;
+        }
+        .state-card-redeemed {
+            background-color:#eff6ff;
+            border:1px solid #dbeafe;
+            border-radius:20px;
+            padding:20px;
+            text-align:center;
+        }
+        .icon-redeemed {
+            background-color:#dbeafe;
+        }
+        .icon-redeemed svg {
+            width:20px;
+            height:20px;
+            stroke:#2563eb;
+            fill:none;
+            stroke-width:2;
+        }
+        .text-redeemed-title {
+            font-size:16px;
+            font-weight:500;
+            color:#1d4ed8;
+        }
+        .state-card-disable {
+            background-color:#f9fafb;
+            border:1px solid #f3f4f6;
+            border-radius:20px;
+            padding:20px;
+            text-align:center;
+        }
+        .icon-disable {
+            background-color:#f3f4f6;
+        }
+        .icon-disable svg {
+            width:20px;
+            height:20px;
+            stroke:#9ca3af;
+            fill:none;
+            stroke-width:2;
+        }
+        .text-disable {
+            font-size:16px;
+            color:#4b5563;
+        }
+        .rule-title {
+            font-size:16px;
+            font-weight:500;
+            color:#1f2937;
+        }
+        .rule-list {
+            margin-top:12px;
+            font-size:14px;
+            color:#6b7280;
+        }
+        .rule-list li {
+            margin-bottom:8px;
+            list-style:none;
+        }
+        .hidden {
+            display:none !important;
+        }
+        .toast {
+            position:fixed;
+            left:50%;
+            top:50%;
+            transform:translate(-50%,-50%);
+            background-color:rgba(0,0,0,0.8);
+            color:#fff;
+            padding:10px 20px;
+            border-radius:12px;
+            font-size:14px;
+            z-index:999;
+            max-width:280px;
+            animation: toastIn 0.25s ease-out;
+        }
+        @keyframes toastIn {
+            from {opacity:0; transform: translate(-50%,-40%);}
+            to {opacity:1; transform: translate(-50%,-50%);}
+        }
+        .bottom-space {
+            height:32px;
+        }
+
+        /* 登录选择弹窗样式 */
+        .login-modal {
+            position: fixed;
+            left: 0;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0,0,0,0.55);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 24px;
+        }
+        .login-modal-inner {
+            width: 100%;
+            max-width: 320px;
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 24px 20px;
+        }
+        .login-modal-title {
+            font-size: 18px;
+            font-weight: 600;
+            color:#1f2937;
+            text-align:center;
+        }
+        .login-modal-desc {
+            font-size:14px;
+            color:#6b7280;
+            text-align:center;
+            margin-top:10px;
+            line-height:1.5;
+        }
+        .login-modal-buttons {
+            margin-top:22px;
+            display:flex;
+            flex-direction:column;
+            gap:10px;
+        }
+        .btn-modal {
+            width:100%;
+            padding:12px;
+            border-radius:12px;
+            font-size:15px;
+            border:none;
+        }
+        .btn-modal-primary {
+            background: linear-gradient(135deg,#6366f1 0%,#8b5cf6 100%);
+            color:#fff;
+        }
+        .btn-modal-outline {
+            border:1px solid #8b5cf6;
+            color:#7c3aed;
+            background:#fff;
+        }
+        .btn-modal-cancel {
+            background:#f3f4f6;
+            color:#4b5563;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="poster-wrap">
+        <img id="activityImg" class="poster-img" src="https://dododido.cn/img/teacher_640x224.jpg" alt="活动海报">
+        <div class="poster-mask"></div>
+        <div id="tagStatus" class="status-tag" style="background:#fb923c;">活动进行中</div>
+    </div>
+
+    <div class="content-wrap">
+        <div class="card">
+            <h1 id="activityName" class="title">优惠活动即将开启</h1>
+            <div class="time-row">
+                <svg viewBox="0 0 24 24"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                <span id="timeText">-</span>
+            </div>
+            <p id="activityDesc" class="desc-text"></p>
+
+            <div id="countdownWrap" class="countdown-box">
+                <svg viewBox="0 0 24 24"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                <span id="countdownText" class="countdown-text"></span>
+            </div>
+
+            <!-- 状态1：可领取 -->
+            <div id="stateNormal" class="mt24">
+                <button id="btnReceive" class="btn-primary">立即领取优惠码</button>
+                <p class="tip-small">每个用户仅可领取一次优惠码</p>
+            </div>
+
+            <!-- 状态2：领取成功 -->
+            <div id="stateReceived" class="mt24 hidden">
+                <div class="state-card-success">
+                    <div class="icon-circle icon-success">
+                        <svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"></path></svg>
+                    </div>
+                    <p class="text-success-title">🎉 领取成功，请复制优惠码</p>
+                    <div id="showPromoCode" class="code-block">******</div>
+                    <div class="btn-row">
+                        <button id="btnCopyCode" class="btn-outline">复制优惠码</button>
+                        <button id="btnGoRedeem" class="btn-solid">去App Store兑换</button>
+                    </div>
+                </div>
+                <div class="note-text">
+                    <p>• 复制优惠码后点击按钮唤起App Store兑换面板</p>
+                    <p>• 优惠码仅限当前Apple账号使用</p>
+                </div>
+            </div>
+
+            <!-- 状态3：已兑换 -->
+            <div id="stateRedeemed" class="mt24 hidden">
+                <div class="state-card-redeemed">
+                    <div class="icon-circle icon-redeemed">
+                        <svg viewBox="0 0 24 24"><path d="M9 12l2 2 4‑4m6 2a9 9 0 11‑18 0 9 9 0 0118 0z"></path></svg>
+                    </div>
+                    <p class="text-redeemed-title">✅ 您已完成优惠码兑换</p>
+                    <p style="font-size:14px;color:#6b7280;margin-top:8px;">会员权益已发放至您的Apple账号</p>
+                </div>
+            </div>
+
+            <!-- 状态4：未开始 / 已结束 -->
+            <div id="stateDisabled" class="mt24 hidden">
+                <div class="state-card-disable">
+                    <div class="icon-circle icon-disable">
+                        <svg viewBox="0 0 24 24"><path d="M12 8v4l3 3m6‑3a9 9 0 11‑18 0 9 9 0 0118 0z"></path></svg>
+                    </div>
+                    <p id="disabledMsg" class="text-disable">活动尚未开始</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 活动规则 -->
+        <div class="card card-mt">
+            <h3 class="rule-title">📋 活动规则</h3>
+            <ul id="activityRule" class="rule-list">
+                <li>• 每个Apple账号仅限领取1次优惠码</li>
+                <li>• 优惠码需要在App Store内完成兑换才可生效</li>
+                <li>• 优惠码过期后将无法再次使用</li>
+                <li>• 活动最终解释权归本App所有</li>
+            </ul>
+        </div>
+        <div class="bottom-space"></div>
+    </div>
+
+    <!-- 登录选择弹窗 -->
+    <div id="loginModal" class="login-modal hidden">
+        <div class="login-modal-inner">
+            <div class="login-modal-title">需要登录</div>
+            <div class="login-modal-desc">只有注册用户登录后才能参与活动，请选择</div>
+            <div class="login-modal-buttons">
+                <button id="btnModalRegister" class="btn-modal btn-modal-primary">去注册</button>
+                <button id="btnModalLogin" class="btn-modal btn-modal-outline">去登录</button>
+                <button id="btnModalCancel" class="btn-modal btn-modal-cancel">取消</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast" class="toast hidden"></div>
+</div>
+
+<script>
+
+var nologin = true;
+
+var activityData = {
+    activityId: 1,
+    activityName:"特别活动",
+    activityDesc:"敬请期待",
+    activityImg:"",
+    status: "END", // NOT_START｜RUNNING｜END｜RECEIVED｜REDEEMED
+    promotionCode:"",
+    timeText:"2026‑09‑01 ~ 2026‑09‑30"
+};
+
+function loadData(){
+    var id =GetRequest()["id"];
+    postData({id:id},"/time/promotionActivity/detail",function(resp){
+
+        console.log(resp);
+        if("0000"!=resp.code){
+
+           alert(resp.msg);
+            return;
+
+        }
+
+        
+        activityData=resp.data
+
+        activityData.timeText=activityData.startTime+"~"+activityData.endTime
+        activityData.activityImg=activityData.activityImgUrl
+        //activityData.promotionCode ="******"
+        renderPage(activityData);
+
+
+    })
+
+}
+
+
+
+var isApp = true;
+const stateNormal = document.getElementById('stateNormal');
+const stateReceived = document.getElementById('stateReceived');
+const stateRedeemed = document.getElementById('stateRedeemed');
+const stateDisabled = document.getElementById('stateDisabled');
+const tagStatus = document.getElementById('tagStatus');
+const disabledMsg = document.getElementById('disabledMsg');
+const showPromoCode = document.getElementById('showPromoCode');
+const btnReceive = document.getElementById('btnReceive');
+const btnCopyCode = document.getElementById('btnCopyCode');
+const btnGoRedeem = document.getElementById('btnGoRedeem');
+const toastDiv = document.getElementById('toast');
+const activityRule =document.getElementById('activityRule');
+const countDownText =document.getElementById('countdownText'); 
+
+//登录弹窗DOM
+var loginModal = document.getElementById('loginModal');
+var btnModalRegister = document.getElementById('btnModalRegister');
+var btnModalLogin = document.getElementById('btnModalLogin');
+var btnModalCancel = document.getElementById('btnModalCancel');
+
+//关闭登录弹窗
+function closeLoginModal(){
+    loginModal.classList.add('hidden');
+}
+
+function goLogin(){
+    loginModal.classList.remove('hidden');
+}
+
+//去注册
+btnModalRegister.addEventListener('click', function(){
+    closeLoginModal();
+    confirmLogin({type:"register"});
+});
+
+//去登录
+btnModalLogin.addEventListener('click', function(){
+    closeLoginModal();
+    confirmLogin({type:"login"});
+});
+
+//取消
+btnModalCancel.addEventListener('click', function(){
+    closeLoginModal();
+});
+
+//点击遮罩关闭弹窗
+loginModal.addEventListener('click', function(e){
+    if(e.target === loginModal){
+        closeLoginModal();
+    }
+});
+
+function userLogin(data){
+    loadData();
+}
+
+/**
+ * 登录/注册回调，业务自行实现跳转
+ * @param opt {type:"register"|"login"}
+ */
+function confirmLogin(opt){
+    if(opt.type === "register"){
+        // 示例：window.location.href="/register";
+        //showToast("跳转到注册页");
+        showregist();
+    }else if(opt.type === "login"){
+        // 示例：window.location.href="/login";
+        //showToast("跳转到登录页");
+        showlogin(function(data){});
+    }
+}
+
+
+function firstcall(){
+
+    loadData();
+}
+function showToast(msg){
+    toastDiv.innerText = msg;
+    toastDiv.classList.remove('hidden');
+    setTimeout(()=>{ toastDiv.classList.add('hidden'); },2200);
+}
+
+
+function renderPage(data){
+    document.getElementById('activityName').innerText = data.activityName;
+    document.getElementById('activityDesc').innerText = data.activityDesc;
+    document.getElementById('timeText').innerText = data.timeText;
+    document.getElementById('activityImg').src = data.activityImg;
+    showPromoCode.innerText = data.promotionCode;
+    activityRule.innerHTML= data.activityRule;
+    countDownText.innerText="距离活动结束时间："+data.remainDays;
+
+    stateNormal.classList.add('hidden');
+    stateReceived.classList.add('hidden');
+    stateRedeemed.classList.add('hidden');
+    stateDisabled.classList.add('hidden');
+
+    switch(data.status){
+        case "NOT_START":
+            tagStatus.innerText = "活动未开始";
+            tagStatus.style.background="#9ca3af";
+            stateDisabled.classList.remove('hidden');
+            disabledMsg.innerText = "活动尚未开始，请耐心等待";
+            break;
+        case "RUNNING":
+            tagStatus.innerText = "活动进行中";
+            tagStatus.style.background="#fb923c";
+            stateNormal.classList.remove('hidden');
+            break;
+        case "END":
+            tagStatus.innerText = "活动已结束";
+            tagStatus.style.background="#9ca3af";
+            stateDisabled.classList.remove('hidden');
+            disabledMsg.innerText = "活动已经结束";
+            break;
+        case "RECEIVED":
+            tagStatus.innerText = "已领取优惠码";
+            tagStatus.style.background="#22c55e";
+            stateReceived.classList.remove('hidden');
+            break;
+        case "REDEEMED":
+            tagStatus.innerText = "已完成兑换";
+            tagStatus.style.background="#3b82f6";
+            stateRedeemed.classList.remove('hidden');
+            break;
+    }
+}
+
+
+btnReceive.addEventListener('click',async ()=>{
+    btnReceive.disabled = true;
+    btnReceive.innerText = "领取中…";
+    try{
+         var  activityId = GetRequest()["id"];
+         postData({activityId:activityId},"/time/promotionCode/occupy",function(resp){
+
+            if(resp.code!="0000"){
+
+                alert(resp.msg);
+
+                return;
+            }
+            var data =resp.data;
+            showToast("领取成功");
+            activityData.status = "RECEIVED";
+            activityData.promotionCode=data.promotionCode
+            renderPage(activityData);
+        });
+ 
+         
+        // JSBridge iOS：window.webkit.messageHandlers.activityReceive.postMessage({activityId:activityData.activityId})
+        
+    }catch(e){
+        showToast("领取失败，请稍后重试");
+    }finally {
+        btnReceive.disabled = false;
+        btnReceive.innerText = "立即领取优惠码";
+    }
+});
+
+btnCopyCode.addEventListener('click',async ()=>{
+    try {
+        await navigator.clipboard.writeText(activityData.promotionCode);
+        showToast("✅ 已复制优惠码");
+    }catch(err){
+        showToast("复制失败，请手动复制");
+    }
+});
+
+btnGoRedeem.addEventListener('click',()=>{
+
+    safari(activityData.redeemUrl)
+    // if(window.webkit && window.webkit.messageHandlers){
+    //     window.webkit.messageHandlers.goRedeemOfferCode.postMessage({});
+    // }else{
+    //     showToast("请在App内打开页面");
+    // }
+});
+
+
+</script>
+</body>
+</html>

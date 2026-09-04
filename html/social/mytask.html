@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        
+        <!--        <meta name="format-detection" content="telephone=no">-->
+        <meta charset="UTF-8">
+            <meta name="msapplication-tap-highlight" content="no">
+                <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+                    
+                    <title>时间指数</title>
+                    <link rel="stylesheet" type="text/css" href="../../mod/swiper/swiper.min.css">
+                        
+                        <link rel="stylesheet" type="text/css" href="../../mod/bootstrap/css/bootstrap.min.css"/>
+                        <link rel="stylesheet" type="text/css" href="../../css/common.css"/>
+                        <script src="../../mod/swiper/swiper.min.js"></script>
+                        <script src="../../js/jquery.min.js"></script>
+                        <script src="../../js/common.js"></script>
+                        <script src="../../js/echarts.min.js"></script>
+                        <script src="../../mod/bootstrap/js/bootstrap.min.js"></script>
+                        <script>
+                            var nologin=true;
+                            
+                            
+                            function firstcall(){
+                                if(!byApp()){
+                                    $("#btnShare").hide();
+                                }
+                                
+                                loadIndex();
+                                logDays();
+                                taskline();
+                                //outcomeline();
+                               // incomeCircle();
+                                //assetline();
+                                //assetdis();
+                            }
+                        
+                        function loadData(){
+                            
+                            
+                            console.log("开始更新。。。");
+                            
+                            
+                        }
+                        
+                        function refreshData(){
+                            setTimeout(function(){firstcall();},500);
+                        }
+                        
+                        function  scroll(id) {
+                            var scroll_offset =$(id).offset(); //得到pos这个div层的offset，包含两个值，top和left
+                            $("body,html").animate({
+                                                   scrollTop:scroll_offset.top //让body的scrollTop等于pos的top，就实现了滚动
+                                                   },0);
+                        }
+                        
+                            </script>
+                        <style>
+                            .swiper-container, {
+                                width: 100%;
+                                height: 100%;
+                                position:absolute;
+                                bottom:10px;
+                                
+                            }
+                        .swiper-slide {
+                            
+                            text-align: center;
+                            font-size: 18px;
+                            height: 550px;
+                            /*background:url('img/banner.png');*/
+                            
+                            /* Center slide text vertically */
+                            display: -webkit-box;
+                            display: -ms-flexbox;
+                            display: -webkit-flex;
+                            display: flex;
+                            -webkit-box-pack: center;
+                            -ms-flex-pack: center;
+                            -webkit-justify-content: center;
+                            justify-content: center;
+                            -webkit-box-align: center;
+                            -ms-flex-align: center;
+                            -webkit-align-items: center;
+                            align-items: center;
+                        }
+                            </style>
+                        </head>
+    <body>
+     
+        
+        <div id="hh" style="">
+            <button type="button" class="btn btn-primary pull-left" onclick="dismiss();" >
+                <span  class="glyphicon glyphicon-chevron-left"></span>
+            </button>
+             <button id="btnShare" type="button"  class="btn btn-primary pull-right"    onclick="share();" > <span class="LBL-WXSHR" style="padding-bottom:10px;"  >微信分享</span> </button>
+        </div>
+        <input id="data" type="hidden" value="" />
+       
+            <!-- Swiper -->
+            <div class="swiper-container">
+                <div class="swiper-wrapper">
+                    
+                    <div class="swiper-slide " style="color:#FFFFFF; ">
+                        <div id="tline"   style="height:90%;width:100%;"></div>
+                    </div>
+                    
+                    <div class="swiper-slide " style="color:#FFFFFF; ">
+                        <div id="eline"   style="height:400px;width:80%;">
+                        
+                        </div>
+                    </div>
+                    <div class="swiper-slide " style="color:#FFFFFF; ">
+                         <div id="xline"  style="height:90%;width:100%;"></div>
+                    </div>
+                    
+                
+
+                   <div class="swiper-slide" style="text-align:center;vertical-align:middle;padding-top:40%;"  >
+                       更多内容，敬请期待
+                    </div>
+                    
+                    
+                </div>
+                <!-- Add Pagination -->
+                <div class="swiper-pagination"></div>
+                
+            </div>
+            
+       
+        
+ 
+        
+    </body>
+    
+    <script>
+          function share(){
+            var idx=swiper.activeIndex;
+            console.log("swipe idx:"+idx);
+            var obj={};
+            //obj["URL"]=domain+webapp+"/html/social/share.html";
+           // obj["PARAM"]=$("#data").val();
+            obj["IMG"]=swipers[idx].getDataURL();
+            obj["op"]="wximgshare";
+            obj["TITLE"]=titles[idx];
+            obj["DESC"]="";
+            obj["scene"]=1;
+            obj["Class"]="TaskDataEngine";
+            asyncommunicate(obj,function(data){
+                            });
+                          // window.location.href="http:share.html?RESULT="+encodeURI(lineChart.getDataURL());
+                          // console.log(lineChart.getDataURL());
+                           
+            
+        }
+        function getTmpl(){
+            
+            return "<tr><td>#LOC#</td><td>#CNT#</td></tr>";
+        }
+    
+        var swipers=[];
+        var titles=[];
+       
+       var tdom=document.getElementById("tline");
+       var tChart=echarts.init(tdom);
+       swipers.push(tChart);
+       titles.push("时间都去哪儿了");
+       
+        var ldom = document.getElementById("eline");
+        var lineChart = echarts.init(ldom);
+        swipers.push(lineChart);
+        titles.push("时间都去哪儿了");
+        var xdom=document.getElementById("xline");
+        var xChart=echarts.init(xdom);
+        swipers.push(xChart);
+        titles.push("时间都去哪儿了");
+         
+         
+                 
+
+        
+        
+        //select sum(mspan),ttype,mday from task t left join event e  on  t.tid=e.tid where csts!='D' and tsts!='D' group by ttype,mday order by mday
+      
+        function loadIndex(){
+            var obj={};
+            obj["Class"]="CommonDataEngine";
+            obj["C"]="MSPAN,TTYPE,MDAY";
+            obj["T"]="(select sum(mspan) AS MSPAN,TTYPE,MDAY from task t left join event e  on  t.tid=e.tid where csts!='D' and tsts!='D'  group by ttype,mday )";
+            obj["O"]="Q";
+            obj["W"]="1=1 order by MDAY";
+            
+            asyncommunicate(obj,function(data){
+                           
+                            var list=JSON.parse(data);
+                            //$("#data").val(encodeURI(data));
+                            
+                            //tasktype.pop();
+                            var idt=tasktype.map(function(o){
+                                             var oo={};
+                                             oo.text=o["v"];
+                                             oo.max=200;//800
+                                             return oo;
+                                             });
+                            
+                            var series=[];
+                           
+                            var v=tasktype;
+                            var dd="YYYY-MM-DD";
+                            var lgd=[];
+                            
+                            for(var i=0;i<list.length;i++){
+                                if(dd!=list[i]["MDAY"]){//换日期了
+                            
+                            
+                                    dd=list[i]["MDAY"];
+                            
+                                    v=tasktype;
+                                    if(i!=0){
+                                        lgd.push(list[i-1]["MDAY"]);
+                                        var nv=v.map(function(o){return o.p;});
+                                       series.push({
+                                        name:'能力发展指数',
+                                        type: 'radar',
+                                        symbol: 'none',
+                                        itemStyle: {
+                                        normal: {
+                                        lineStyle: {
+                                        width:1
+                                        }
+                                        },
+                                        emphasis : {
+                                        areaStyle: {color:'rgba(0,250,0,0.3)'}
+                                        }
+                                        },
+                                        data:[
+                                              {
+                                              value:nv,
+                                              name: list[i-1]["MDAY"]
+                                              }
+                                              ]
+                                        });
+                                    }// end if
+                                }//end if
+                            
+                            if(dd==list[i]["MDAY"]){
+                            
+                              v[list[i]["TTYPE"]-1]["p"]=parseInt(list[i]["MSPAN"])*1.00/4;//*200/800
+                            
+                               continue;
+                            }
+                            
+                            
+                            }//end for
+                            console.log(series);
+                            console.log(idt);
+                            console.log(lgd);
+                            //$("#data").val(JSON.stringify(series));
+                            
+                            var  option = {
+                            title: {
+                            text: lanMap["IENERGY"],
+                            subtext:lanMap["IETIP"],
+                            x:'right',
+                            y:'bottom'
+                            },
+                            tooltip: {
+                            trigger: 'item',
+                            backgroundColor : 'rgba(0,0,250,0.2)'
+                            },
+                            legend: {data: []},//lgd
+                            visualMap: {
+                            color: ['red', 'yellow']
+                            
+                            },
+                            radar: {
+                            indicator : idt
+                            },
+                            series :  series
+                            };
+                            
+                            lineChart.setOption(option, true);
+
+                            
+                            
+                            });
+           
+           
+        }
+    
+    
+    
+    
+    function logDays(){
+        
+        var ob={};
+        ob["Class"]="CommonDataEngine";
+        ob["T"]="(select distinct MDAY from event where csts!='D')";
+        ob["O"]="Q";
+        ob["C"]="MDAY";
+        ob["W"]="1=1";
+        asyncommunicate(ob,function(data){
+                        
+                        taskBar(JSON.parse(data));
+                        });
+                        
+    }
+    
+    
+    
+    function taskBar(days){
+        
+        var ob={};
+        ob["Class"]="CommonDataEngine";
+        ob["T"]="event e left join task t on t.tid =e.tid";
+        ob["O"]="Q";
+        ob["C"]="mday,mspan,tname";
+        ob["W"]="e.csts!='D' and  t.tsts!='D' order by tname,mday";
+        asyncommunicate(ob,function(data){
+                        var list=JSON.parse(data);
+                        var all={};
+                        
+                        for(var i=0;i<list.length;i++){
+                        
+                        if(typeof all[list[i]["tname"]] == "undefined"){
+                        
+                        all[list[i]["tname"]]=[];
+                        
+                        for(var k=0;k<days.length;k++){
+                        all[list[i]["tname"]].push({"MDAY":days[k]["MDAY"],"MSPAN":0});
+                        }
+                        }
+                        
+                        for(var j=0;j<all[list[i]["tname"]].length;j++){
+                        
+                        if(all[list[i]["tname"]][j]["MDAY"]==list[i]["mday"]){
+                        
+                        all[list[i]["tname"]][j]["MSPAN"]=parseInt(list[i]["mspan"]);
+                        }
+                        
+                        }
+                        
+                        
+                        
+                        }//end list for
+                        
+                        console.log(all);
+                        
+                        var series=[];
+                        var lgd=[];
+                        var selectd={};
+                        
+                        for(var key in all){
+                        var obj={};
+                        selectd[key]=false;
+                        //if(!byApp()){//web 访问显示所有选择项
+                         lgd.push(key);
+                       // }
+                       
+                        obj.name=key;
+                        obj.type="line";
+                        obj.data=all[key].map(function(o){
+                                            return o["MSPAN"];});
+                        series.push(obj);
+                        
+                        
+                        }
+                        console.log(series);
+                        
+                        var  option = {
+                        title: {
+                        text: lanMap["TASKLINE"],
+                        subtext: lanMap["TASKLINEDES"],
+                        x: 'center',
+                        y:'bottom'
+                        },
+                        tooltip: {
+                        trigger: 'axis',
+                        axisPointer: {
+                        animation: false
+                        }
+                        },
+                        legend: {
+                        selected:selectd,
+                        data:lgd,
+                        top:'50',
+                        itemGap:5,
+                        itemHeight:10,
+                        x: 'right',
+                        //align:'left',
+                        //y:'bottom',
+                        orient:'vertical'
+                        
+                        },
+                        xAxis : [
+                                 {
+                                 type : 'category',
+                                 boundaryGap : false,
+                                 axisLine: {onZero: true},
+                                 data:days.map(function(o){ return o["MDAY"];})
+                                 }
+                                 ],
+                        yAxis : [
+                                 {
+                                 name : lanMap["MINUTE"],
+                                 type : 'value',
+                                 scale:  1
+                                 }
+                                 ],
+                        series :  series
+                        };
+                        
+                        xChart.setOption(option, true);
+                        
+                        
+                        });
+                        
+                        
+                        
+                        
+                        
+    }
+    
+    
+    
+    
+    
+    //create type
+    function taskline(){
+        
+        var obj={};
+        obj["Class"]="CommonDataEngine";
+        obj["O"]="Q";
+        obj["C"]="sum(mspan),count(1),avg(mspan),tname";
+        obj["T"]=" event e left join task t on t.tid=e.tid";
+        obj["W"]=" t.tsts!='D'  and e.csts!='D' group by tname order by sum(mspan) desc";
+        
+        asyncommunicate(obj,function(data){
+                        // try{
+                        var tdata=JSON.parse(data);
+                        
+                        var tnames=tdata.map(function(tt){return tt["tname"];});
+                        var ttimes=tdata.map(function(o){
+                                             var d=o["sum(mspan)"]/1440;
+                                             return d.toFixed(2);});
+                        var avgs=tdata.map(function(o){
+                                           var d=o["avg(mspan)"]/60;
+                                           return d.toFixed(2);});
+                        //alert(data);
+                        option = {
+                        title: {
+                        top:60,
+                        text: lanMap["TASKDIST"],
+                        subtext: lanMap["TASKSTAT"],
+                        x: 'right',
+                        y:'bottom'
+                        },
+                        tooltip: {
+                        trigger: 'axis',
+                        axisPointer: {
+                        animation: false
+                        }
+                        },
+                        legend: {
+                        
+                        data:[lanMap["TOTALSPEND"],lanMap["AVGSPEND"]],
+                        x: 'right',
+                        //align:'left',
+                        y:'bottom'
+                       
+
+                        },
+                        
+                        xAxis : [
+                                 {
+                                 type : 'category',
+                                 boundaryGap : false,
+                                 axisLine: {onZero: true},
+                                 data:tnames
+                                 }
+                                 ],
+                        yAxis : [
+                                 {
+                                 name : '',//lanMap["TOTALSPEND"],
+                                 type : 'value',
+                                 scale:  0.1
+                                 }
+                                 ],
+                        series : [
+                                  {
+                                  name:lanMap["TOTALSPEND"],
+                                  type:'bar',
+                                  data:ttimes
+                                  },
+                                  {
+                                  name:lanMap["AVGSPEND"],
+                                  type:'line',
+                                  data:avgs
+                                  }
+                                  ]
+                        };
+                        
+                        
+                        
+                        
+                        
+                        tChart.setOption(option, true);
+                        
+                        //}catch(e){
+                        //alert(e);
+                        
+                        //}
+                        
+                        
+                        });
+                        
+    }
+
+    
+    
+    
+    
+    var swiper = new Swiper('.swiper-container', {
+                            pagination: '.swiper-pagination',
+                            paginationClickable: true,
+                            spaceBetween: 30,
+                            centeredSlides: true,
+                            autoplay: 2500,
+                            autoplayDisableOnInteraction: true
+                            });
+    
+        </script>
+    
+</html>

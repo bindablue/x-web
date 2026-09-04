@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html>
+<head>
+<!--        <meta name="format-detection" content="telephone=no">-->
+<meta charset="UTF-8">
+<meta name="msapplication-tap-highlight" content="no">
+<meta name="viewport"
+	content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+
+<title>目标概览</title>
+
+<link rel="stylesheet" type="text/css" href="../../css/common.css" />
+<link rel="stylesheet" type="text/css"
+	href="../../mod/bootstrap/css/bootstrap.min.css" />
+
+<script src="../../js/jquery.min.js"></script>
+
+<script src="../../mod/bootstrap/js/bootstrap.min.js"></script>
+
+<script src="../../js/common.js"></script>
+<script src="../../js/meta.js"></script>
+
+<style>
+input, select, textarea {
+	margin-top: 5px;
+	padding: 5px 0px;
+	line-height: 16px;
+	width: 100%;
+	-webkit-appearance: none;
+	border: 1px solid #87CEEB;
+}
+
+
+
+</style>
+<body>
+
+<div id="hh" >
+    <button type="button" class="btn btn-primary pull-left" onclick="dismiss();">
+        <span  class="glyphicon glyphicon-chevron-left"></span>
+    </button>
+     <input  id="sname" name="keyword" style="float:left;margin-left:10px;width:60%;height:32px;" placeholder="关键字" class="sname PH-KEYWORD" oninput="loadSubGoals($('#GID').val())"  required />
+ </div>
+	<div class="container">
+        <div style="margin-top:80px;padding:10px;"><a onclick="$('#lst').toggle()"  class="LBL-LSTSHOW">显示列表</a></div>
+        <table id="lst" class="table"   >
+       </table>
+        <div style="padding:10px;" ><a class="LBL-TREESHOW" onclick="$('#maxtrix').toggle()">显示层次</a>🌲🌲🌲🌲🌲🌲🌲🌲</div>
+       <table id="maxtrix" class="table" style="display:none;">
+       </table>
+       <input type="hidden" id="GID" value=""/>
+	</div>
+
+
+<div id="tmpl" style="display:none;">
+    
+    
+    <div class="panel #class#" style="margin-top:10px;word-wrap:break-word;">
+        <div class="panel-heading">
+            <h3 class="panel-title">#tname#
+                <a href="add.html?ID=#ID#">&gt;&gt;</a>
+                
+                <span  style="float:right;margin-right:10px;" class="glyphicon glyphicon-info-sign" onclick="webGotoRemote('#turl#');"></span>
+            </h3>
+        </div>
+        <div class="panel-body">
+            #ttime# #tcontent#
+        </div>
+    </div>
+    
+    
+    
+</div>
+
+
+
+</body>
+<script>
+    
+    
+        function refreshData(){
+           // firstcall();
+           
+           
+        }
+var days=0;
+var lvl=0;
+
+function loadParam(id){
+    
+    var obj={};
+    obj["Class"]="CommonDataEngine";
+    obj["O"]="Q";
+    obj["T"]="(select count(distinct psd) AS days,case when max(lvl) is null then 0  else max(lvl) end   AS lvl from activity where rid='"+id+"' and CSTS!='D' order by psd,lvl)";
+    obj["C"]="days,lvl";
+    obj["W"]=" 1=1 ";
+    document.getElementById("lst").innerHTML="加载目标。。。";
+    asyncommunicate(obj,function(data){
+                    var list=JSON.parse(data);
+                    var cols=parseInt(list[0]["lvl"])+1;
+                    var rows=parseInt(list[0]["days"]);
+                    var html="";
+                    for(var j=0;j<rows;j++){
+                      var tr="<tr>";
+                       for(var k=0;k<cols;k++){
+                         var td="<td id='"+j+"A"+k+"'>";
+                            //td+=j+"A"+k;
+                           td+="</td>";
+                        tr+=td;
+                        }
+                       tr+="</tr>";
+                        html+=tr;
+                    }
+                    
+                    
+                    $("#maxtrix").html(html);
+                     loadSubGoals(id);
+                    });
+    
+    
+}
+
+var colors={};
+function getColor(ID){
+    if(typeof colors[ID] !="undefined"){
+        return colors[ID];
+    }else{
+        var c ='#'+(Math.random()*0xffffff<<0).toString(16);
+
+          colors[ID]="<span style='background:"+c+";'>&nbsp;</span>";
+          return "<span style='background:"+c+";'>&nbsp;</span>";
+    }
+    
+}
+    function loadSubGoals(id){
+            var obj={};
+            var kw=$("#sname").val();
+            obj["Class"]="CommonDataEngine";
+            obj["O"]="Q";
+            obj["T"]="ACTIVITY";
+            obj["C"]="ID,AN,MNAME,PSD,LVL,PID";
+            obj["W"]=" RID='"+id+"' and CSTS!='D' and AN like '%"+kw+"%' order by PSD,AN ";
+             //document.getElementById("lst").innerHTML="加载后代目标。。。";
+            asyncommunicate(obj,function(data){
+                            try{
+                            
+                            var html=[];
+                            var list=JSON.parse(data);
+                            var tmpl='<tr id="e#ID#"><td>#PSD#</td><td>#AN#</td><td>#MNAME#</td><td><a href="add.html?ID=#ID#">&gt;&gt;</a></td><td><a href="send.html?ID=#ID#">发送</a></td></tr>';
+                            var ddd="2017";
+                            var rrr=-1;
+                            for(var i=0;i<list.length;i++){
+                                    var record=tmpl;
+                                for(var key in list[i]){
+                                    var regex=new RegExp("#"+key+"#","gi");
+                                    record=record.replace(regex,list[i][key]);
+                                }
+                            
+                                if(ddd!=list[i]["PSD"]){
+                                    rrr+=1;
+                                    ddd=list[i]["PSD"];
+                                    $("#"+rrr+"A0").html(ddd);
+                                }
+                            
+                           
+                           
+                               console.log("id:"+rrr+"A"+list[i]["LVL"]);
+                             //不显示第一个
+                               var an=list[i]["AN"];
+                                if(!byApp()){
+                                an="<a href='add.html?ID="+list[i]["ID"]+"'>"+an+"</a>";
+                                }
+                               $("#"+rrr+"A"+(parseInt(list[i]["LVL"])-1)).prepend(getColor(list[i]["PID"])
+                                                                                   +an+getColor(list[i]["ID"])+"<br/>");
+                            
+                                html.push(record);
+
+                            
+                            }
+                            if(list.length>0){
+                                //document.getElementById("events").innerHTML+=html.join("");
+                                document.getElementById("lst").innerHTML=html.join("");
+                            
+                            }else{
+                               // $("#lst").html("无数据<a onclick=\"loadSubGoals();\">点击刷新</a>");
+                            }
+                            
+                            }catch(e){
+                            console.log(e);
+                            }
+                            });
+
+        }
+        
+        
+        
+        
+    
+    function firstcall(){
+        
+        //if(byApp()){
+       // $("#lst").html("<a onclick=\"loadSubGoals();\">点击刷新</a>")
+        // }
+        
+        var obj=GetRequest();
+        
+        var rid="";
+        if(obj){
+            rid=obj["ID"];
+            $("#GID").val(rid);
+        }
+
+
+        if(rid){
+            
+            setTimeout(function(){
+                       loadParam(rid);
+                      
+                       
+                       },100);
+                      
+        }
+        
+        
+    }
+
+
+    
+     </script>
+
+</html>

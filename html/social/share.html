@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        
+        <!--        <meta name="format-detection" content="telephone=no">-->
+        <meta charset="UTF-8">
+            <meta name="msapplication-tap-highlight" content="no">
+                <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+                    <link rel="stylesheet" type="text/css" href="../../mod/bootstrap/css/bootstrap.min.css"/>
+                    
+                    <title>能力发展指数分享</title>
+                    
+                     <script src="../../js/jquery.min.js"></script>
+<!-- 微信只支持备案的域名-->
+                      
+                       
+                        
+                        <script>
+                            function GetRequest() {
+                                var url = location.search; //获取url中"?"符后的字串
+                                var theRequest = new Object();
+                                if (url.indexOf("?") != -1) {
+                                    var str = url.substr(1);
+                                    strs = str.split("&");
+                                    for(var i = 0; i < strs.length; i ++) {
+                                        theRequest[strs[i].split("=")[0]]=unescape(strs[i].split("=")[1]);
+                                    }
+                                }
+                                return theRequest;
+                            }
+                        
+                        
+                        
+                   
+                            var nologin=true;
+                            $(function(){firstcall();});
+                            function firstcall(){
+                                
+                                loadIndex();
+                                //taskline();
+                            }
+                        
+                        
+                            </script>
+                        <style>
+                            
+                            </style>
+                        </head>
+    <body>
+        
+        <div class="container  text-center"  >
+            
+            
+           
+          
+            
+            
+            
+            
+            <div  style="height:auto;width:100%;text-align:center;padding:2%;">
+                 <span>数据来源：http://dadadida.cn </span>
+              
+                <div id="radar"></div>
+                <a class="btn-success btn pull-center btn-block" style="margin-top:20px;"
+                    href="https://itunes.apple.com/cn/app/ji-xian/id1190108058?mt=8">我也要</a>
+            </div>
+            <table class="table" id="tcnt"></table>
+            
+        </div>
+        
+    </body>
+    
+    <script>
+        
+        function getTmpl(){
+            
+            return "<tr><td>#LOC#</td><td>#CNT#</td></tr>";
+        }
+    
+        
+        //select sum(mspan),ttype,mday from task t left join event e  on  t.tid=e.tid where csts!='D' and tsts!='D' group by ttype,mday order by mday
+      
+        function loadIndex(){
+            
+                        var data=GetRequest()["RESULT"];
+                        var src=decodeURI(data)
+                        console.log(decodeURI(data));
+                        var img="<img src='../../temp/"+src+"' width='100%;' height='auto'/>";
+                       
+                        $("#radar").html(img);
+        }
+    
+        </script>
+    
+</html>

@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html>
+    <head>
+       <meta name="format-detection" content="telephone=no">
+        <meta charset="UTF-8"> 
+        <meta name="msapplication-tap-highlight" content="no">
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+       
+        <title>目标列表</title>
+        <link rel="stylesheet" type="text/css" href="../../css/common.css"/>
+
+        <link rel="stylesheet" type="text/css" href="../../mod/bootstrap/css/bootstrap.min.css"/>
+        <script src="../../js/jquery.min.js"></script>
+        <script src="../../js/common.js"></script>
+        <style>
+            div.progress{
+                position:relative;
+                top:8px;
+                left:0px;
+                
+            }
+        .badge{
+            font-size:8px;
+        }
+        .media{
+            border-bottom:1px #EEE solid;
+            padding-bottom:20px ;
+        }
+        .txt-content{
+            margin:3px 0px;
+        }
+        pre{
+            background:#FFF;
+            border:0px;
+        }
+        
+        </style>
+        <script>
+          
+          function firstcall(){
+               loadTask();
+          }
+        
+        
+        
+            function getTmpl(){
+                var tmpl="<tr><td  onclick=\"goUpdate('#ID#');\" style=''>#AN#</td>"+
+                "<td onclick=\"overview('#ID#');\"> <div class=\"progress\" style=\"width:80%px;height:15px;\"></div></td><td><a style=\"width:20px;\" href=\"send.html?ID=#ID#\">"+lanMap["SEND"]+"</a></td>"
+                +"</tr>";
+                tmpl='<div class="panel panel-default " ><div  class="panel-body"><h5>#PER#%  #AN# <a   href="send.html?ID=#ID#"  >发送</a></h5><p> <span class="badge badge-sm alert-warning  ">#PSD#~#PFD#</span><span class="badge alert-warning alert-sm  "> #PE#H</span> <div class="progress pull-center" style="width:70%;height:8px;"><div class="progress-bar" role="progressbar" aria-valuenow="#AE#" aria-valuemin="0" aria-valuemax="#PE#" style="width:#PER#%;" ></div></div><span class="badge alert-success alert-sm  ">#ASD#~#AFD#</span><span class="badge alert-success alert-sm  " > #AE#H</span> </p><div><a class="pull-left btn btn-warning btn-xs" href="#" onclick="goUpdate(\'#ID#\');" role="button">编辑</a><a class="btn btn-success btn-xs pull-right" href="#" onclick="overview(\'#ID#\');" role="button">详情</a></div></div></div>';
+                var line = [];
+                //glyphicon glyphicon-edit
+                line.push('<div class="media  " >');
+                line.push('<div class="">');
+                line.push(' <h4 class="media-heading" onclick="goUpdate(\'#ID#\');" ><span class="title"> #AN#</span></h4>');
+                line.push(' <div class="progress pull-center" style="width:100%;"><div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="#AE#" aria-valuemin="0" aria-valuemax="#PE#" style="width:#PER#%;" ></div></div><span class="badge alert-success">#PER#%</span><span class="badge badge-sm alert-warning  ">#PSD#~#PFD#:#PE#H;</span> <span class="badge alert-success alert-sm  ">#ASD#~#AFD# : #AE#H;</span><div class="txt-content  " ><pre>#AD# </pre></div> </div>');
+                line.push('<div class="media-footer"  >');
+                line.push(' <a  class="up" href="send.html?ID=#ID#"  ><span class="glyphicon glyphicon-send"></span></a><div class="pull-right" onclick="goUpdate(\'#ID#\');"><a ><span class="glyphicon glyphicon-edit"></span></a> </div>');
+                line.push('</div>');
+                line.push('</div>');
+                
+                return line.join("");
+                
+                
+                
+            }
+        
+        function refreshData(){
+            loadTask();
+            
+        }
+         var cnt=0;
+        function callback(data){
+            try{
+                var cl="primary,success,info,warning,danger";
+                var classes=cl.split(",");
+                var list=JSON.parse(data);
+                var html="";
+                var tmpl=getTmpl();
+                var regex;
+                for (var i in list){
+                    var one=tmpl;
+                    for(var key in list[i]){
+                        regex=new RegExp("#"+key+"#","gi");
+                        one=one.replace(regex,list[i][key]);
+                        
+                    }
+                    var percent=list[i]["AE"]*100.0/list[i]["PE"];
+                     regex=new RegExp("#PER#","gi");
+                    one=one.replace(regex,percent.toFixed(2));
+                    html+=one;
+                    
+                }
+                if(cnt!=list.length){
+                    if($("#refcnt").length==0){
+                        
+                        $("#tips").html(lanMap["SEARCHED"]+" "+(list.length)+" "+lanMap["RECORD"]);
+                    }
+                    cnt=list.length;
+                    setTimeout(function(){
+                               $("#tips").html('');//$("#refcnt").remove();
+                               },1000);
+                }
+                
+                $("#response").html(html);
+                
+            }catch(ex){
+                
+                $("#response").html(ex);
+            }
+            
+
+        }
+        function del(tid){
+            
+            var obj={"tid":tid};
+            obj["Class"]="TaskDataEngine";
+            obj["op"]="del";
+            communicate(obj,function(data){
+                        alert(data);
+                        loadTask()
+                        });
+        }
+        
+        function loadTask(){
+            var obj=getFormJson("#formid");
+            var w="";
+            if($("#csts").val()=="1"){
+                w="AND CSTS IN ('O','C','R')";
+            }else{
+                w="AND CSTS IN ('A')";
+            }
+            obj["W"]+=w;
+            if($("#sname").val()){
+               obj["W"]=obj["W"]+" AND AN like '%"+$("#sname").val()+"%'  order by AN";
+            }else{
+                obj["W"]=obj["W"]+"  order by AN";
+            }
+            obj["Class"]="CommonDataEngine";
+            // obj["keyword"]=$("#sname").val();
+            communicate(obj,callback);
+        }
+        
+        function archive(){
+            if($("#csts").val()=="1"){//show
+                
+                $("#arc").removeClass("glyphicon glyphicon-folder-close");
+                $("#arc").addClass("glyphicon glyphicon-folder-open");
+                $("#csts").val("0");
+
+            }else{
+                $("#arc").removeClass("glyphicon glyphicon-folder-open");
+                $("#arc").addClass("glyphicon glyphicon-folder-close");
+                 $("#csts").val("1");
+            }
+            loadTask();
+            
+        }
+        
+        
+     
+        
+        </script>
+        
+        <style>
+            #hh btn{
+                background:#FFFF00;
+                
+            }
+            
+        
+            </style>
+       
+    </head>
+    <body>
+        
+      
+
+        
+        
+          <div class="container"  >
+              
+              
+              
+              <div id="hh" >
+                  
+                      <button type="button" class=" btn btn-primary pull-left" style="float:left;width:50px;margin-bottom:5px;"  onclick="dismiss();">
+                          <span  class="glyphicon glyphicon-chevron-left"></span>
+                      </button>
+                      
+                
+                  <input  id="sname" name="keyword" style="float:left;margin-left:10px;height:32px;width:60%;" placeholder="关键字" class="sname form-control PH-KEYWORD" oninput="loadTask()" required />
+                    <button  type="button" class="btn btn-primary"  onclick="archive()" >
+                        <span  id="arc" class="glyphicon glyphicon-folder-close"    ></span> </button>
+                  
+                   
+                    
+              </div>
+        <form id="formid">
+       <input type="hidden" name="C" value="ID,AN,AD,MNAME,AE,PE,PSD,PFD,ASD,AFD"/>
+        <input type="hidden" name="O" value="Q"/>
+        <input type="hidden" name="T" value="ACTIVITY"/>
+        <input type="hidden" name="W" value="PID=''"/>
+       </form>
+        <input id="csts" type="hidden" value="1"/>
+         <a id="tips" style="float:left;width:100%;text-align:center;margin-top:70px;"></a>
+    <div    id="response" style="width:100%;margin-top:90px;">
+        
+
+    </div>
+ 
+     
+     
+      <script>
+          
+          function overview(tid){
+              var dir="html/goal";
+              var page="overview.html?ID="+tid;
+              webGotoLocal(dir,page);
+          }
+           
+      function goUpdate(tid){
+          var dir="html/goal";
+          var page="add.html?ID="+tid+"&LVL=1";
+          webGotoLocal(dir,page);
+        }
+      function goDetail(tid,turl){
+          
+          if(turl){
+          webGotoRemote(turl);
+           }else {
+        }
+      }
+      
+      </script>
+        </div>
+
+    </body>
+</html>

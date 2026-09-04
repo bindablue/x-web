@@ -1,0 +1,1 @@
+function communicate(n,i){window.plugins.DataChannel.communicate(function(n){i&&i(n)},function(n){alert(n)},JSON.stringify(n))}function asyncommunicate(n,i){window.plugins.DataChannel.asyncommunicate(function(n){i&&i(n)},function(n){alert(n)},JSON.stringify(n))}setTimeout(function(){"undefined"!=typeof firstcall&&firstcall()},100);

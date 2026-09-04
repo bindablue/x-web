@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        
+        <!--        <meta name="format-detection" content="telephone=no">-->
+        <meta charset="UTF-8">
+            <meta name="msapplication-tap-highlight" content="no">
+                <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+                    
+                    <title>x0.16</title>
+                    <link rel="stylesheet" type="text/css" href="../../mod/swiper/swiper.min.css">
+                        <link rel="stylesheet" type="text/css" href="../../css/common.css"/>
+                        <link rel="stylesheet" type="text/css" href="../../mod/bootstrap/css/bootstrap.min.css"/>
+                        <script src="../../mod/swiper/swiper.min.js"></script>
+                        <script src="../../js/jquery.min.js"></script>
+                        <script src="../../js/common.js"></script>
+                        <script src="../../js/meta.js"></script>
+                        <script src="../../js/echarts.min.js"></script>
+                        
+                        <script>
+                            var handler
+                            function firstcall(){
+                                loadTask();
+                               // loop();
+                                loadUnFull();
+                             
+                            }
+                        
+                        var tt=0;
+                        var direct=-1;
+                        
+                        function loop(){
+                            handler=setInterval(function(){
+                                                
+                                                
+                                                
+                                                if(direct<0){
+                                                   last();
+                                                   tt++;
+                                               
+                                                }
+                                                
+                                                if(direct>0){
+                                                 next();
+                                                 tt++;
+                                                }
+                                                
+                                                if(tt>=5){
+                                                 direct*=-1;
+                                                 tt=0;
+                                                }
+                                                
+                                                
+                                                
+                                                
+                                                
+                                                
+                                                },1500);
+                        }
+                        
+                        function loadData(){
+                            console.log("开始更新。。。");
+                            
+                        }
+                        
+                        function refreshData(){
+                            setTimeout(function(){loadTask();},500);
+                        }
+                        
+                        
+                            </script>
+                        <style>
+                            
+                        
+                        
+                            </style>
+                        </head>
+    <body>
+        <div >
+            <nav  style="padding-top:30px;padding-bottom:0px;" >
+                
+                
+            </nav>
+            
+            
+            
+            <div class="container">
+                <div id="hh" style="">
+                <button type="button" class="btn btn-back btn-primary pull-left" onclick="dismiss();" >
+                    <span  class="glyphicon glyphicon-chevron-left"></span>
+                </button>
+                <div style="padding:8px;" id="tips" > </div>
+                 <input  id="tday" name="tday" style="text-align:center;padding:1px;margin-top:10px; margin-bottom:10px;" onblur="loadTask(this.value)" placeholder="" class="name" value="2016-01-01" type="date" required />
+                
+                
+                
+               
+                     
+                <div style="float:left;width:15%; height:150px;padding-top:70px;" onclick="last();"><a > <span class="glyphicon glyphicon-backward" > </span></a>
+                </div>
+                <div id="echart"  style="height:150px;width:70%;float:left;"></div>
+                
+                 <div style="width:15%;height:150px;padding-top:70px;"  onclick="next();" class="pull-right"><a  ><span class="glyphicon glyphicon-forward"> </span></a></div>
+                 
+                 </div>
+                <table class="table" style="margin-top:240px;z-index:-1;"  id="lst">
+                    
+               </table>
+                
+                
+                
+                
+                
+                
+                
+            </div>
+            
+            
+            
+           
+        </div>
+        
+        
+        
+        
+    </body>
+    
+    <script>
+        
+        
+        function last(){
+            var tday=addDays($("#tday").val(),-1);
+            $("#tday").val(tday);
+            loadTask(tday);
+            
+            
+        }
+    
+    function loadUnFull(){
+        
+        
+         var obj={};
+         obj["Class"]="CommonDataEngine";
+         obj["C"]="span,mday"
+         obj["T"]="(select sum(mspan) as span,mday from event e left join task t on e.tid=t.tid  where csts!='D' and tsts!='D' group by mday having sum(mspan)!=1440 ) a ";
+         obj["O"]="Q";
+         obj["W"]=" 1=1 ";
+       
+         asyncommunicate(obj,function(data){
+                         console.log("未打满");
+                         console.log(data);
+                         var list=JSON.parse(data);
+                         if(list.length==0){
+                         return;
+                         }
+                        // alert(JSON.stringify(data));
+                          var tips="你有"+list[0].mday+"等"+list.length+"天未打满卡！"
+                         $("#tips").html(tips);
+                         
+                         });
+                         
+        
+    }
+    
+     function next(){
+        var tday=addDays($("#tday").val(),1);
+        $("#tday").val(tday);
+        loadTask(tday);
+
+
+    }
+    
+    function loadTask(tday){
+        var obj={};
+       
+        var today=getToday8(0);
+        if(tday){
+            today=tday;
+        }
+        today=$("#tday").val();
+        
+        displayChart(today);
+        
+        obj["Class"]="CommonDataEngine";
+        obj["C"]="e.tid,ttype,tname,mday,mspan,memo"
+        obj["T"]="EVENT e left join task t on t.tid=e.tid";
+        obj["O"]="Q";
+        obj["W"]=" csts!='D' and t.tsts!='D' AND MDAY ='"+today+"' order by ttype";
+        var types=tasktype.map(function(o){return o.v;});
+        asyncommunicate(obj,function(data){
+                        
+                        try{
+                        var list=JSON.parse(data);
+                       
+                        var one=getTmpl();
+                        var html=[];
+                        var total=0;
+                        for(var i=0;i<list.length;i++){
+                           var one=getTmpl();
+                            for(var key in list[i]){
+                        
+                                var regex=new RegExp("#"+key+"#","gi");
+                                if(key=="ttype"){
+                                one=one.replace(regex, types[parseInt(list[i][key])-1]);
+                                }else{
+                                 one=one.replace(regex,list[i][key]);
+                                }
+                        
+                            }
+                            total+=parseInt(list[i]["mspan"]);
+                            html.push(one);
+                        }
+                        var one=getTmpl();
+                         one=one.replace("#ttype#","");
+                        one=one.replace("#tname#",lanMap["LOGGED"]+":");
+                        one=one.replace("#mspan#",total);
+                         one=one.replace("#CLASS#","success");
+                        
+                        html.unshift(one);
+                        one=getTmpl();
+                        one=one.replace("#CLASS#","warning");
+                        one=one.replace("#ttype#","");
+                        one=one.replace("#tname#",lanMap["NOLOG"]+":");
+                        one=one.replace("#mspan#",24*60-total);
+                        html.unshift(one);
+                        
+                        $("#lst").html(html.join(""));
+                        
+                        
+                        
+                        }catch(e){
+                        
+                        }
+                        });
+                        
+                                                        
+                                                        
+    }
+
+    function getTmpl(){
+        
+        return "<tr  class='#CLASS#' onclick='goDetail(\"#e.tid#\",false)'><td>#ttype#</td> <td> #tname#</td><td>#mspan#</td> </tr>";//<td> #mday# </td><td>#memo#</td>
+        
+    }
+    function goDetail(tid,turl){
+        
+        if(turl){
+            webGotoRemote(turl);
+        }else {
+            var dir="html/plan";
+            var page="add.html?tid="+tid+"&dat="+$("#tday").val();
+            webGotoLocal(dir,page);
+        }
+    }
+    
+   
+    document.getElementById('tday').valueAsDate = new Date();
+    
+    
+</script>
+     <script src="../../js/task.js"></script>
+</html>

@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html style="height: 100%">
+    <head>
+        <meta charset="utf-8">
+            </head>
+    
+        <link rel="stylesheet" type="text/css" href="../../mod/bootstrap/css/bootstrap.min.css"/>
+       <link rel="stylesheet" type="text/css" href="../../css/common.css"/>
+
+        <script src="../../js/jquery.min.js"></script>
+         <script src="../../js/common.js"></script>
+               <script type="text/javascript" src="../../mod/echarts/echarts-all-3.js"></script>
+        <script type="text/javascript" src="../../mod/echarts/extension/dataTool.min.js"></script>
+        <script type="text/javascript" src="../../mod/echarts/map/js/china.js"></script>
+        <script type="text/javascript" src="../../mod/echarts/map/js/world.js"></script>
+        <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=ZUONbpqGBsYGXNIYHicvbAbM"></script>
+        <script type="text/javascript" src="../../mod/echarts/extension/bmap.min.js"></script>
+        <body style="height: 100%; margin: 0">
+            <div id="hh" style="margin-bottom:50px;" >
+                <button type="button" class="btn btn-primary pull-left" onclick="window.history.go(-1);">
+                    <span  class="glyphicon glyphicon-chevron-left"></span>
+                </button>
+                <button type="button" class="btn btn-primary " onclick="zoom(true)">
+                    <span class="glyphicon glyphicon-resize-full"  ></span>
+                </button>
+                <button type="button" class="btn btn-primary " onclick="zoom(false)">
+                    <span   class="glyphicon glyphicon-resize-small"></span>
+                </button>
+                <button type="button" class="btn  pull-right"  >
+                 <a href="events.html" class="LBL-MANAGE" style="padding-bottom: 10px;" >管理</a>
+                </button>
+            </div>
+            <div id="container" style="margin-top:90px;height:600px;"></div>
+       </body>
+       
+       <script type="text/javascript">
+            
+            var nologin=true;
+
+       
+            function firstcall(){
+                
+                var ob={};
+                ob["Class"]="CommonDataEngine";
+                ob["T"]="(SELECT strftime('%Y%m%d',ctime,'"+timefixed+"') AS DTE,strftime('%H:%M:%S',ctime,'"+timefixed+"') AS TIM,STREET,LNG,LAT FROM LOCATION WHERE csts!='D' AND 1=1 ORDER BY CTIME DESC)";
+                ob["O"]="Q";
+                ob["C"]="DTE,TIM,STREET,LNG,LAT";
+                ob["W"]="1=1";
+                asyncommunicate(ob,function(data){
+                               
+                                //console.log(data);
+                                showChart(data);
+                                });
+                                
+                                
+            }
+        
+            var dom = document.getElementById("container");
+            var myChart = echarts.init(dom);
+            var app = {};
+            option = null;
+            
+            var num=5;
+            function zoom(ok){
+                
+                if(ok){
+                    if(num>20){
+                        return ;
+                    }
+                    num++;
+                }else{
+                    if(num<2){
+                        return;
+                    }
+                    num--;
+                    
+                }
+                
+                myChart.setOption({bmap:{zoom:num}});
+            }
+            function showChart(dd){
+                var list=JSON.parse(dd);
+                
+                var all={};
+                var data=[];
+                var center=[];
+                var geoCoordMap={};
+                
+                for(var i=0;i<list.length;i++){
+                    
+                    if(typeof all[list[i]["DTE"]] == "undefined"){
+                        
+                        all[list[i]["DTE"]]=[];
+                       // all[list[i]["CTIME"]]]["value"]=[];
+                    
+                        
+                        
+                    }
+                    
+                    var obj={"name":list[i]["TIM"]+" "+list[i]["STREET"],"value":[parseFloat(list[i]["LNG"]),parseFloat(list[i]["LAT"]),100]};
+                    
+                    
+                    all[list[i]["DTE"]].push(obj);
+                    
+                    
+                    
+                   // data.push({name:list[i]["STREET"],value:20});
+                    //geoCoordMap[list[i]["STREET"]]=[list[i]["LNG"],list[i]["LAT"]];
+                    if(i==0){
+                        center.push(list[i]["LNG"]);
+                        center.push(list[i]["LAT"]);
+                    }
+                }
+                
+                var series=[];
+                var lgd=[];
+                var idx=0;
+                var len=0;
+                for(var k in all){
+                    len++;
+                }
+                
+                var hStep = 300 / (len - 1);
+                
+                for (var key in all){
+                    idx++;
+                    var c ='#'+(Math.random()*0xffffff<<0).toString(16);
+                    
+                    var lines =  [{"lineStyle":{
+                                  normal: {
+                                    color: echarts.color.modifyHSL('#5A94DF', Math.round(hStep * idx))
+                                  }
+                                  },"coords":all[key].map(function(o){
+                                                         var v=o["value"];
+                                                         v.pop();
+                                                         return v;
+                                                         })}];
+                    console.log(JSON.stringify(lines));
+                    
+                     
+                    lgd.push(key);
+                   var line={
+                        name: key,
+                        type: 'lines',//'effectScatter',//'scatter',
+                        coordinateSystem: 'bmap',
+                        data: lines,
+                        polyline: true,
+                        lineStyle: {
+                            normal: {
+                                //color: c,
+                                opacity: 0.6,
+                                width: 3
+                            }
+                        },
+                        progressiveThreshold: 500,
+                        progressive: 200,
+                        
+                        effect: {
+                            constantSpeed: 20,
+                            show: true,
+                            trailLength: 0.1,
+                            symbolSize: 1.5
+                        },
+                        zlevel: 1
+                   };
+                   
+                   var one={
+                       name: key,
+                       type:'effectScatter',//'scatter',
+                       coordinateSystem: 'bmap',
+                       data: all[key],
+                       symbolSize: function (val) {
+                           return 1;//val[2] / 10;
+                       },
+                       
+                       label: {
+                        normal: {
+                        formatter: '{b}',
+                        position: 'right',
+                        show: false
+                        },
+                        emphasis: {
+                        show: true
+                        }
+                        },
+                       rippleEffect:{
+                           period:4,
+                           scale:10,
+                           brushType:'stroke'
+                           
+                       },
+
+                      itemStyle: {
+                        normal: {
+                        color: c
+                        }
+                        }
+                   };
+                   
+                   series.push(one);
+                   
+                }
+                
+                            option = {
+                                title: {
+                                    text: '我的足迹 - 百度地图',
+                                    subtext: 'data from X app',
+                                    sublink: 'http://dadadida.cn',
+                                    left: 'center'
+                                },
+                                tooltip : {
+                                    trigger: 'item'
+                                },
+                                legend: {
+                                    
+                                    data:lgd,
+                                    top:'50',
+                                    //itemGap:5,
+                                    //itemHeight:10,
+                                    x: 'right',
+                                    //align:'left',
+                                    //y:'bottom',
+                                    orient:'vertical'
+                                },
+                                bmap: {
+                                    center: center,//[104.114129, 37.550339],
+                                    zoom: num,//15,//5,
+                                    roam: true,
+                                    mapStyle:dayMap
+                                },
+                                series :series
+                          
+                            };;
+                            if (option && typeof option === "object") {
+                                myChart.setOption(option, true);
+                            }
+
+                
+            }
+       
+       
+       var dayMap= {
+           styleJson: [{
+                       'featureType': 'water',
+                       'elementType': 'all',
+                       'stylers': {
+                       'color': '#d1d1d1'
+                       }
+                       }, {
+                       'featureType': 'land',
+                       'elementType': 'all',
+                       'stylers': {
+                       'color': '#f3f3f3'
+                       }
+                       }, {
+                       'featureType': 'railway',
+                       'elementType': 'all',
+                       'stylers': {
+                       'visibility': 'off'
+                       }
+                       }, {
+                       'featureType': 'highway',
+                       'elementType': 'all',
+                       'stylers': {
+                       'color': '#fdfdfd'
+                       }
+                       }, {
+                       'featureType': 'highway',
+                       'elementType': 'labels',
+                       'stylers': {
+                       'visibility': 'off'
+                       }
+                       }, {
+                       'featureType': 'arterial',
+                       'elementType': 'geometry',
+                       'stylers': {
+                       'color': '#fefefe'
+                       }
+                       }, {
+                       'featureType': 'arterial',
+                       'elementType': 'geometry.fill',
+                       'stylers': {
+                       'color': '#fefefe'
+                       }
+                       }, {
+                       'featureType': 'poi',
+                       'elementType': 'all',
+                       'stylers': {
+                       'visibility': 'off'
+                       }
+                       }, {
+                       'featureType': 'green',
+                       'elementType': 'all',
+                       'stylers': {
+                       'visibility': 'off'
+                       }
+                       }, {
+                       'featureType': 'subway',
+                       'elementType': 'all',
+                       'stylers': {
+                       'visibility': 'off'
+                       }
+                       }, {
+                       'featureType': 'manmade',
+                       'elementType': 'all',
+                       'stylers': {
+                       'color': '#d1d1d1'
+                       }
+                       }, {
+                       'featureType': 'local',
+                       'elementType': 'all',
+                       'stylers': {
+                       'color': '#d1d1d1'
+                       }
+                       }, {
+                       'featureType': 'arterial',
+                       'elementType': 'labels',
+                       'stylers': {
+                       'visibility': 'off'
+                       }
+                       }, {
+                       'featureType': 'boundary',
+                       'elementType': 'all',
+                       'stylers': {
+                       'color': '#fefefe'
+                       }
+                       }, {
+                       'featureType': 'building',
+                       'elementType': 'all',
+                       'stylers': {
+                       'color': '#d1d1d1'
+                       }
+                       }, {
+                       'featureType': 'label',
+                       'elementType': 'labels.text.fill',
+                       'stylers': {
+                       'color': '#999999'
+                       }
+                       }]
+       };
+       
+       var nightMap= {
+           'styleJson': [
+                         {
+                         'featureType': 'water',
+                         'elementType': 'all',
+                         'stylers': {
+                         'color': '#031628'
+                         }
+                         },
+                         {
+                         'featureType': 'land',
+                         'elementType': 'geometry',
+                         'stylers': {
+                         'color': '#000102'
+                         }
+                         },
+                         {
+                         'featureType': 'highway',
+                         'elementType': 'all',
+                         'stylers': {
+                         'visibility': 'off'
+                         }
+                         },
+                         {
+                         'featureType': 'arterial',
+                         'elementType': 'geometry.fill',
+                         'stylers': {
+                         'color': '#000000'
+                         }
+                         },
+                         {
+                         'featureType': 'arterial',
+                         'elementType': 'geometry.stroke',
+                         'stylers': {
+                         'color': '#0b3d51'
+                         }
+                         },
+                         {
+                         'featureType': 'local',
+                         'elementType': 'geometry',
+                         'stylers': {
+                         'color': '#000000'
+                         }
+                         },
+                         {
+                         'featureType': 'railway',
+                         'elementType': 'geometry.fill',
+                         'stylers': {
+                         'color': '#000000'
+                         }
+                         },
+                         {
+                         'featureType': 'railway',
+                         'elementType': 'geometry.stroke',
+                         'stylers': {
+                         'color': '#08304b'
+                         }
+                         },
+                         {
+                         'featureType': 'subway',
+                         'elementType': 'geometry',
+                         'stylers': {
+                         'lightness': -70
+                         }
+                         },
+                         {
+                         'featureType': 'building',
+                         'elementType': 'geometry.fill',
+                         'stylers': {
+                         'color': '#000000'
+                         }
+                         },
+                         {
+                         'featureType': 'all',
+                         'elementType': 'labels.text.fill',
+                         'stylers': {
+                         'color': '#857f7f'
+                         }
+                         },
+                         {
+                         'featureType': 'all',
+                         'elementType': 'labels.text.stroke',
+                         'stylers': {
+                         'color': '#000000'
+                         }
+                         },
+                         {
+                         'featureType': 'building',
+                         'elementType': 'geometry',
+                         'stylers': {
+                         'color': '#022338'
+                         }
+                         },
+                         {
+                         'featureType': 'green',
+                         'elementType': 'geometry',
+                         'stylers': {
+                         'color': '#062032'
+                         }
+                         },
+                         {
+                         'featureType': 'boundary',
+                         'elementType': 'all',
+                         'stylers': {
+                         'color': '#465b6c'
+                         }
+                         },
+                         {
+                         'featureType': 'manmade',
+                         'elementType': 'all',
+                         'stylers': {
+                         'color': '#022338'
+                         }
+                         },
+                         {
+                         'featureType': 'label',
+                         'elementType': 'all',
+                         'stylers': {
+                         'visibility': 'off'
+                         }
+                         }
+                         ]
+       };
+                   </script>
+   
+</html>

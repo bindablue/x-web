@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        
+        <!--        <meta name="format-detection" content="telephone=no">-->
+        <meta charset="UTF-8">
+            <meta name="msapplication-tap-highlight" content="no">
+                <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+                    
+                    <title>x1.0</title>
+                         <link rel="stylesheet" type="text/css" href="../mod/bootstrap/css/bootstrap.min.css"/>
+                        <link rel="stylesheet" type="text/css" href="../css/common.css"/>
+                        <script src="../js/jquery.min.js"></script>
+                        <script src="../js/common.js"></script>
+                        <script src="../js/echarts.min.js"></script>
+                        <script src="../mod/bootstrap/js/bootstrap.min.js"></script>
+                        <script>
+                            //var nologin=true;
+                            function firstcall(){
+                                
+                                taskline();
+                            }
+                        
+                        function loadData(){
+                            
+                            
+                            console.log("开始更新。。。");
+                            
+                            
+                        }
+                        
+                        function refreshData(){
+                            setTimeout(function(){firstcall();},500);
+                        }
+                        
+                        function  scroll(id) {
+                            var scroll_offset =$(id).offset(); //得到pos这个div层的offset，包含两个值，top和left
+                            $("body,html").animate({
+                                                   scrollTop:scroll_offset.top //让body的scrollTop等于pos的top，就实现了滚动
+                                                   },0);
+                        }
+                        
+                            </script>
+                        <style>
+                            
+                            </style>
+                        </head>
+    <body>
+        <div id="hh" style="margin-bottom:50px;" >
+            <button type="button" class="btn btn-primary pull-left" onclick="window.history.go(-1);">
+                <span style="padding-bottom: 10px;">&lt;&lt;</span>
+            </button>
+             
+            
+        </div>
+        
+        <div class="container" style="height:80%;margin-top:60px;">
+            
+                               <form class="form-horizontal" id="qryForm" >
+              
+                 
+                   
+                <div class="form-group">
+               <label class="col-sm-2 control-label"  for="ttime"></label> 
+                <div class="col-sm-3">
+                    <input id="stime" name="StartDate"  class="form-control"   placeholder="执行时间" 
+                    type="date"/>  
+                     
+                </div>
+                <div class="col-sm-3">
+                    
+                     <input id="etime" name="EndDate"  class="form-control"   placeholder="执行时间" 
+                    type="date"/>  
+                </div>
+                    <div class="col-sm-2">
+                     <select class="form-control " name="history" onchange="showDays(this.value)"  >
+                      <option value="">全部</option> 
+                     <option value="-1">昨天</option> 
+                      <option value="-7">过去7天</option> 
+                       <option value="-15">过去15天</option> 
+                        <option value="-30">过去30天</option> 
+                    </select>  
+                    
+                </div>
+                <div class="col-sm-2">
+                 <button type="button" class=" btn btn-primary btn-default pull-right" onclick="showLines()"><span >查询</span></button>
+                  
+                </div>
+              </div>
+             
+             </form>
+            
+            
+            
+            
+            <div id="container" style="height:550px;width:100%;">
+                
+            </div>
+            <table class="table" id="tcnt"></table>
+            
+        </div>
+        
+    </body>
+    
+    <script>
+        
+        var nologin=true;
+        function showDays(days){
+      	     $("#stime").val(getToday8(days));
+       	 $("#etime").val(getToday8());
+      	  
+        }
+        function firstcall(){
+        	showDays(-7);
+        	showLines();
+        }
+        function condition(){
+        	   var where=" AND 1= 1";
+             if($("#stime").val()!=''){
+             	where+= " AND ctime>='"+$("#stime").val()+" 00:00:00'";
+             }
+             if($("#etime").val()!=''){
+             	where+= " AND ctime<='"+$("#etime").val()+" 23:59:59'";
+             }
+              return where;
+        }
+        function showLines(){
+            
+            var ob={};
+            ob["Class"]="CommonDataEngine";
+            ob["T"]="(SELECT DISTINCT strftime('%Y%m%d',ctime,'"+timefixed+"') AS DTE FROM LOG WHERE 1=1 "+condition()+" ORDER BY CTIME)";
+            ob["O"]="Q";
+            ob["db"]="db";
+            ob["dn"]="log.db";
+            ob["C"]="DTE";
+            ob["W"]="1=1";
+            asyncommunicate(ob,function(data){
+                            
+                            //console.log(data);
+                            showChart(JSON.parse(data));
+                            });
+                            
+                            
+        }
+    
+    var dom = document.getElementById("container");
+    var myChart = echarts.init(dom);
+    var app = {};
+    option = null;
+    
+    var num=5;
+    function zoom(ok){
+        
+        if(ok){
+            if(num>20){
+                return ;
+            }
+            num++;
+        }else{
+            if(num<2){
+                return;
+            }
+            num--;
+            
+        }
+        
+        myChart.setOption({bmap:{zoom:num}});
+    }
+    function showChart(days){
+        
+        var ob={};
+        ob["Class"]="CommonDataEngine";
+        ob["T"]="(SELECT COUNT(1) AS CNT,CASE WHEN m.CITY IS NULL OR CITY='' THEN '其他' ELSE CITY END  AS CITY,strftime('%Y%m%d',ctime,'"+timefixed+"') AS DTE FROM LOG l left join ip_map m on m.ip=l.tip  WHERE  1=1 "+condition()+" and m.city not like '%厦门%' GROUP BY  m.CITY,strftime('%Y%m%d',ctime,'"+timefixed+"') ORDER BY strftime('%Y%m%d',ctime,'"+timefixed+"') )";
+        ob["O"]="Q";
+        ob["db"]="db";
+        ob["dn"]="log.db";
+        ob["C"]="CITY,DTE,CNT";
+        ob["W"]="1=1";
+        
+        asyncommunicate(ob,function(data){
+                        var list=JSON.parse(data);
+                        var all={};
+                        
+                        for(var i=0;i<list.length;i++){
+                        
+                        if(typeof all[list[i]["CITY"]] == "undefined"){
+                        
+                         all[list[i]["CITY"]]=[];
+                        
+                        for(var k=0;k<days.length;k++){
+                        all[list[i]["CITY"]].push({"DTE":days[k]["DTE"],"CNT":0});
+                        }
+                        }
+                        
+                        for(var j=0;j<all[list[i]["CITY"]].length;j++){
+                        
+                        if(all[list[i]["CITY"]][j]["DTE"]==list[i]["DTE"]){
+                        
+                        all[list[i]["CITY"]][j]["CNT"]=parseInt(list[i]["CNT"]);
+                        }
+                        
+                        }
+                        
+                        
+                        
+                        }//end list for
+                        
+                        console.log(all);
+                        
+                        var series=[];
+                        var lgd=[];
+                        var selectd={};
+                        
+                        for(var key in all){
+                        var obj={};
+                        
+                        
+                       // selectd[key]=false;
+                        
+                        //if(!byApp()){//web 访问显示所有选择项
+                        lgd.push(key);
+                        // }
+                        
+                        obj.name=key;
+                        obj.type="line";
+                        obj.data=all[key].map(function(o){
+                                              return o["CNT"];});
+                        series.push(obj);
+                        
+                        
+                        }
+                        console.log(series);
+                        
+                        var  option = {
+                        title: {
+                        text: '',
+                        subtext: '',
+                        x: 'center'
+                        },
+                        tooltip: {
+                        trigger: 'axis',
+                        axisPointer: {
+                        animation: false
+                        }
+                        },
+                        legend: {
+                        selected:selectd,
+                        data:lgd,
+                        top:'50',
+                        itemGap:5,
+                        itemHeight:10,
+                        x: 'right',
+                        //align:'left',
+                        //y:'bottom',
+                        orient:'vertical'
+                        
+                        },
+                        xAxis : [
+                                 {
+                                 type : 'category',
+                                 boundaryGap : false,
+                                 axisLine: {onZero: true},
+                                 data:days.map(function(o){ return o["DTE"];})
+                                 }
+                                 ],
+                        yAxis : [
+                                 {
+                                 name : '次数',
+                                 type : 'value',
+                                 scale:  1
+                                 }
+                                 ],
+                        series :  series
+                        };
+                        
+                        myChart.setOption(option, true);
+                        
+                        
+                        });
+                        
+        
+    }
+    
+    
+    
+        </script>
+    
+</html>

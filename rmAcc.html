@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="format-detection" content="telephone=no">
+<meta charset="UTF-8">
+<meta name="msapplication-tap-highlight" content="no">
+<meta name="viewport"
+	content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+<meta name="keywords"
+	content="嗒嗒嘀嗒系统 时间管理 软件专家 微信群发软件 时间管理软件 dadadida  dadadida.cn Task Plan Log Goal Management Time Money Finance">
+<meta name="description"
+	content="嗒嗒嘀嗒系统 时间管理 软件专家 ！欢迎定制个性化服务软件： iOS app ，安卓app，微信小程序，微信公众号，网站，window软件 。请联系QQ客服【115-1590-110】 dadadida.cn dadadida  ">
+
+<title></title>
+
+
+ 
+<!-- AdminLTE Skins. Choose a skin from the css/skins
+       folder instead of downloading all of them to reduce the load. -->
+<link rel="stylesheet" href="mod/bootstrap/css/bootstrap.min.css">
+
+<script>
+    var isApp = true;
+</script>
+<script src="js/jquery.min.js"></script>
+<script src="mod/bootstrap/js/bootstrap.min.js"></script>
+<script src="js/common.js?v=1.0"></script>
+ 
+<style>
+    ul{
+        display:block;
+        padding:0px;
+    }
+    li{
+        clear:both;
+    }
+</style>
+</head>
+<body style="padding-bottom:100px;">
+     
+    
+        
+        
+        
+        <div style="width:100%;margin-top:0px;text-align:center;">
+            
+            <img  style="width:100%;" src='https://dododido.cn/img/guide.jpeg' />
+            
+        </div>
+        
+        <div id="response" style="width:100%;margin-top:15px;padding:5px;">
+            
+            <div class="hero-unit text-center">
+                <h5> <i class="icon-remove-circle"></i>永久注销</h5>
+                <p>您将永久注销账号，请谨慎操作！</p>
+                <p>
+  <div class="btn btn-danger"
+                    onclick="preDel()">
+                              账号永久注销
+                </div>
+             
+                </p>
+            </div>
+         
+       
+         <br/>
+            
+        </div>
+        
+        <script>
+            var nologin = true;
+        </script>
+        <style>
+              .toast{
+
+        background-color: #FFFFFF;
+        border-width: 1px;
+        border-color: #EEE;
+        box-shadow: 10px 3px 20px 0px rgba(0, 0, 0, 0.15);
+
+
+    } 
+            list{
+                list-style:none;
+            }
+            ul{
+                
+                list-style-type:none;
+            }
+            
+            .thumbnails{
+                
+                
+            }
+        </style>
+        <div class="modal fade" id="confirmDialog" tabindex="-1" data-toggle="modal"  aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">账号永久注销确认</h5>
+                </div>
+                <div id="removeTips" class="modal-body">
+                    尊敬的用户，您将申请永久注销账号【<b class="loginName"></b>】，注销账号后该账号将永久无法登录，
+                    历史信息无法恢复。请知悉！
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="hideDelModal()"  >关闭</button>
+                    <button type="button" class="btn btn-danger" onclick="removeAccount()">确认并永久注销</button>
+                </div>
+            </div>
+        </div>
+        </div>
+     
+</body>
+<script src="js/com_app.js"></script>
+<script>
+    
+    function showTips(title,text){
+        var body=['<div> <h4>',title,'</h4>',
+             '<div>',text,'</div>',
+             '<div onclick="$(\'.mess\').fadeOut();" style="margin-top:20px;border-top-style:solid;padding-top:20px;border-width:1px;border-color:#EEE;" class="pull-center"> ',
+             ' <a  style="text-decoration:none;" class="  pull-center">确认</a></div>'
+             ,'</div>',
+        ]
+
+         toast(body.join(""),60000,'toast')
+ }
+
+    function firstcall(){
+        
+    }
+    
+    //登录成功后
+    var domain="https://dododido.cn/service";
+    var hasConfirmLogin = false
+    
+    function userLogin(data){
+         
+     if(!hasConfirmLogin){
+             return ;
+      }
+         
+        console.log(data)
+        $(".loginName").html(data["loginName"]);
+        showDelModal();
+        hasConfirmLogin = false
+        
+    }
+    
+    function cbLogin(data){
+        
+        console.log(data)
+    }
+    function confirmLogin(){
+        
+      // if(confirm('您注销账号前需要进行登录确认，是否继续？')){
+           hasConfirmLogin = true
+           showlogin(cbLogin);
+       //}
+    }
+    function hideDelModal(){
+         
+         $('#confirmDialog').modal('hide');
+    }
+   function showDelModal(){
+        
+        $('#confirmDialog').modal('show');
+    }
+    function removeAccount(){
+        hideDelModal();
+        
+        $.ajax({
+            type: 'GET',
+            url: domain+"/user/userAccount/invalid",
+            success: function(data){
+                console.log(data)
+                showTips("提示",data.msg)
+           },
+        error:function(xhr){
+               if (xhr.status === 401) {
+                   confirmLogin();
+                console.error("未授权访问！");
+               }
+           }
+        });
+        
+    }
+    
+    //判断是否在线
+    function preDel(){
+        
+        $.ajax({
+            type: 'GET',
+            url: domain+"/user/userAccount/mine",
+            success: function(data){
+                console.log(data)
+               //succHandler(data);
+               //alert(JSON.stringify(data));
+               if(data["code"]!="0000"){
+                    showTips("提示",data.msg)
+                   return;
+               }
+                  
+               $(".loginName").html(data.data["loginName"]);
+               
+               showDelModal();
+           },
+            error:function(xhr){
+               if (xhr.status === 401) {
+                   confirmLogin();
+                console.error("未授权访问！");
+               }
+           }
+        });
+    }
+    
+</script>
+
+</html>

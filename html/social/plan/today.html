@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="format-detection" content="telephone=no">
+        <meta charset="UTF-8"> 
+        <meta name="msapplication-tap-highlight" content="no">
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+       
+        <title>当日任务</title>
+        
+        <link rel="stylesheet" type="text/css" href="../../mod/bootstrap/css/bootstrap.min.css"/>
+          <link rel="stylesheet" type="text/css" href="../../css/common.css"/>
+        <script src="../../js/jquery.min.js"></script>
+        <script src="../../js/common.js"></script>
+        <script>
+          
+          function firstcall(){
+              
+               loadTask();
+               
+          }
+       
+            function getTmpl(){
+                var tmpl="<tr onclick=\"goDetail('#tid#','#turl#')\"><td>#ttime#<span class='badge alert-success'>#tcycle##tday#</span> </td>"
+                  +"<td style=''>#tname#</td><td > <span id='sp#tid#' class='badge  '>0<span></td>"+
+              /*  "<td><span  class=\"glyphicon glyphicon-remove\" onclick=\"del('#tid#')\"></span></td>"+
+                "<td><span  class=\"glyphicon glyphicon-pencil\" onclick=\"goUpdate('#tid#');\"></span></td>"+
+                "<td><span  class=\"glyphicon glyphicon-info-sign\" onclick=\"goD('#turl#');\"></span></td>"+*/
+                "</tr>";
+                
+                return tmpl;//$("#tmpl").html();
+                
+            }
+        
+        function refreshData(){
+            setTimeout(function(){loadTask()},500);
+            
+        }
+         var cnt=0;
+        function callback(data){
+           // try{
+                $("#tips").html("");
+                var cl="primary,success,info,warning,danger";
+                var classes=cl.split(",");
+                var list=JSON.parse(data);
+                var html="<tr  ><td> </td><td>今日未打卡 </td><td  ><span id='lspan' class='badge alert-warning' >0</span></td>";
+                var tmpl=getTmpl();
+                var regex;
+                var tcycles={};
+                for(var i=0;i<frequency.length;i++){
+                    tcycles[frequency[i]["k"]]=frequency[i]["v"];
+               
+                }
+                var time="";
+                for (var i in list){
+                    var one=tmpl;
+                    
+                    if(list[i]["ttime"].split(":")[0]!=time){
+                        
+                        //html+="<tr><td><h4>"+list[i]["ttime"].split(":")[0]+":00</h4></td><td></td><td></td></tr>";
+                        
+                        one=one.replace("#ttime#","<b>#ttime#</b>");
+                        time=list[i]["ttime"].split(":")[0];
+                    }
+                    for(var key in list[i]){
+                        
+                        if(key=="tcycle"){
+                            if(list[i]["tcycle"]=="one"){
+                             list[i]["tcycle"]="";
+                            }else{
+                             list[i]["tcycle"]=tcycles[list[i]["tcycle"]];
+                            }
+                          
+                        }
+                        //begin translate
+                        if(list[i]["tcycle"]=="day"){
+                           list[i]["tday"]="";
+                        }
+                        
+                        if(list[i]["tcycle"]=="week"){
+                            console.log(list[i]["tday"]);
+                            if(lanMap["WEEK"][list[i]["tday"]]){
+                                 list[i]["tday"]=lanMap["WEEK"][list[i]["tday"]];
+                            }
+                           
+                        }
+                        
+                        //end  translate
+                        
+                        regex=new RegExp("#"+key+"#","gi");
+                        one=one.replace(regex,list[i][key]);
+                        
+                        one=one.replace("#class#","panel-"+classes[i%5]);
+                    }
+                    html+=one;
+                    
+                }
+                if(cnt!=list.length){
+                    if($("#refcnt").length==0){
+                        //$("body").prepend("<div id='refcnt'  >已更新"+(list.length-cnt)+"条记录</div>");
+                        
+                        $("#tips").html("已查询"+(list.length)+"条记录");
+                    }
+                    cnt=list.length;
+                    setTimeout(function(){
+                               $("#tips").html('');//$("#refcnt").remove();
+                               },1000);
+                }
+                
+                $("#response").html(html);
+                
+                loadEvent();
+                
+           //catch(ex){
+                
+              //  $("#response").html(ex);
+           // }
+            
+
+        }
+        function del(tid){
+            
+            var obj={"tid":tid};
+            obj["Class"]="TaskDataEngine";
+            obj["op"]="del";
+            communicate(obj,function(data){
+                        alert(data);
+                        loadTask()
+                        });
+        }
+        
+        function loadTask(){
+            var obj=getFormJson("#formid");
+            obj["Class"]="TaskDataEngine";
+             obj["keyword"]=$("#sname").val();
+            communicate(obj,callback);
+        }
+        
+        function loadEvent(){
+            var dat=getToday8();
+            
+            //select * from event where MDAY='2017-03-07';
+            var obj={};
+            obj["Class"]="CommonDataEngine";
+            obj["C"]="TID,MSPAN";
+            obj["O"]="Q";
+            obj["T"]="EVENT";
+            obj["W"]="1=1 AND CSTS!='D'";
+            obj["W"]+=" AND MDAY='"+dat+"'";
+            
+            $("#lst").html("");
+            asyncommunicate(obj,function(data){
+                            var tt=0;
+                            var list=JSON.parse(data);
+                            for(var i=0;i<list.length;i++){
+                             $("#sp"+list[i]["TID"]).html(list[i]["MSPAN"]);
+                             $("#sp"+list[i]["TID"]).addClass("alert-success");
+                             tt+=parseInt(list[i]["MSPAN"]);
+                            }
+                              $("#lspan").html(1440-tt);
+                            });
+
+            
+        }
+        
+     
+        
+        </script>
+        
+        <style>
+            .btn-back{
+                display:none;
+            }
+            
+        
+            </style>
+       
+    </head>
+    <body>
+        <nav  style="padding-top:0px;padding-bottom:0px;" >
+                       
+        </nav>
+          <div class="container"  >
+              <div id="hh"   >
+                  <button type="button" class="btn    btn-primary pull-right"
+                      onclick="goAdd();" >
+                      <span  class="glyphicon glyphicon-plus"></span>
+                  </button>
+                  <button type="button" class="btn  btn-back btn-primary pull-left"
+                      onclick="dismiss();" >
+                      <span  class="glyphicon glyphicon-chevron-left"></span>
+                  </button>
+                  <button type="button" class="btn  btn-primary pull-left"
+                      onclick="goMng();" >
+                      <span  class="glyphicon glyphicon-list"></span>
+                  </button>
+                  
+
+                  
+                  
+                    <div id="tips" style="float:left;width:100%;text-align:center;">正在加载当天任务...</div>
+              </div>
+        <form id="formid">
+        <input type="hidden" name="op" value="today"/>
+       </form>
+    <table
+        class="table"  id="response" style="width:100%;margin-top:65px;">
+    </table>
+ 
+<div id="tmpl" style="display:none;">
+
+
+<div class="panel #class#" style="margin-top:10px;word-wrap:break-word;">
+    <div class="panel-heading">
+        <h3 class="panel-title">#tname#
+           
+           
+            <span  style="float:right;margin-right:10px;" class="glyphicon glyphicon-info-sign" onclick="webGotoRemote('#turl#');"></span>
+     </h3>
+    </div>
+    <div class="panel-body">
+       #ttime# #tcontent#
+    </div>
+</div>
+    
+
+
+ </div>
+     
+     
+      <script>
+          
+          function goAdd(){
+              var dir="html/plan";
+              var page="add.html";
+              webGotoLocal(dir,page);
+          }
+      
+      function goMng(){
+          var dir="html/plan";
+          var page="sindex.html";
+          webGotoLocal(dir,page);
+      }
+      
+      function goUpdate(tid){
+          var dir="html/plan";
+          var page="add.html?tid="+tid;
+          webGotoLocal(dir,page);
+        }
+      
+      function goDetail(tid,turl){
+          
+          var dir="html/plan";
+          var page="add.html?tid="+tid;
+          webGotoLocal(dir,page);
+      }
+      
+      </script>
+        </div>
+
+    </body>
+</html>

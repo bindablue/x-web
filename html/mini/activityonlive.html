@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="format-detection" content="telephone=no">
+<meta charset="UTF-8">
+<meta name="msapplication-tap-highlight" content="no">
+<meta name="viewport"
+	content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+
+<title>大屏抽奖</title>
+	
+<link rel="stylesheet" type="text/css" href="../../mod/swiper/swiper.min.css">       
+ 
+ <!-- bootstrap & fontawesome -->
+		<link rel="stylesheet" href="../../assets/css/bootstrap.min.css" />
+		
+		<link rel="stylesheet" href="../../assets/font-awesome/4.5.0/css/font-awesome.min.css" />
+
+		<!-- page specific plugin styles -->
+
+		<!-- text fonts -->
+		<link rel="stylesheet" href="../../assets/css/fonts.googleapis.com.css" />
+
+		<!-- ace styles -->
+		<link rel="stylesheet" href="../../assets/css/ace.min.css" class="ace-main-stylesheet" id="main-ace-style" />
+
+		<!--[if lte IE 9]>
+			<link rel="stylesheet" href="../../assets/css/ace-part2.min.css" class="ace-main-stylesheet" />
+		<![endif]-->
+		<link rel="stylesheet" href="../../assets/css/ace-skins.min.css" />
+		<link rel="stylesheet" href="../../assets/css/ace-rtl.min.css" />
+
+		<!--[if lte IE 9]>
+		  <link rel="stylesheet" href="../../assets/css/ace-ie.min.css" />
+		<![endif]-->
+
+		<!-- inline styles related to this page -->
+
+		<!-- ace settings handler -->
+		<script src="../../assets/js/ace-extra.min.js"></script>
+
+		<!-- HTML5shiv and Respond.js for IE8 to support HTML5 elements and media queries -->
+
+		<!--[if lte IE 8]>
+		<script src="../../assets/js/html5shiv.min.js"></script>
+		<script src="../../assets/js/respond.min.js"></script>
+		<![endif]-->
+ 
+ <!-- basic scripts -->
+
+		<!--[if !IE]> -->
+		<script src="../../assets/js/jquery-2.1.4.min.js"></script>
+
+		<!-- <![endif]-->
+
+		<!--[if IE]>
+<script src="../../assets/js/jquery-1.11.3.min.js"></script>
+<![endif]-->
+<script src="../../assets/js/bootstrap.min.js"></script>
+
+ <script src="../../js/common.js"></script>
+<script src="../../js/page.js"></script>
+ 
+<style>
+ #all-mask{
+ position:absolute;
+ left:0px;
+ top:70px;
+ background-color:rgba(0,0,0,0.1);
+ display:none;  
+ 
+ width:1400px;
+ height:240px;
+ z-index:20;
+ }
+  
+ #area{
+ position:relative;
+ float:left;
+ width:600px;
+ height:600px;
+ overflow:auto;
+white-space:nowrap;
+margin-bottom:250px;
+z-index:0;
+ }
+  #others{
+   position:absolute;
+   top:350px;
+   left:0px;
+   clear:both;
+   padding-left:20px;
+  
+  padding-top:30px;
+ }
+  #hitlist{
+ width:300px;
+ height:600px;
+ float:right;
+ overflow:auto;
+ z-index:200000;
+ 
+ }
+ #applicants{
+ left:0px;
+ position:absolute;
+ width:600px;
+ z-index:1;
+ text-align:left;
+ }
+#mask{
+  
+  border:2px dashed #B0171F;
+  border-radius:100px;
+  width:180px;
+  height:180px;
+  position:absolute;
+  top:10px;
+  left:210px;
+  z-index:100;
+  background:rgba(0,0,0,0.1);
+}
+  .bb::before, .bb::after {
+          position: absolute;
+          top: 0;
+          bottom: 0;
+          left: 0;
+          right: 0;
+        }
+         
+        .bb {
+          width: 200px;
+          height: 200px;
+          margin: auto;
+          background: url("img/Button-White-Large.png") no-repeat 50%/70% rgba(0, 0, 0, 0.1);
+          color: #69ca62;
+          box-shadow: inset 0 0 0 1px rgba(105, 202, 98, 0.5);
+        }
+        .bb::before, .bb::after {
+          content: '';
+          z-index: -1;
+          margin: -5%;
+          box-shadow: inset 0 0 0 2px;
+          animation: clipMe 8s linear infinite;
+        }
+        .bb::before {
+          animation-delay: -4s;
+        }
+        .bb:hover::after, .bb:hover::before {
+          background-color: rgba(255, 0, 0, 0.3);
+        }
+         
+        @keyframes clipMe {
+          0%, 100% {
+            clip: rect(0px, 220.0px, 2px, 0px);
+          }
+          25% {
+            clip: rect(0px, 2px, 220.0px, 0px);
+          }
+          50% {
+            clip: rect(218.0px, 220.0px, 220.0px, 0px);
+          }
+          75% {
+            clip: rect(0px, 220.0px, 220.0px, 218.0px);
+          }
+        }   
+ 
+ .light{
+ border:#aaa 1px dashed;
+ box-shadow:0 0 8px rgba(81, 81,81,0.8);
+ }   
+#applicants img{
+width:160px;
+height:160px;
+margin:20px;
+border-radius:80px; 
+
+
+}
+ 
+.img{
+display:inline-block;
+text-align:center;
+}
+.img span{
+white-space:nowrap;
+overflow:hidden;
+}
+ .mess{
+  position:fixed;
+  top:470px;
+  left:450px;  
+  width:200px;
+  height:200px;
+   
+  color:#FFF;
+  background:#FFC0CB;
+  border-radius:10px;
+  text-align:center;
+  margin-top:300
+  padding:20px;
+  z-index:40000000;
+ }
+.main-container{
+ 
+ 
+}
+.main{
+ text-align:center;
+  
+ width:100%;
+}
+ .btn{
+  
+ }
+ .clearfix{
+ clear:both;
+ width:100%:
+ }
+ .prize-header{
+  margin-top:10px;
+  padding:5px 15px;
+  text-align:left;
+  font-weight:bold;
+ }
+ .prize-area{
+  float:left;
+  width:300px; 
+ }
+ .gotlist{
+  height:140px;
+  
+ }
+ .drawarea{
+ width:100%;
+ }
+.main-container{
+ position:absolute;
+ top:30px;
+ border:10px ;
+ left:10%;
+ width:80%;
+ text-align:center;
+ margin:0 auto;
+ box-shadow:0 0 8px rgba(81, 81,81,0.8);
+ border-radius:20px;
+ background:#0f222b;
+ color:#FFF;
+}
+.main{
+width:100%;
+text-align:center;
+
+}
+.act-header{
+padding:8px;
+font-family: STXihei, "华文细黑", "Microsoft YaHei", "微软雅黑";
+font-size:30px;
+border-radius:20px;
+border-bottom:1px solid #EEE;
+text-align:left;
+
+
+}
+.btn-circle{
+border-radius:5px;
+}
+
+
+</style>
+ 
+</head>
+<body>
+	
+	<div class="main">
+	
+	<div class="main-container">
+	<section  class="act-header   ">
+	<img id="qrcode"   style="width:100px;height:100px;"/>
+    <span id="title"></span>  <span id="cnt" class="badge label-danger"></span> 
+	</section>
+	    <div id="drawarea">
+		 <div id="area">
+		 <canvas id="all-mask"></canvas>
+		 <div id="mask" class="bb"></div>
+		 <div id="applicants">
+	
+	     </div>
+	     
+       </div>
+       <div id="others">
+       
+          <select id="prizes" ></select>
+           <div id="btn-start" class="btn btn-success btn-circle" onclick="beginDraw();">开始</div>
+	       <div id="btn-stop" class="btn btn-danger btn-circle " onclick="stop();">停止</div>
+	       <div class="btn btn-info hide" onclick="resetf();">Reset</div>
+	      
+         </div>
+        </div>
+        <div id="hitlist"></div>
+        <div class="clearfix"></div>
+      
+ <script>
+ var canvas = document.getElementById("all-mask");
+ var context = canvas.getContext("2d");
+ 
+ context.fillStyle = "rgba(40,44,52,0.7)";//设置填充色（可以是渐变色或半透明色）
+ context.fillRect(0,0,canvas.width,canvas.height);//填充背景我色
+ context.fillStyle = "rgba(0,0,0,0.1)";
+ context.clearRect(47,4,35,100);//抠出一个矩形区域
+  /* context.beginPath();
+  context.arc(60,55,50,0,2*Math.PI);
+  context.fill();
+  clearArcFun(60,55,50,context); */
+  //context.closePath();
+  
+  
+ var len=0;
+ var interval;
+ var sts=true;
+ var cnt;
+ var reverse=true;
+ 
+ var speedunit=200;
+ var speed=200;
+ var counter=0;
+
+  function stop(){
+	  
+	  sts=false;
+	  $("#btn-start").removeAttr("disabled");
+	 
+  }
+  
+ function clearArcFun(x,y,r,cxt){    //(x,y)为要清除的圆的圆心，r为半径，cxt为context
+	   var stepClear=1;//别忘记这一步  
+	   clearArc(x,y,r);
+	   function clearArc(x,y,radius){
+	      var calcWidth=radius-stepClear;  
+	      var calcHeight=Math.sqrt(radius*radius-calcWidth*calcWidth);  
+
+	      var posX=x-calcWidth;  
+	      var posY=y-calcHeight;  
+	                      
+	      var widthX=2*calcWidth;  
+	      var heightY=2*calcHeight;  
+	                      
+	      if(stepClear<=radius){  
+	         cxt.clearRect(posX,posY,widthX,heightY);  
+	         stepClear+=1;  
+	         clearArc(x,y,radius);  
+	      }  
+	    }  
+	}
+  
+  
+  function gotPrize( ){
+	  
+	  if(!sts){
+		  bgm.pause();
+		  return;
+	  }
+	  var prizeid=$("#prizes").val()
+	  if(!prizeid){
+		  toast("<b>请先设置奖项！</b>");
+		  return;
+	  }
+	  var prize=prizemap[prizeid];
+	  
+	  postData(prize,"/rest/product/screenAct",function(data){
+		   if(data["CODE"]=="0000"){
+			   winner=data["data"];
+			   console.log("winner");
+			   start();
+			   // 开始滚动 
+		   }else if(data["CODE"]=="5555"){
+			   //都抽完了，停止
+			   winner=null;
+			   bgm.pause();
+			 
+			   over.play();
+			   toast("<b>"+prize["levelname"]+"已抽完</b>");	
+			   clearInterval(interval);
+			 	interval=null;
+		   }else{
+			   bgm.pause();
+			   toast("<b>"+data["MSG"]+"</b>");	
+		   }
+		  
+	  });
+	  
+  }
+  var over=new Audio("../../media/over.mp3");
+ var takephoto = new Audio("../../media/takephoto.mp3");
+   var bgm=new Audio("../../media/bg.mp3");
+  bgm.loop=true;
+ 
+ var queryspan=3000;
+ var querycnt=0;
+
+function beginDraw(){
+	
+	if(!canStart){
+		toast("<b>还未到抽奖时间！若要马上开始，请重新设置活动结束日期为当前日期时间之前</b>");
+		return;
+	}
+	 $("#btn-start").attr("disabled","disabled");
+	sts=true;
+	gotPrize();
+}
+  
+ function start(){
+ 
+ 	 bgm.play();
+ 	 clearInterval(interval);
+ 	var startpos=speedunit;
+ 	var endpos=-1*speedunit*(cnt-2);
+ 	interval=setInterval( function(){
+ 	 
+ 			 counter++;
+ 			 if(reverse){
+ 				 len-=speed;
+ 			 }else{
+ 				 len+=speed;
+ 			 }
+ 			
+ 			 if(len<=endpos){
+ 				 reverse=!reverse;
+ 				// sts=false;
+ 				 //clearInterval(interval);
+ 			 } 
+ 			 if(len>=startpos){
+ 				 reverse=!reverse;
+ 				 //clearInterval(interval);
+ 			 }
+ 			 $("#applicants").css("left",len);
+ 			  var idx=(200-len)/200;
+ 			  if(winner==null){
+ 				  
+ 			  }else if(counter>cnt&&applicants[idx]["uid"]==winner["uid"]){
+ 				counter=0;
+ 			 	clearInterval(interval);
+ 			 	 
+ 			 	interval=null;
+ 			 	var person="<div  style='height:120px;width:80px;display:inline-block;margin:8px;float:left;'><img class='light ' style='width:80px;width:80px;'src='"+applicants[idx].avatar+"' /><div>  "+applicants[idx].nickname+"</div></div>";
+ 			 	
+ 			 	takephoto.play(); //播放
+ 			 	toast("<div class='light ' style='padding:auto 5px;'><b>恭喜中奖了!</b></div><div  style='margin:auto 10px;'>"+person.replace("float:left","float:center;")+"</div>");			 
+ 			 	console.log("---"+sts+">>");
+ 			 
+ 			 	$("#prize"+winner["prizeid"]).append(person);
+ 			 	console.log(sts+":"+len+":"+cnt);
+ 				 
+ 			     setTimeout(gotPrize,2000);
+ 				 
+ 			 }
+ 			 
+ 		  
+     	
+     	  
+      },100);
+ }
+ 
+ function toast(mess){
+     var str='<div class="mess text-center light"><span></span></div>';
+     $("body").append(str);
+     $(".mess").fadeIn().find("span").html(mess);
+     setTimeout(function(){
+        $(".mess").fadeOut();
+     },2000)
+ }
+
+ function randomFrom(lowerValue,upperValue)
+ {
+     return Math.floor(Math.random() * (upperValue - lowerValue + 1) + lowerValue);
+ }
+
+ function reset(){
+ 	
+ 	 len=0;
+ 	 $("#applicants").css("left",len);
+ 	 clearInterval(interval);
+ 	 interval=null;
+ }
+      
+      function firstcall(){
+     	 
+    	 getActivity();
+    	
+     }
+      
+      var prizemap={};
+      var applicants=[]; 
+      var winner;
+      var canStart=true;
+      function getActivity(){
+          var obj=GetRequest();
+          var actid=obj["id"];
+       
+    	  postData(obj,"/rest/product/getAct",function(data){
+    		   $("#qrcode").attr("src",domain+"/store/act/"+actid+".jpg");
+    		  console.log(data);
+				var nowdays=getNowFormatDate();
+				//console.log(nowdays);
+    			if(nowdays<data["endDate"]){
+    				querycnt++;
+    				if(querycnt>5){
+    					querycnt=0;
+    				}
+    				//setTimeout(function(){getActivity();},queryspan*querycnt);
+    				//canStart=false;
+    			}else{
+    				canStart=true;
+    			}
+    		  $("title").html(data["name"]);
+    		  
+    		  $("#title").html(data["name"]);
+    		  if(data.prizes.length==0){
+    			  toast("<b>当前没有奖项，请设置奖项！</b>");
+    		  }
+    		 var prizes=data.prizes.sort(function(a,b){return b.level-a.level;});
+    		 //var prizes2=data.prizes.sort(function(a,b){return a.level-b.level;});
+     		 for(var i=0;i<prizes.length;i++){
+     			 
+     			 $("#prizes").append("<option value='"+prizes[i]["id"]+"'>"+prizes[i]["levelname"]+"("+prizes[i]["hitcount"]+"个人)</option>");
+     			 prizemap[prizes[i]["id"]]=prizes[i];
+         	  }
+     		prizes=data.prizes.sort(function(a,b){return a.level-b.level;});
+     		 for(var i=0;i<prizes.length;i++){
+    		 $("#hitlist").append("<div class='prize-area light' ><div class='prize-header'><span>"+prizes[i]["levelname"]+"</span></div><div class='gotlist' id='prize"+prizes[i]["id"]+"' ></div></div>");
+     		 }
+     		 
+     		 
+    		  var ones=data.applicants;
+    		  applicants=ones;
+    		  $("#applicants").html("");
+    		  $("#hitlist gotlist").html("");
+    		  cnt=ones.length;
+    		  $("#cnt").html(cnt +"人");
+    		  var winners=[];
+    		  for(var i=0;i<ones.length;i++){
+    			  
+    			  $("#applicants").append("<div class='img'>  <img    src='"+ones[i]["avatar"]+"'/><br/><span>"+ones[i]["nickname"]+"</span></div>");
+    		      if(ones[i]["hit"]=="1"){
+    		    	  winners.push(ones[i]);
+    		    	
+    		      }
+    		  }
+    		  $("#applicants").append("<div  class='clearfix' ></div>");
+    		  winners=winners.sort(function(a,b){return a.level-b.level;});
+    		  for (var idx=0;idx<winners.length;idx++){
+    			  
+    			  var person="<div style='height:120px;width:80px;display:inline-block;margin:8px;float:left;'><img class='light' style='width:80px;width:80px;'src='"+winners[idx].avatar+"' /><div>  "+winners[idx].nickname+"</div></div>";
+	 		      $("#prize"+winners[idx]["prizeid"]).append(person);  
+    		  }
+    		  
+    		  for(var i=0;i<prizes.length;i++){
+    			  
+    			  $("#prize"+prizes["id"]).append("<div class='clearfix'></div>")
+    		  }
+    		  
+    		  
+    	  });
+          
+      }
+       
+      function getNowFormatDate() {
+    	    var date = new Date();
+    	    var seperator1 = "-";
+    	    var seperator2 = ":";
+    	    var month = date.getMonth() + 1;
+    	    var strDate = date.getDate();
+    	    if (month >= 1 && month <= 9) {
+    	        month = "0" + month;
+    	    }
+    	    if (strDate >= 0 && strDate <= 9) {
+    	        strDate = "0" + strDate;
+    	    }
+    	    var currentdate = date.getYear() + seperator1 + month + seperator1 + strDate
+    	            + " " + date.getHours() + seperator2 + date.getMinutes()
+    	            + seperator2 + date.getSeconds();
+    	    return currentdate;
+    	}
+      </script>
+
+	</div>
+</div>
+
+</body>
+</html>

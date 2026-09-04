@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>使用意见反馈</title>
+  <script src="js/jquery.min.js"></script>
+  <script src="js/common.js"></script>
+  <style>
+    :root {
+      --primary: #007AFF;
+      --primary-light: rgba(0, 122, 255, 0.08);
+      --bg: #F2F2F7;
+      --card: #FFFFFF;
+      --text: #1C1C1E;
+      --text-secondary: #8E8E93;
+      --text-tertiary: #AEAEB2;
+      --divider: #E5E5EA;
+      --radius-sm: 8px;
+      --radius-md: 14px;
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      /* background: var(--bg); */
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'PingFang SC', sans-serif;
+      color: var(--text);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* 导航栏 */
+    .nav-bar {
+      /* background: var(--card); */
+      padding: 12px 8px 12px;
+      display: flex;
+      align-items: center;
+      border-bottom: 0.5px solid var(--divider);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .nav-back {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: none;
+      background: transparent;
+      color: #606162;
+      font-size: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .nav-title {
+      flex: 1;
+      text-align: center;
+      font-size: 17px;
+      font-weight: 600;
+      color: var(--text);
+      margin-right: 40px;
+    }
+
+    /* 页面内容 */
+    .page-content {
+      padding: 16px 16px 32px;
+    }
+
+    /* 区块标题 */
+    .section-header {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 8px 8px 8px;
+      margin-top: 8px;
+    }
+
+    /* 卡片 */
+    .card {
+      /* background: var(--card); */
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      margin-bottom: 16px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+    }
+
+    /* 联系方式行 */
+    .contact-row {
+      display: flex;
+      align-items: center;
+      padding: 14px 16px;
+      border-bottom: 0.5px solid var(--divider);
+      cursor: pointer;
+    }
+
+    .contact-row:last-child {
+      border-bottom: none;
+    }
+
+    .contact-row:active {
+      /* background: var(--bg); */
+    }
+
+    .contact-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+      margin-right: 12px;
+    }
+
+    .contact-icon.qq {
+      background: rgba(0, 122, 255, 0.1);
+      color: var(--primary);
+    }
+
+    .contact-icon.email {
+      background: rgba(52, 199, 89, 0.1);
+      color: #34C759;
+    }
+
+    .contact-info {
+      flex: 1;
+    }
+
+    .contact-label {
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--text);
+      margin-bottom: 2px;
+    }
+
+    .contact-value {
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    .contact-arrow {
+      color: var(--text-tertiary);
+      font-size: 16px;
+      font-weight: 300;
+    }
+
+    /* 在线反馈表单 */
+    .form-group {
+      padding: 12px 16px;
+      border-bottom: 0.5px solid var(--divider);
+    }
+
+    .form-group:last-child {
+      border-bottom: none;
+    }
+
+    .form-label {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+    }
+
+    /* 反馈类型选择 */
+    .type-selector {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .type-tag {
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 500;
+      border: 1.5px solid var(--divider);
+      color: var(--text-secondary);
+      background: transparent;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .type-tag.active {
+      border-color: var(--primary);
+      color: var(--primary);
+      background: var(--primary-light);
+    }
+
+    /* 文本域 */
+    .textarea-wrap {
+      position: relative;
+    }
+
+    .textarea-wrap textarea {
+      width: 100%;
+      min-height: 120px;
+      border: none;
+      border-radius: var(--radius-sm);
+      /* background: var(--bg); */
+      padding: 12px;
+      font-size: 15px;
+      font-family: inherit;
+      color: var(--text);
+      resize: none;
+      line-height: 1.5;
+    }
+
+    .textarea-wrap textarea:focus {
+      outline: none;
+      box-shadow: 0 0 0 2px var(--primary-light);
+    }
+
+    .textarea-wrap textarea::placeholder {
+      color: var(--text-tertiary);
+    }
+
+    .char-count {
+      position: absolute;
+      bottom: 8px;
+      right: 12px;
+      font-size: 11px;
+      color: var(--text-tertiary);
+    }
+
+    /* 联系方式输入 */
+    .input-row {
+      display: flex;
+      align-items: center;
+    }
+
+    .input-row input {
+      flex: 1;
+      border: none;
+      /* background: var(--bg); */
+      border-radius: var(--radius-sm);
+      padding: 10px 12px;
+      font-size: 15px;
+      font-family: inherit;
+      color: var(--text);
+    }
+
+    .input-row input:focus {
+      outline: none;
+      box-shadow: 0 0 0 2px var(--primary-light);
+    }
+
+    .input-row input::placeholder {
+      color: var(--text-tertiary);
+    }
+
+    /* 提交按钮 */
+    .submit-btn {
+      display: block;
+      width: 100%;
+      padding: 14px 0;
+      background: var(--primary);
+      color: #FFFFFF;
+      font-size: 16px;
+      font-weight: 600;
+      border: none;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      margin-top: 8px;
+      transition: background 0.2s;
+    }
+
+    .submit-btn:active {
+      background: #0066D6;
+    }
+
+    /* 温馨提示 */
+    .tips {
+      font-size: 12px;
+      color: var(--text-tertiary);
+      text-align: center;
+      padding: 16px 24px 0;
+      line-height: 1.6;
+    }
+
+    .hide {
+
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- 导航栏 -->
+  <div class="nav-bar">
+    <button class="nav-back"></button>
+    <div class="nav-title">使用意见反馈</div>
+  </div>
+
+  <!-- 页面内容 -->
+  <div class="page-content">
+
+    <!-- 联系方式区域 -->
+    <div class="section-header">直接联系我们</div>
+    <div class="card">
+      <div class="contact-row"
+        onclick="safari('mqqapi://card/show_pslcard?src_type=internal&version=1&card_type=group&uin=348858237')">
+        <div class="contact-icon qq">💬</div>
+        <div class="contact-info">
+          <div class="contact-label">
+            QQ 反馈群</div>
+          <div class="contact-value">点击加入QQ群聊</div>
+        </div>
+        <span class="contact-arrow" > ›</span>
+      </div>
+      <div class="contact-row" onclick="safari('mailto:admin@dododido.cn?subject=极限任务APP使用反馈&body=具体反馈内容：')"> 
+        <div class="contact-icon email">✉️</div>
+        <div class="contact-info">
+          <div class="contact-label"> 邮箱反馈</div>
+          <div class="contact-value">点击发送邮件</div>
+        </div>
+        <span class="contact-arrow">›</span>
+      </div>
+    </div>
+
+    <!-- 在线反馈提交 -->
+    <form id="feedbackContent" class="">
+      <div class="section-header ">在线提交反馈【注册用户】</div>
+      <div class="card">
+        <div class="form-group">
+          <div class="form-label">反馈类型</div>
+          <div class="type-selector">
+            <span class="type-tag active" data-type="1">功能建议</span>
+            <span class="type-tag" data-type="2">Bug 报告</span>
+            <span class="type-tag" data-type="3">体验优化</span>
+            <span class="type-tag" data-type="4">其他</span>
+          </div>
+        </div>
+        <!-- 用于提交的隐藏域 -->
+        <input type="hidden" name="type" id="feedbackType" value="1">
+        <div class="form-group">
+          <div class="form-label">反馈内容</div>
+          <div class="textarea-wrap">
+            <textarea id="content" name="content" placeholder="请描述您遇到的问题或建议，我们会尽快处理..."></textarea>
+            <span class="char-count">0/500</span>
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="form-label">联系方式（选填）</div>
+          <div class="input-row">
+            <input id="contact" name="contact" type="text" placeholder="QQ / 邮箱 / 手机号">
+          </div>
+        </div>
+      </div>
+
+
+
+    </form>
+    <!-- 提交按钮 -->
+    <button class="submit-btn" onclick="submitFeedback()">提交反馈</button>
+
+    <div class="tips hide">我们会在 1-3 个工作日内处理您的反馈，感谢您的支持！</div>
+
+
+  </div>
+  <script>
+
+    $(document).on('click', '.type-tag', function () {
+      $('.type-tag').removeClass('active');
+      $(this).addClass('active');
+      var type = $(this).data('type');
+      $('#feedbackType').val(type);
+    });
+
+    // 字数统计
+    $('textarea[name="content"]').on('input', function() {
+      var len = $(this).val().length;
+      $('.char-count').text(len + '/500');
+    });
+   
+    //登录成功后
+    var domain = "https://dododido.cn/service/";//"http://master001/";//
+    var hasConfirmLogin = false
+
+    function userLogin(data) {
+
+      if (!hasConfirmLogin) {
+
+        return;
+      }
+
+      console.log(data)
+      $(".loginName").html(data["loginName"]);
+
+      hasConfirmLogin = false
+
+    }
+
+    function cbLogin(data) {
+      console.log(data)
+    }
+
+    function confirmLogin() {
+
+      if (confirm('您提交反馈需要进行登录确认，是否继续？')) {
+        hasConfirmLogin = true
+        showlogin(cbLogin);
+      }
+    }
+
+
+
+    function submitFeedback() {
+      //hideDelModal();
+      let query = getFormJson('#feedbackContent');
+      let params = GetRequest()
+      for (var key in params) {
+        query[key] = params[key]
+      }
+
+      submitByWeb(query)
+    }
+    function submitByWeb(query) {
+
+      if ($.trim(query.content).length == 0) {
+
+        alert("反馈内容不能为空")
+        return
+
+      }
+      $.ajax({
+        type: 'POST',
+        contentType: 'application/json;charset=utf-8', // 关键：声明是JSON
+        data: JSON.stringify(query),                // 转成JSON字符串
+        url: domain + "time/feedback/add",
+        success: function (data) {
+          console.log(data)
+          alert(data.msg)
+          $("#content").val("")
+          $("#contact").val("")
+        },
+        error: function (xhr) {
+
+          console.log(xhr)
+          if (xhr.status === 401) {
+            confirmLogin();
+            console.error("未授权访问！");
+          }
+          if (xhr.status == 403) {
+
+            var response = JSON.parse(xhr.responseText)
+            alert(response.msg)
+
+
+          }
+        }
+      });
+
+
+
+    }
+    //判断是否在线
+    function preSubmit() {
+
+      $.ajax({
+        type: 'GET',
+        url: domain + "/user/userAccount/mine",
+        success: function (data) {
+          console.log(data)
+          //succHandler(data);
+          //alert(JSON.stringify(data));
+          if (data["code"] != "0000") {
+            alert(data["msg"]);
+            return;
+          }
+
+          $(".loginName").html(data.data["loginName"]);
+
+          //showDelModal();
+        },
+        error: function (xhr) {
+          if (xhr.status === 401) {
+            confirmLogin();
+            console.error("未授权访问！");
+          }
+        }
+      });
+    }
+
+     function firstcall() {
+      //preSubmit() ;
+      console.log("firstcall")
+
+    }
+
+  </script>
+</body>
+
+</html>

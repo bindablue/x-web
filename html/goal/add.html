@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html>
+<head>
+<!--        <meta name="format-detection" content="telephone=no">-->
+<meta charset="UTF-8">
+<meta name="msapplication-tap-highlight" content="no">
+<meta name="viewport"
+	content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+
+<title>目标创建</title>
+
+<link rel="stylesheet" type="text/css" href="../../css/common.css" />
+<link rel="stylesheet" type="text/css"
+	href="../../mod/bootstrap/css/bootstrap.min.css" />
+
+<script src="../../js/jquery.min.js"></script>
+
+<script src="../../mod/bootstrap/js/bootstrap.min.js"></script>
+<script src="../../js/common.js"></script>
+<script src="../../js/meta.js"></script>
+
+<style>
+input, select, textarea {
+	margin-top: 5px;
+	padding: 5px 0px;
+	line-height: 16px;
+	width: 100%;
+	-webkit-appearance: none;
+	border: 1px solid #87CEEB;
+}
+
+
+</style>
+<body>
+
+<div id="hh" >
+    <button type="button" class="btn btn-back btn-primary pull-left" onclick="backgo();">
+         <span  class="glyphicon glyphicon-chevron-left"></span>
+    </button>
+     
+     <button id="qrlink" type="button" class="btn btn-primary" style="display:none;" onclick="showQR()" > <span  class="glyphicon glyphicon-qrcode"    ></span> </button>
+    <button id="btnShare" type="button" class="btn btn-primary"  style="display:none;"  onclick="share();" > <span class="glyphicon glyphicon-share-alt"   ></span> </button>
+     <button type="submit" class=" btn btn-primary btn-default pull-right" onclick="submitForm()"><span class="LBL-SAVE">保存</span></button>
+</div>
+	<div class="container">
+
+		<form class="form-horizontal" style="margin-top:80px" id="formid" role="form">
+         
+                <div class="form-group" style="display:none;">
+<!--				<label for="ID" class="col-sm-2 control-label">目标编号</label>-->
+				<div class="col-sm-10">
+					<input type="text" readonly class="form-control PH-TARGET" style='font-size:10px;' name="ID" id="ID"
+						placeholder="目标">
+				</div>
+			</div>
+			<div class="form-group" id="lpid">
+<!--				<label for="PID" class="col-sm-2 control-label">父目标编号</label>-->
+				<div class="col-sm-12">
+					<input type="text" readonly class="form-control PH-PTARGET" style='font-size:10px;' id="PID"
+						name="PID" placeholder="父目标">
+				</div>
+			</div>
+           
+            
+            <div class="form-group">
+<!--                <label for="AN" class="col-sm-2 control-label">目标名称</label>-->
+                <div class="col-sm-12">
+                    <input type="text" class="form-control PH-TARGET" name="AN" id="AN"
+                        placeholder="目标">
+                        </div>
+            </div>
+            <div class="form-group">
+<!--                <label for="lastname" class="col-sm-2 control-label">目标内容</label>-->
+                <div class="col-sm-12">
+                    <textarea type="text" class="form-control PH-MEMO" name="AD" id="AD"
+                        placeholder="内容"></textarea>
+                        </div>
+            </div>
+            
+            <div class="form-group hide">
+                <label for="UNAME" class="col-sm-2 control-label LBL-CREATOR">创建人</label>
+                <div class="col-sm-10">
+                    <input type="text" disabled class="form-control PH-LNAME"
+                        name="UNAME" id="UNAME"
+                        placeholder="登录名">
+                        </div>
+            </div>
+            
+            <div class="form-group">
+<!--                <label for="MNAME" class="col-sm-2 control-label">负责人</label>-->
+                <div class="col-sm-4 col-xs-4">
+                    <input type="text"   class="form-control PH-MNAME" name="MNAME" id="MNAME"
+                        placeholder="填写你要分配的用户名(负责人）">
+                        </div>
+                
+           
+<!--                <label class="col-sm-2 control-label">是否可分解</label>-->
+                <div class="col-sm-4  col-xs-4">
+                    <select class="form-control" name="ISBRK" id="ISBRK">
+                    </select>
+                    
+                </div>
+            
+<!--                <label class="col-sm-2 control-label">状态</label>-->
+                <div class="col-sm-4 col-xs-4">
+                    <select class="form-control" name="CSTS" id="CSTS">
+                        
+                    </select>
+                    
+                </div>
+            </div>
+
+
+            <ul id="myTab" class="nav nav-tabs">
+                <li >
+                    <a href="#plan" class="LBL-PLAN" data-toggle="tab">
+                        计划/实际
+                    </a>
+                </li>
+                
+                <li class="active"><a href="#sub" data-toggle="tab" class="LBL-STARGET">子目标</a></li>
+                 <li><a href="#task" data-toggle="tab" class="LBL-TASKREL">关联任务</a></li>
+                
+            </ul>
+            <div id="myTabContent" class="tab-content">
+                <div class="tab-pane fade " id="plan">
+                     <div class="form-group" >
+                     <div class="col-sm-1 col-xs-6 LBL-PLAN control-label pull-left">
+                         计划:
+                     </div>
+                     </div>
+                    <div class="form-group">
+<!--                        <label for="PSD" class="col-sm-1 control-label">计划开始日期</label>-->
+                        <div class="col-sm-4 col-xs-4">
+                            <input type="tel"  pattern="[0-9]*" placeholder="计划开始日期yyyymmdd" class="form-control PH-PSD"
+                            name="PSD" id="PSD" />
+                            
+                        </div>
+                        
+                    
+<!--                        <label for="PFD" class="col-sm-2 control-label">计划完成日期</label>-->
+                        <div class="col-sm-4 col-xs-4">
+                            <input type="tel"  pattern="[0-9]*" class="form-control PH-PFD" placeholder="计划完成日期yyyymmdd"  name="PFD" id="PFD" />
+                            
+                        </div>
+                        
+                    
+<!--                        <label for="PE" class="col-sm-2 control-label">计划工时</label>-->
+                        <div class="col-sm-4 col-xs-4">
+                            <input type="text" class="form-control PH-PE " id="PE" name="PE" value=""
+                                placeholder="计划工时（小时）"/>
+                                
+                                </div>
+                        
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-sm-1 col-xs-6 LBL-ACTUAL control-label pull-left">
+                           实际:
+                        </div>
+                    </div>
+                    <div class="form-group">
+<!--                        <label for="ASD" class="col-sm-2 control-label">实际开始日期</label>-->
+                        <div class="col-sm-4 col-xs-4">
+                            <input type="tel"  pattern="[0-9]*"  placeholder="实际开始日期yyyymmdd" class="form-control PH-ASD"
+                            name="ASD" id="ASD" />
+                            
+                        </div>
+                        
+                    
+<!--                        <label for="AFD" class="col-sm-2 control-label">实际完成日期</label>-->
+                        <div class="col-sm-4 col-xs-4">
+                            <input type="tel"  pattern="[0-9]*" class="form-control PH-AFD" placeholder="实际完成日期yyyymmdd"
+                            name="AFD" id="AFD"  />
+                            
+                        </div>
+                        
+                    
+<!--                        <label for="AE" class="col-sm-2 control-label">实际工时</label>-->
+                        <div class="col-sm-4 col-xs-4">
+                            <input type="text" class="form-control PH-AE" name="AE" id="AE"
+                                placeholder="实际工时（小时）" value="" />
+                                
+                                </div>
+                        
+                    </div>
+
+                    
+                </div>
+                 <div class="tab-pane fade in active" id="sub">
+                     <a id="tgoal"></a>
+                    <a id="sg" href="#" class="pull-right LBL-ADDSUB" style="padding:10px;" >添加子目标</a>
+
+                    <table class="table"  style="margin-top:10px;" id="lst">
+                        
+                    </table>
+
+                
+                </div>
+                 
+                 <div class="tab-pane fade" id="task">
+                     <a id="thour"></a>
+                     <a id="reltask" onclick="bindTask();" class="pull-right LBL-TASKREL" style="padding:10px;">关联任务</a>
+                     
+                     <table class="table"  style="margin-top:10px;" id="tlst">
+                         
+                     </table>
+                     
+                     
+                 </div>
+                
+            </div>
+            
+              <input type="hidden" name="RID" id="RID" value=""/>
+               <input type="hidden" name="LVL" id="LVL" value="1"/>
+   
+        <input type="hidden" name="O" value="A"/>
+        <input type="hidden" name="T" value="ACTIVITY"/>
+			<div class="form-group">
+				
+			</div>
+			
+		
+		</form>
+        
+       
+       
+	</div>
+
+
+
+
+</body>
+<script>
+    
+    function initFields(){
+        
+        var obj=document.getElementById('CSTS');
+        if(obj.options.length>0){return;}
+        for(var i=0;i<goalSts.length;i++){
+            obj.options.add(new Option(goalSts[i]["v"],goalSts[i]["k"])); //这个兼容IE与firefox
+            
+        }
+        
+        var cycle=document.getElementById('ISBRK');
+        if(cycle.options.length>0){return;}
+        for(var i=0;i<goalBreak.length;i++){
+            
+            cycle.options.add(new Option(goalBreak[i]["v"],goalBreak[i]["k"]));
+        }
+    }
+
+    function share(){
+        var obj={"ID":$("#ID").val()};
+        obj["op"]="share";
+        obj["Class"]="TaskDataEngine";
+        asyncommunicate(obj,function(data){
+                        });
+                        
+    }
+
+    function showQR(){
+        
+        var obj={};
+        obj["Class"]="WebDataEngine";
+        obj["op"]="QR";
+        obj["ID"]="G#"+$("#ID").val();
+        asyncommunicate(obj,function(data){
+                        
+                        });
+        
+        
+    }
+    function bindTask(){
+        if($("#ID").val()){
+            
+             webGotoLocal("html/plan","sindex.html?AID="+$("#ID").val());
+        }
+        
+        
+    }
+    function backgo(){
+        if(GetRequest()["view"]){
+            
+            dismiss();
+            return;
+        }
+        if($("#PID").val()){
+            window.history.back();
+          return;
+        }
+         dismiss();
+    }
+    
+        function refreshData(){
+           
+           
+           // loadSubGoals();
+        }
+   //删除关联
+    function delAT(ID){
+        var obj={};
+        obj["Class"]="CommonDataEngine";
+        obj["O"]="D";
+        obj["ID"]=ID;
+        obj["T"]="ACT_TASK";
+        asyncommunicate(obj,function(data){
+                        try{
+                            var j=JSON.parse(data);
+                                if(j["CODE"]=="0000"){
+                                loadActTask($("#ID").val());
+                                //$("#e"+ID).remove();
+                                }
+                            }catch(e){
+                                console.log(e);
+                            }
+                        
+                        });
+                        
+
+    }
+
+function archive(){
+    var id=$("#ID").val();
+    if(!id){
+        return;
+    }
+    $("#CSTS").val("A");//archive
+    submitForm();
+    
+}
+
+    function delE(ID){
+        
+        //alert(ID);
+        var obj={};
+        obj["Class"]="CommonDataEngine";
+        obj["O"]="D";
+        obj["ID"]=ID;
+        obj["T"]="ACTIVITY";
+        asyncommunicate(obj,function(data){
+                        try{
+                        var j=JSON.parse(data);
+                        if(j["CODE"]=="0000"){
+                         $("#e"+ID).remove();
+                        }
+                        }catch(e){
+                            console.log(e);
+                        }
+                        
+                        });
+        
+     }
+
+    function loadSubGoals(){
+            var obj={};
+            obj["Class"]="CommonDataEngine";
+            obj["O"]="Q";
+            obj["T"]="ACTIVITY";
+            obj["C"]="ID,AN,AD,MNAME,PSD,PE,AE";
+            obj["W"]=" PID='"+TID+"' and CSTS!='D' order by PSD,AN desc  ";
+            var ae=0;
+            var pe=0;
+            var mae=0;
+            var pae=0;
+            var mpe=0;
+            var ppe=0;
+             //document.getElementById("lst").innerHTML="加载子目标。。。";
+            asyncommunicate(obj,function(data){
+                            try{
+                            
+                            var html=[];
+                            var list=JSON.parse(data);
+                            var tmpl='<tr id="e#ID#"><td>#PSD#</td><td>#AN##AD#</td><td>#MNAME#</td><td>#AE#/#PE#</td><td><a href="add.html?ID=#ID#">&gt;&gt;</a></td></tr>';
+                            
+                            for(var i=0;i<list.length;i++){
+                                    var record=tmpl;
+                                for(var key in list[i]){
+                                    var regex=new RegExp("#"+key+"#","gi");
+                            
+                                    record=record.replace(regex,list[i][key]);
+                           
+                                }
+                               console.log(list[i]);
+                                if(list[i]["AE"]){
+                                    var aae=parseFloat(list[i]["AE"]);
+                                     ae+=aae;
+                                    if(aae>0){
+                                       pae+=parseFloat(list[i]["AE"]);
+                                       }else{
+                                       mae+=parseFloat(list[i]["AE"]);
+                                    }
+                                }
+                            
+                                 if(list[i]["PE"]){
+                                    var ape=parseFloat(list[i]["PE"]);
+                                        pe+=ape;
+                                       if(ape>0){
+                                        ppe+=parseFloat(list[i]["PE"]);
+                                       }else{
+                                        mpe+=parseFloat(list[i]["PE"]);
+                                       }
+
+                                }
+                            
+                                html.push(record);
+
+                            
+                            }
+                            
+                             var ttt="*:"+ae+"/"+pe+"; +:"+pae+"/"+ppe+"; -:"+mae+"/"+mpe;
+                             $("#tgoal").html(ttt);
+                            
+                            
+                            
+                            
+                            if(list.length>0){
+                                //document.getElementById("events").innerHTML+=html.join("");
+                                document.getElementById("lst").innerHTML=html.join("");
+                                
+                                
+                                
+                                setTimeout(function(){
+                                           if(ae>0){
+                                            $("#AE").val(ae);
+                                           }
+                                           
+                                           
+                                           if(pe>0){
+                                           $("#PE").val(pe);
+                                           }
+                                              },1000);
+                                           
+
+                            
+                            }else{
+                                //$("#lst").html("<a onclick=\"loadSubGoals();\">"+lanMap["REFRESH"]+"</a>");
+                            }
+                            
+                            }catch(e){
+                            
+                            }
+                            });
+
+        }
+        
+        
+        
+        var TID="";
+        var PID="";
+        var RID="";
+        
+        function del(){
+            if(!confirm("确定要删除？")){
+                return;
+            }
+            var obj={"tid":TID};
+            obj["Class"]="CommonDataEngine";
+            obj["O"]="D";
+            asyncommunicate(obj,function(data){
+                            if(byApp()){
+                            dismiss();
+                            }else{
+                            webGotoLocal("html/plan","index.html");
+                            }
+                            
+                            
+                            });
+        }
+    
+    function loadTask(tid){
+        var obj={};
+        obj["Class"]="CommonDataEngine";
+        obj["C"]="ID,PID,LVL,RID,PSD,PFD,PE,AN,AD,ASD,AFD,AE,UNAME,MNAME,ISBRK,CSTS";
+        obj["O"]="Q";
+        obj["T"]="ACTIVITY";
+        obj["W"]="ID='"+tid+"'";
+        
+        asyncommunicate(obj,function(data){
+                        var arr=JSON.parse(data);
+                        if(arr.length>0){
+                        
+                        for(var i in arr[0]){
+                            $("#"+i).val(arr[0][i]);
+                        
+                            }
+                        
+                        }
+                        
+                        setSub($("#ID").val(),$("#RID").val(),parseInt($("#LVL").val()));
+                        
+                        
+                        });
+    }
+
+
+    function loadActTask(aid){
+        var obj={};
+        obj["Class"]="CommonDataEngine";
+        obj["O"]="Q";
+        obj["T"]="TASK t LEFT JOIN ACT_TASK at ON t.tid=at.id left join (SELECT case when sum(mspan) is null then 0 else sum(mspan) end AS sum,t.tid AS TTID FROM TASK  t left join event e on e.tid=t.tid WHERE TSTS!='D' and CSTS!='D' GROUP BY t.TID )  c on c.ttid=t.tid ";
+        obj["C"]="TNAME,TID,TTIME,sum";
+        obj["W"]=" AID='"+aid+"' and at.CSTS!='D' and t.tsts!='D' order by ttime ";
+        asyncommunicate(obj,function(data){
+                        
+                       // alert(data);
+                        var html=[];
+                        var list=JSON.parse(data);
+                        var tmpl='<tr id="e#TID#"><td>#TTIME#</td><td>#TNAME#</td><td>#sum#</td><td><a onclick="delAT(\'#TID#\')">X</a></td></tr>';
+                        var total=0.00;
+                        for(var i=0;i<list.length;i++){
+                        var record=tmpl;
+                        for(var key in list[i]){
+                        var regex=new RegExp("#"+key+"#","gi");
+                        console.log(key);
+                        record=record.replace(regex,list[i][key]);
+                        }
+                        total+=parseFloat(list[i]["sum"]);
+                        html.push(record);
+                        
+                        }
+                        var tt=total/60;
+                        $("#thour").html(tt.toFixed(2)+"小时");
+                        
+                        $("#tlst").html(html);
+                        
+                        });
+
+
+    }
+    function firstcall(){
+        initFields();
+        //if(byApp()){
+       // $("#lst").html("<a onclick=\"loadSubGoals();\">"+lanMap["REFRESH"]+"</a>")
+        // }
+        var obj=GetRequest();
+        var tid="";
+        var pid="";
+        var rid="";
+        var lvl="";
+        if(obj){
+            tid=obj["ID"];
+            rid=obj["RID"];
+            pid=obj["PID"];
+            lvl=obj["LVL"];
+            if(pid){//子目标 新增
+                
+                PID=pid;
+                $("#PID").val(pid);
+                if(rid){
+                 RID=rid;
+                 $("#RID").val(rid);
+                }
+            
+            
+            }
+            if(lvl){
+                $("#LVL").val(parseInt(lvl)+1);
+            }
+           
+           if(tid){//编辑
+               
+               
+             TID=tid;
+            
+            
+             loadSubGoals();
+             loadActTask(tid);
+             
+             $("#ID").val(tid);
+             setSub(TID,RID,lvl);
+             
+             setTimeout(function(){
+                        loadTask(tid);
+                        
+                        },100);
+                        if(byApp()){
+                            $("#qrlink").show();
+                            $("#btnShare").show();
+                        }
+                       
+            }else{//新增
+                
+               $("#sg").hide();
+               $("#qrlink").hide();
+               $("#btnShare").hide();
+           }
+           
+        }
+        
+        
+    }
+
+function setSub(tid,rid,lvl){
+    
+    var url="add.html?PID="+tid;
+    if(rid){//传递rid
+        
+        url+="&RID="+rid;
+    }else{
+        url+="&RID="+tid;//父节点
+        
+    }
+    if(lvl){
+        url+="&LVL="+(parseInt(lvl));
+    }
+    $("#sg").attr("href",url);
+    
+
+}
+
+
+    function submitForm(){
+        var obj=getFormJson("#formid");
+        
+        obj["Class"]="CommonDataEngine";
+        console.log(JSON.stringify(obj));
+        asyncommunicate(obj,function(data){
+                        //dismiss();
+                        backgo();
+                        
+                        });
+    }
+
+
+    
+     </script>
+
+</html>

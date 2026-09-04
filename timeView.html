@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>移动端时间甘特图</title>
+  <link rel="stylesheet" type="text/css" href="mod/bootstrap/css/bootstrap.min.css" />
+  <script src="js/jquery.min.js"></script>
+  <script src="js/echarts.min.js?v=1.1"></script>
+  <script src="mod/moment/moment.min.js"></script>
+ 
+  <style>
+    #main {
+      width: 100%;
+      height: 640px;
+    }
+      
+      .btn-wrapper {
+        text-align: center;
+        margin-top: 15px;
+      }
+  </style>
+</head>
+
+<body  >
+  <div id="main"></div>
+  <div class="btn-wrapper">
+    <button id="selectAll" class="btn btn-primary">全选</button>
+    <button id="unSelectAll" class="btn btn">全不选</button>
+  </div>
+
+  <script>
+    const myChart = echarts.init(document.getElementById('main'));
+
+    // ======================
+    // 你的真实数据格式
+    // ======================
+    const rawData = [
+      {
+        "taskName": "饮食",
+        "startTime": "2026-06-25 11:43:00",
+        "endTime": "2026-06-25 12:16:00",
+        "exeName": "早餐",
+        "exeId": "67a2cd0496bd420b9564a188295c22e9",
+        "eventDate": "2026-06-25",
+      },
+      {
+        "taskName": "饮食",
+        "startTime": "2026-06-25 18:00:00",
+        "endTime": "2026-06-25 19:20:00",
+        "exeName": "晚餐",
+        "exeId": "67a2cd0496bd420b9564a188295c22e0",
+        "eventDate": "2026-06-25",
+      },
+      {
+        "taskName": "工作",
+        "startTime": "2026-06-25 09:00:00",
+        "endTime": "2026-06-25 11:30:00",
+        "exeName": "开发",
+        "exeId": "67a2cd0496bd420b9564a188295c22e1",
+        "eventDate": "2026-06-25",
+      },
+      {
+        "taskName": "工作",
+        "startTime": "2026-06-26 14:00:00",
+        "endTime": "2026-06-26 17:00:00",
+        "exeName": "会议",
+        "exeId": "67a2cd0496bd420b9564a188295c22e2",
+        "eventDate": "2026-06-26",
+      }
+    ];
+    /**
+     * 根据 任务名+事项名 生成稳定随机颜色
+     * @param {string} taskName - 任务名称
+     * @param {string} exeName  - 事项名称
+     * @returns {string} hsl 颜色字符串
+     */
+    function generateColor(exeName) {
+      const str =exeName ;//(taskName || '') + '|' + (exeName || '');
+
+      // 简单稳定哈希
+      let hash = 0;
+      for (let i = 0; i < str.length; i++) {
+        hash = str.charCodeAt(i) + ((hash << 5) - hash);
+      }
+      hash = hash & hash; // 转成正数
+
+       // HSL 保证柔和好看：
+      // 色相 0~360 随机
+      // 饱和度 55~75%
+      // 亮度 45~65%
+      const hue = Math.abs(hash) % 360;
+      const saturation = 55 + (Math.abs(hash >> 4) % 20);
+      const lightness = 45 + (Math.abs(hash >> 6) % 20);
+
+      return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+    }
+      
+    
+    function firstcall() {
+
+      var obj = {};
+      var endTime = moment().subtract(1, "days").format("YYYY-MM-DD");
+      var startTime = moment().subtract(7, "days").format("YYYY-MM-DD");
+
+      obj["startTime"] = startTime
+      obj["endTime"]=endTime
+      obj["exeCode"] = "eventQuery";
+      obj["Class"] = "CommonDataEngine";
+      asyncommunicate(obj, function (data) {
+        //下载idTag
+        let list= JSON.parse(data).filter(item=>item.startTime&&item.endTime);
+        initChart(list)
+
+
+      });
+    }
+    // 时间字符串 => 当天分钟数
+    function timeToMinutes(timeStr,eventDate) {
+      console.log("timeStr:"+timeStr)
+      const [datePart, timePart] = timeStr.split(' ');
+      // 结束时间是次日 00:00，按当天 24:00 算
+      if (datePart !== eventDate && timePart.startsWith('00:00')) {
+        return 1440; // 24:00
+      }
+
+      const [h, m] = timePart.split(':').map(Number);
+      return h * 60 + m;
+    }
+
+    function initChart(rawData) {
+      // 收集所有日期（X轴）
+      const dateSet = new Set();
+      rawData.sort((a, b) => a.taskName.localeCompare(b.taskName));
+      rawData.forEach(item => dateSet.add(item.eventDate));
+      const dateList = Array.from(dateSet).sort();
+
+      // 按 exeName 分组（每个 exeName 一个 series）
+      const groupByExe = {};
+      rawData.forEach(item => {
+        const key = item.exeName;
+        if (!groupByExe[key]) groupByExe[key] = [];
+        groupByExe[key].push(item);
+      });
+      
+      const legendNames = Object.keys(groupByExe);
+      const colors = legendNames.map(item=>generateColor(item))
+      
+      // 配色
+      //const colorList = ['#409eff', '#67c23a', '#e6a23c', '#f56c6c', '#9c6cf5', '#0fc6c2'];
+
+      // 构造 series
+      const series = Object.keys(groupByExe).map((exeName, idx) => {
+        //const color = generateColor(exeName);
+        const data = groupByExe[exeName];
+        return {
+          name: exeName,
+          type: 'custom',
+          renderItem: function (params, api) {
+            const barWidth = 22;
+            const x = api.coord([api.value(0), 0])[0];
+            const yStart = api.coord([0, api.value(1)])[1];
+            const yEnd = api.coord([0, api.value(2)])[1];
+
+            return {
+              type: 'rect',
+              shape: {
+                x: x - barWidth / 2,
+                y: yStart,
+                width: barWidth,
+                height: yEnd - yStart
+              },
+              style: api.style({
+                //fill: color,
+                opacity: 0.75
+              })
+            };
+          },
+          data: data.map(item => {
+            
+            const xIndex = dateList.indexOf(item.eventDate);
+            const startMin = timeToMinutes(item.startTime,item.eventDate);
+            const endMin = timeToMinutes(item.endTime,item.eventDate);
+            // 这里用算法自动生成颜色
+            
+            return {
+              value: [xIndex, startMin, endMin],
+              item: item,
+            };
+          })
+        };
+      });
+
+      const option = {
+          color:colors,
+          title: {
+            text: '时间块分布图',
+            left: 'center',       // 居中
+            top: 0,               // 距离顶部距离
+            textStyle: {
+              fontSize: 16,
+              fontWeight: 'bold'
+            }
+          },
+        tooltip: {
+          formatter: (params) => {
+            const it = params.data.item;
+            const startTime = it.startTime.split(' ')[1].substring(0, 5);
+            const endTime = it.endTime.split(' ')[1].substring(0, 5);
+            return `
+        ${params.seriesName} -
+        ${it.taskName}<br/>
+        ${it.eventDate}<br/>
+        ${startTime} ~ ${endTime}
+      `;
+          }
+        },
+        legend: {
+          data: Object.keys(groupByExe),
+          bottom: 10
+        },
+        grid: {
+          left: 80, right: 50, top: 60, bottom: 190
+        },
+        xAxis: {
+          type: 'category',
+          data: dateList,
+          axisLabel: {
+                    fontSize: 11,
+                    // ========== 日期倾斜显示 ==========
+                    rotate: -30,    // 倾斜角度
+                    //margin: 15 ,
+                    align: 'left' // 对齐方式
+          }
+        },
+        yAxis: {
+          type: 'value',
+          min: 0,
+          max: 1440,
+          interval: 60,
+          axisLabel: {
+            formatter: val => {
+              const h = Math.floor(val / 60);
+              const m = val % 60;
+              return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
+            }
+          }
+        },
+        series: series
+      };
+      myChart.setOption(option);
+      
+      
+      document.getElementById('selectAll').onclick = function () {
+        legendNames.forEach(name => {
+          myChart.dispatchAction({ type: 'legendSelect', name: name });
+        });
+      };
+      document.getElementById('unSelectAll').onclick = function () {
+        legendNames.forEach(name => {
+          myChart.dispatchAction({ type: 'legendUnSelect', name: name });
+        });
+      };
+    }
+
+    window.addEventListener('resize', () => myChart.resize());
+  </script>
+  
+  <script src="js/common.js"></script>
+</body>
+<script src="js/com_app.js"></script>
+</html>

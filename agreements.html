@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <!-- 移动端适配 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>极限任务 - 服务协议汇总</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Microsoft YaHei", sans-serif;
+        }
+        body {
+            background-color: #f5f7fa;
+            padding: 40px 16px;
+            min-height: 100vh;
+        }
+        .wrap {
+            max-width: 680px;
+            margin: 0 auto;
+        }
+        .page-title {
+            text-align: center;
+            font-size: 24px;
+            color: #1a1a1a;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        .page-desc {
+            text-align: center;
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 40px;
+            line-height: 1.6;
+        }
+        .protocol-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        .protocol-card {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 22px 20px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+            cursor: pointer;
+            transition: all 0.24s ease;
+            border: 1px solid #eee;
+        }
+        .protocol-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.09);
+            border-color: #4096ff;
+        }
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .card-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1f2937;
+        }
+        .arrow {
+            color: #999;
+            font-size: 20px;
+        }
+        .card-tip {
+            font-size: 13px;
+            color: #737373;
+            line-height: 1.55;
+        }
+        .card-link {
+            display: block;
+            text-decoration: none;
+        }
+        .footer-note {
+            margin-top: 60px;
+            text-align: center;
+            font-size: 12px;
+            color: #aaa;
+        }
+    </style>
+</head>
+<body>
+    <div class="wrap">
+        <h1 class="page-title">极限任务 全部服务协议</h1>
+        <p class="page-desc">使用APP前，请完整阅读以下协议，点击卡片查看完整文档</p>
+
+        <div class="protocol-list">
+            <!-- 1. 用户协议 -->
+            <a class="card-link" href="https://dododido.cn/service/protocol.html" target="_blank">
+                <div class="protocol-card">
+                    <div class="card-header">
+                        <div class="card-title">用户协议</div>
+                        <span class="arrow">›</span>
+                    </div>
+                    <div class="card-tip">包含账户注册、使用规范、服务变更、账号注销、平台权责等全部使用规则</div>
+                </div>
+            </a>
+
+            <!-- 2. 隐私政策 -->
+            <a class="card-link" href="https://dododido.cn/service/privacy.html" target="_blank">
+                <div class="protocol-card">
+                    <div class="card-header">
+                        <div class="card-title">隐私政策</div>
+                        <span class="arrow">›</span>
+                    </div>
+                    <div class="card-tip">说明个人信息收集、本地存储、数据同步、隐私条款更新相关规则</div>
+                </div>
+            </a>
+
+            <!-- 3. 自动续费服务协议 -->
+            <a class="card-link" href="https://dododido.cn/service/renewal.html" target="_blank">
+                <div class="protocol-card">
+                    <div class="card-header">
+                        <div class="card-title">自动续费服务协议</div>
+                        <span class="arrow">›</span>
+                    </div>
+                    <div class="card-tip">会员自动续费开通、扣款规则、关闭路径、价格调整、争议处理相关约定</div>
+                </div>
+            </a>
+        </div>
+
+        <div class="footer-note">
+            © 2026 极限任务APP 版权所有
+        </div>
+    </div>
+</body>
+</html>

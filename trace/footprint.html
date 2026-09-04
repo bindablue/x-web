@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <title>世界地图 - 轨迹</title>
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/echarts/map/js/world.js"></script>
+  <script src="../mod/swiper/swiper.min.js"></script>
+  <script src="../js/jquery.min.js"></script>
+  <script src="../js/common.js"></script>
+  <script src="../js/meta.js"></script>
+  <!-- <script src="../js/echarts.min.js"></script> -->
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    #map {
+      width: 100vw;
+      height: 100vh;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="map"></div>
+
+  <script>
+    // 1. 初始化图表
+    const myChart = echarts.init(document.getElementById('map'));
+
+    // 2. 你的设备数据
+    let deviceData = [
+      { deviceId: 'D001', createTime: '2026-07-01 08:00:00', latitude: 39.9042, longitude: 116.4074 },
+      { deviceId: 'D001', createTime: '2026-07-01 09:00:00', latitude: 31.2304, longitude: 121.4737 },
+      { deviceId: 'D001', createTime: '2026-07-01 10:00:00', latitude: 22.3193, longitude: 114.1694 },
+      { deviceId: 'D002', createTime: '2026-07-01 08:30:00', latitude: 40.7128, longitude: -74.0060 },
+      { deviceId: 'D002', createTime: '2026-07-01 09:30:00', latitude: 51.5074, longitude: -0.1278 },
+      { deviceId: 'D002', createTime: '2026-07-01 10:30:00', latitude: 35.6762, longitude: 139.6503 },
+    ];
+
+   
+
+    function firstcall() {
+
+      loadData()
+    }
+    //renderMap()
+
+    function loadData() {
+
+      let obj={}
+
+      obj["Class"] = "CommonDataEngine";
+      obj["exeCode"] = "locationQuery"
+      obj["startTime"]="2019-05-01"
+      obj["endTime"]="2026-06-01"
+
+      //obj["eventDate"] = today;
+     
+      asyncommunicate(obj, function (data) {
+
+        try {
+          
+          deviceData = JSON.parse(data);
+          console.log(JSON.stringify(deviceData))
+
+          renderMap();
+        }
+        catch (e) {
+          console.log(e)
+        }
+
+
+      })
+
+
+    }
+
+
+
+
+
+
+    function renderMap() {
+      // 按 deviceId 分组
+      const deviceMap = {};
+      deviceData.forEach(item => {
+        if (!deviceMap[item.state]) deviceMap[item.state] = [];
+        deviceMap[item.state].push(item);
+      });
+
+      // 按时间排序
+      Object.values(deviceMap).forEach(points => {
+        points.sort((a, b) => new Date(a.createTime) - new Date(b.createTime));
+      });
+      let lastPoint;
+      // 构造轨迹 & 点位
+      const lineData = [];
+      const scatterData = [];
+      const colors = ['#ff4d4f', '#1890ff', '#52c41a', '#faad14'];
+
+      Object.entries(deviceMap).forEach(([did, points], idx) => {
+        const color = colors[idx % colors.length];
+        const coords = points.map(p => [p.longitude, p.latitude]);
+        const sdid = did
+
+        if (coords.length > 1) {
+          lineData.push({
+            name: sdid,
+            coords: coords,
+            lineStyle: { color, width: 2 }
+          });
+        }
+
+        console.log(lineData)
+
+        const last = points[points.length - 1];
+        lastPoint= last
+        scatterData.push({
+          name: sdid,
+          value: [last.longitude, last.latitude, last.createTime],
+          itemStyle: { color }
+        });
+      });
+
+      const option = {
+        tooltip: {
+          trigger: 'item',
+          formatter: p => {
+            if (p.seriesType === 'effectScatter') {
+              // ========== 【关键修改3】从 p.data 取时间，从 p.value 取经纬度 ==========
+              const lng = p.value[0];
+              const lat = p.value[1];
+              const time = p.value[2]; // 从顶层 data 取时间
+              return `
+                设备：${p.name}<br>
+                时间：${time}<br>
+                经纬度：${lat}, ${lng}
+              `;
+            }
+            return p.name;
+          }
+        },
+        legend: {
+          data: Object.keys(deviceMap),
+          top: 10,
+          left: 'center'
+        },
+        geo: {
+          map: 'world',
+          roam: true,
+          zoom: 25,  
+          center: [lastPoint.longitude, lastPoint.latitude],
+          itemStyle: {
+            areaColor: '#f3f4f6',
+            borderColor: '#d1d5db'
+          },
+          emphasis: {
+            disabled: true, // 完全禁用区域高亮（最稳）
+            itemStyle: { areaColor: '#e5e7eb' }
+          }
+        },
+        series: [
+
+          {
+            type: 'effectScatter',
+            coordinateSystem: 'geo',
+            data: scatterData,
+            symbolSize: 5,
+            symbol: 'circle', // 圆形点
+            // 2. 涟漪效果（让点更显眼）
+            rippleEffect: {
+              scale: 3, // 涟漪扩散倍数
+              brushType: 'stroke' // 描边扩散
+            },
+            zlevel: 11,
+            label: {
+              show: true,
+              position: 'right',
+              formatter: '{b}'
+            }
+          },
+          {
+            type: 'lines',
+            coordinateSystem: 'geo',
+            polyline: true,
+            data: lineData,
+            zlevel: 1,
+            effect: {
+              show: true,
+              period: 6,
+              symbol: 'arrow',
+              symbolSize: 5
+            }
+          }
+        ]
+      };
+
+      myChart.setOption(option);
+      window.addEventListener('resize', () => myChart.resize());
+    }
+  </script>
+</body>
+
+</html>

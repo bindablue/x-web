@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+		<meta charset="utf-8" />
+		<title>管理系统</title>
+		<meta name="description" content="top menu &amp; navigation" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+
+		<!-- bootstrap & fontawesome -->
+		<link rel="stylesheet" href="assets/css/bootstrap.min.css" />
+		<link rel="stylesheet" href="assets/font-awesome/4.5.0/css/font-awesome.min.css" />
+
+		<!-- page specific plugin styles -->
+
+		<!-- text fonts -->
+		<link rel="stylesheet" href="assets/css/fonts.googleapis.com.css" />
+
+		 
+		 
+		<link rel="stylesheet" href="assets/css/ace-skins.min.css" />
+		<link rel="stylesheet" href="assets/css/ace-rtl.min.css" />
+    	<script src="assets/js/jquery-2.1.4.min.js"></script>
+       <script src="js/common.js"></script>
+       <script src="js/shop.js"></script>
+	  
+	</head>
+
+	<body class="container" style="padding-top:1rem">
+		 <div id="infoset" style="display:none" class="text-center">
+		                  
+						           <img class="avatar" style="border-radius:10px;" width="50px" height="50px" src="img/x.jpg" alt="头像" />
+ 								    <a class="uname">您的昵称 </a>
+								    <br/>
+						             <br/>
+									<a onclick="goframe('html/user/reset.html')">
+										<i class="ace-icon fa fa-cog"></i>
+										密码设置
+									</a>
+								 
+									<a  class="hide" onclick="goframe('html/user/infoset.html')">
+										<i class="ace-icon fa fa-user"></i>
+										 个人信息设置
+									</a >
+									<a onclick="goframe('ownorder.html')" >
+									<i class="ace-icon fa fa-user"></i>
+									 我的订单
+									</a>
+									 <button class=" btn btn-xs btn-success" onclick="showlogin(cb)"> 重新登录 </button>
+			 </div>
+			 <div id="login"  style="display:none;" class="text-center">
+			   <button class=" btn btn-lg btn-danger" onclick="showlogin(cb);"> 
+			   请登录
+			   </button>
+			   
+			   
+			 </div>
+
+								 
+									 
+
+				<nav role="navigation"  >
+					<ul class="nav navbar-nav" id="syslist" >
+						
+
+						
+						
+						
+						 
+					</ul>
+
+				 
+				</nav>
+			 
+
+		<div class="main-container ace-save-state" id="main-container">
+			 
+ 
+		</div><!-- /.main-container -->
+
+		
+		<script type="text/javascript">
+			if('ontouchstart' in document.documentElement) document.write("<script src='assets/js/jquery.mobile.custom.min.js'>"+"<"+"/script>");
+		</script>
+		<script src="assets/js/bootstrap.min.js"></script>
+
+		 
+		 
+
+		<!-- inline scripts related to this page -->
+		<script type="text/javascript">
+			 
+		</script>
+		 
+	
+		<script>
+	function cb(data){
+		 
+		 
+	}
+	
+	function userLogin(data){
+		 
+		firstcall();
+	}
+	 
+	  
+	 function getOneMenu(){
+		var m=['<div style="padding:10px;height:80px;" class=" text-center col-sm-4 col-xs-4" >',
+		   '<div onclick="goframe(\'#url#\')">',
+				'<i class="menu-icon fa-2x  #ico#"></i></br>',
+				'<span class="menu-text" style="display:inline-block;overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">#mname#</span>',
+			'</div>',
+
+			 
+		'</div>'];
+		 
+		 return  m.join("");//'<li><a href="#" onclick="goframe(\'#url#\')"><span class="#ico#" aria-hidden="true"></span>&nbsp;#mname#</a></li>';
+
+	 }
+	 
+	 
+	 
+	 function getTopMenu(){
+		 
+		 var  
+		 arr=['<div class="text-center" style="padding:8px 0px;">#mname#</div>',
+			 
+		   
+	        '<div class="submenu col-sm-12 col-xs-12"> <div id="#mcode#" ></div></div>  ']
+		 return arr.join("");
+	 }
+	 var menus=[];
+	  
+	 
+	 
+	 function makemenu(){
+		 
+		 
+			var list = menus;
+				var scans = [];
+				var regex;
+				var one;
+				$("#syslist").html("");
+				if(menus.length>0){
+					$("#login").hide();
+				}
+				
+				for ( var i in list) {
+					if (list[i]["mtype"] == "f" ||
+							!list[i]["pcode"]) {
+
+						continue;
+					}
+					
+					 if($.inArray(list[i]["mcode"], scans)!=-1){
+			            	console.log(list[i]["mcode"]+" has dealed.");
+			            	continue;
+			            }
+					 scans.push(list[i]["mcode"]);
+					 
+					console.log(i);
+					var length = $("#" + list[i]["syscode"]).length;
+
+					if (length == 0) {
+
+						
+						var tmpl = '<div class="clearfix"  style="margin-top:5px;">  <div class="text-center">'
+								+ "<h4>"+list[i]['sysname']+"</h4>"
+								+ '</div><div id="'+list[i]["syscode"]+'" > </div></div>';
+
+						$("#syslist").append(tmpl);
+					}
+					console.log(list[i]);
+
+					one = getOneMenu();
+					for ( var key in list[i]) {
+						regex = new RegExp("#" + key + "#", "gi");
+						one = one.replace(regex, list[i][key]);
+
+					}
+
+					$("#" + list[i]["syscode"]).append(one);
+
+				}
+
+			}
+
+			function loadmenu() {
+				postData({}, "/rest/user/mymenus", function(data) {
+
+					console.log(data);
+					menus = data;
+					makemenu();
+
+				});
+
+			}
+
+			function lastdays() {
+
+				var now = new Date();
+				var firstDay = new Date(now.getFullYear(), 0, 1);
+				//计算当前时间与本年第一天的时差(返回一串数值，代表两个日期相差的毫秒数)
+				var dateDiff = now - firstDay;
+				//一天的毫秒数
+				var msPerDay = 1000 * 60 * 60 * 24;
+				//计算天数
+				var diffDays = Math.ceil(dateDiff / msPerDay);
+				return diffDays;
+			}
+
+			function getuserinfo() {
+				//加载手机号，邮箱
+				var obj = {};
+
+				postData(obj, "/rest/user/info", function(data) {
+					 
+					try {
+                       if(!data){
+							
+							showLogin(cb);
+						}
+                     
+						if ( typeof (data) == "undefined") {
+							
+							return;
+						}
+						
+						
+						console.log("data:" + data);
+                         $("#login").hide();
+                         $("#infoset").show();
+						var list = [ data ];
+
+						for (var i = 0; i < list.length; i++) {
+							console.log(list[i]["avatar"])
+							if (list[i]["avatar"]) {
+
+								$(".avatar").attr(
+										"src",
+										list[i]["avatar"].replace("http:",
+												"https:"));
+							}
+
+						}
+					} catch (e) {
+						console.log(e);
+					}
+				});
+
+			}
+			function firstcall() {
+
+				
+
+				getuserinfo();
+				loadmenu();
+				checkSts(0);
+				setInterval(function() {
+
+					checkSts(1);
+				}, 120000);
+				loadcurrentrole();
+
+			}
+			function checkSts(v) {
+
+				postData({}, "/rest/user/status", function(data) {
+					console.log(data);
+					if (data["UNAME"]) {
+						$(".uname").html(data["UNAME"]);
+						$("#sts").html(
+								'<i class="fa fa-circle text-success"></i>在线');
+					} else {
+						 
+                        $("#login").show();
+                        $("#infoset").hide(); 
+						$("#sts").html(
+								'<i class="fa fa-circle text-warning"></i>离线');
+						if (v == 0) {
+							//logout();
+						}
+						return;
+					}
+
+					if (data["CTIME"]) {
+
+						$(".regtime").html(data["CTIME"]);
+					}
+
+				});
+				getmsg();
+			}
+
+			function logout() {
+
+				postData({}, "/rest/user/logout", function(data) {
+
+					// window.location.href="html/user/login.html";
+
+				});
+			}
+
+			function loadcurrentrole() {
+
+			}
+
+			function goframe(url) {
+				goHtml(url);
+			}
+		</script>
+		 
+		
+		 
+		
+		
+		
+	</body>
+</html>

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<body>
+<script>
+window.onload = function() {
+  try {
+    // 1. 读取
+    const sid = document.cookie || '';
+
+    // 2. 发给 iOS
+    window.webkit.messageHandlers.sessionBridge.postMessage({
+      sid: sid
+    });
+
+    // 3. 立即清理（防止重复绑定）
+//    localStorage.removeItem('invite_sid');
+
+  } catch(e) {}
+};
+</script>
+</body>
+</html>

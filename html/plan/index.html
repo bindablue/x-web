@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <!--        <meta name="format-detection" content="telephone=no">-->
+        <meta charset="UTF-8"> 
+        <meta name="msapplication-tap-highlight" content="no">
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+       
+        <title>任务列表</title>
+        
+        <link rel="stylesheet" type="text/css" href="../../mod/bootstrap/css/bootstrap.min.css"/>
+          <link rel="stylesheet" type="text/css" href="../../css/common.css"/>
+        <script src="../../js/jquery.min.js"></script>
+        <script src="../../js/common.js"></script>
+        <script>
+          
+          function firstcall(){
+               loadTask();
+          }
+            function getTmpl(){
+                var tmpl="<tr><td style=''>#tname#</td><td>#ttime#</td>"+
+                "<td><span  class=\"glyphicon glyphicon-remove\" onclick=\"del('#tid#')\"></span></td>"+
+                "<td><span  class=\"glyphicon glyphicon-pencil\" onclick=\"goUpdate('#tid#');\"></span></td>"+
+                "<td><span  class=\"glyphicon glyphicon-info-sign\" onclick=\"goD('#turl#');\"></span></td>"+
+                "</tr>";
+                
+                return $("#tmpl").html();
+                
+            }
+        
+        function refreshData(){
+            setTimeout(function(){loadTask()},500);
+            
+        }
+         var cnt=0;
+        function callback(data){
+            try{
+                var cl="primary,success,info,warning,danger";
+                var classes=cl.split(",");
+                var list=JSON.parse(data);
+                var html="";
+                var tmpl=getTmpl();
+                var regex;
+                for (var i in list){
+                    var one=tmpl;
+                    for(var key in list[i]){
+                        regex=new RegExp("#"+key+"#","gi");
+                        one=one.replace(regex,list[i][key]);
+                        var num=i%5;
+                        one=one.replace("#class#","panel-"+classes[i%5]);
+                    }
+                    html+=one;
+                    
+                }
+                if(cnt!=list.length){
+                    if($("#refcnt").length==0){
+                        //$("body").prepend("<div id='refcnt'  >已更新"+(list.length-cnt)+"条记录</div>");
+                        
+                        $("#tips").html("已查询"+(list.length)+"条记录");
+                    }
+                    cnt=list.length;
+                    setTimeout(function(){
+                               $("#tips").html('');//$("#refcnt").remove();
+                               },1000);
+                }
+                
+                $("#response").html(html);
+                
+            }catch(ex){
+                
+                $("#response").html(ex);
+            }
+            
+
+        }
+        function del(tid){
+            
+            var obj={"tid":tid};
+            obj["Class"]="TaskDataEngine";
+            obj["op"]="del";
+            communicate(obj,function(data){
+                        alert(data);
+                        loadTask()
+                        });
+        }
+        
+        function loadTask(){
+            var obj=getFormJson("#formid");
+            obj["Class"]="TaskDataEngine";
+             obj["keyword"]=$("#sname").val();
+            communicate(obj,callback);
+        }
+        
+        
+        
+     
+        
+        </script>
+        
+        <style>
+            
+            
+        
+            </style>
+       
+    </head>
+    <body>
+       
+      
+
+          <div class="container"  >
+              <div id="hh"  >
+                  <button type="button" class="btn btn-primary"  style="float:left;width:50px;margin-bottom:5px;" onclick="dismiss();" >
+                     <span  class="glyphicon glyphicon-chevron-left"></span>
+                  </button>
+                  
+                  
+                  <input  id="sname" name="keyword" style="float:left;margin-left:10px;width:60%;" placeholder="输入标题关键字进行搜索" class="sname form-control" oninput="loadTask()"  required />
+                  <div id="tips" style="float:left;width:100%;text-align:center;">已更新0条</div>
+              </div>
+        <form id="formid">
+        <input type="hidden" name="op" value="get"/>
+       </form>
+    <div class="table"  id="response" style="width:100%;margin-top:50px;">
+    </div>
+ 
+<div id="tmpl" style="display:none;">
+
+
+<div class="panel #class#" style="margin-top:10px;word-wrap:break-word;">
+    <div class="panel-heading">
+        <h3 class="panel-title">#tname#
+           
+           
+            <span  style="float:right;margin-right:10px;" class="glyphicon glyphicon-info-sign" onclick="webGotoRemote('#turl#');"></span>
+     </h3>
+    </div>
+    <div class="panel-body">
+       #ttime# #tcontent#
+    </div>
+</div>
+    
+
+
+ </div>
+     
+     
+      <script>
+           
+      function goUpdate(tid){
+          var dir="html/plan";
+          var page="add.html?tid="+tid;
+          webGotoLocal(dir,page);
+        }
+      function goDetail(tid,turl){
+          
+          if(turl){
+          webGotoRemote(turl);
+           }else {
+          //var dir="html/plan";
+          //var page="add.html?tid="+tid;
+          //webGotoLocal(dir,page);
+          }
+      }
+      
+      </script>
+        </div>
+
+    </body>
+</html>

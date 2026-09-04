@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+      
+<!--        <meta name="format-detection" content="telephone=no">-->
+        <meta charset="UTF-8"> 
+        <meta name="msapplication-tap-highlight" content="no">
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+       
+        <title>x0.16</title>
+        <link rel="stylesheet" type="text/css" href="../../mod/swiper/swiper.min.css">
+        <link rel="stylesheet" type="text/css" href="../../css/common.css"/>
+        <link rel="stylesheet" type="text/css" href="../../mod/bootstrap/css/bootstrap.min.css"/>
+       
+        <script src="../../js/jquery.min.js"></script>
+        <script src="../../js/common.js"></script>
+        
+
+        <script>
+           
+            
+            function firstcall(){
+                initFields();
+                loadTask();
+                if(!byApp()){
+                    $("#tl").append('<li role="presentation" ><a href="add.html"> <span class="glyphicon glyphicon-plus"></span></a></li>');
+                }
+            }
+        function initFields(){
+            for(var i=0;i<tasktype.length;i++){
+                var ttmpl=$("#ttmpl").html();
+                var atmpl=$("#atmpl").html();
+                var reg=new RegExp("#V#","g");
+                ttmpl=ttmpl.replace(reg,tasktype[i]["v"]);
+                atmpl=atmpl.replace(reg,tasktype[i]["v"]);
+                reg=RegExp("#M#","gi");
+                ttmpl=ttmpl.replace(reg,tasktype[i]["m"]);
+                reg=RegExp("#TT#","gi");
+                ttmpl=ttmpl.replace(reg,tasktype[i]["k"]);
+                atmpl=atmpl.replace(reg,tasktype[i]["k"]);
+                $("#tl").append(atmpl);
+                $(".container").append(ttmpl);
+            }
+            
+        }
+        
+        function loadData(){
+            
+           
+            console.log("开始更新。。。");
+            
+            
+        }
+        
+        function refreshData(){
+            setTimeout(function(){loadTask();},500);
+        }
+        
+        function  scroll(id) {
+            var scroll_offset =$(id).offset(); //得到pos这个div层的offset，包含两个值，top和left
+            $("body,html").animate({
+                                   scrollTop:scroll_offset.top //让body的scrollTop等于pos的top，就实现了滚动
+                                   },0);
+        }
+        
+        </script>
+        <style>
+   
+  
+         
+      </style>
+    </head>
+    <body>
+        
+        <div class="container" style="margin-top:80px;" >
+            
+        
+            <div   class="btn-group-vertical" style="position:fixed;left:3px;bottom:6px;">
+                <ul  id="tl" class="nav nav-pills nav-stacked" role="tablist">
+                  
+                   
+                    
+                   
+                </ul>
+                
+          
+              
+            </div>
+              <form id="formid">
+             <input type="hidden" name="op" value="get"/>
+              </form>
+        </div>
+        
+        
+        <div id="hh"  >
+            <button type="button" class="btn btn-back btn-primary"  style="float:left;width:50px;margin-bottom:5px;" onclick="dismiss();" >
+                <span  class="glyphicon glyphicon-chevron-left"></span>
+            </button>
+
+            
+            <input  id="sname" name="keyword" style="float:left;margin-left:10px;width:60%;height:32px;" placeholder="输入标题关键字进行搜索"
+            class="sname PH-KEYWORD" oninput="loadTask()"  required />
+            <button  type="button" class="btn btn-primary"  onclick="archive()" >
+                <span  id="arc" class="glyphicon glyphicon-volume-off"    ></span> </button>
+            <div id="tips" style="float:left;width:100%;text-align:center;">...</div>
+        </div>
+        
+          <input id="csts" type="hidden" value="C"/>
+        
+        <div id="ttmpl" class="hidden">
+            <div name="M#TT#" class="media ">
+                <a class="media-left media-top" href="#">
+                    <img src="../../img/#M#" alt="..." width="32" height="32"/>
+                </a>
+                <div class="media-body">
+                    <h4  id="T#TT#" class="media-heading">#V#</h4>
+                    <table class="table" id="type#TT#">
+                    </table>
+                </div>
+            </div>
+            
+        </div>
+        <div id="atmpl" class="hidden">
+            <li role="presentation">
+<!--                <a  onclick="scroll('#type#TT#')">#V#</a>-->
+<a  href="#type#TT#">#V#</a>
+            </li>
+            
+        </div>
+        
+
+        
+    </body>
+    
+    <script>
+        
+        function archive(){
+            if($("#csts").val()=="C"){//show
+                
+                $("#arc").removeClass("glyphicon glyphicon-volume-off");
+                $("#arc").addClass("glyphicon glyphicon-volume-down");
+                $("#csts").val("A");
+                
+            }else{
+                $("#arc").removeClass("glyphicon glyphicon-volume-down");
+                $("#arc").addClass("glyphicon glyphicon-volume-off");
+                $("#csts").val("C");
+            }
+            loadTask();
+            
+        }
+    
+ 
+    
+        function loadTask(){
+        var obj=getFormJson("#formid");
+        obj["keyword"]=$("#sname").val();
+        obj["Class"]="TaskDataEngine";
+        //asyncommunicate(obj,callback);
+        obj={};
+        obj["O"]="Q";
+        obj["C"]="ttype,tname,ttime,tid,turl,count1";
+        obj["Class"]="CommonDataEngine";
+        obj["T"]="( SELECT t.tid,tname,ttime,turl,ttype,tsts,case when p.cnt is null then 0 else p.cnt end as count1 from task t left join (select count(1) as cnt,tid from event where csts!='D' group by tid) p on t.tid=p.tid  where tsts!='D') TASK ";
+        obj["W"]="1=1 AND tsts='"+$("#csts").val()+"' AND tname like '%"+$("#sname").val()+"%' order by ttime";
+        asyncommunicate(obj,callback);
+        
+                                    
+    }
+                                  
+    function getTmpl(){
+        
+        return "<tr class='#CLASS#' onclick=\"goDetail('#tid#','#turl#')\"><td>#ttime#</td><td>#tname#</td><td><span class=\"badge\">#count1#<span></td></tr>";
+        
+    }
+    
+    var cnt=0;
+    function callback(data){
+        var td=new Date();
+        var hour=(td.getHours()<10)?"0"+td.getHours():td.getHours()+"";
+        // alert(hour);
+        var list=JSON.parse(data);
+        var html={};
+        for(var i=0;i<tasktype.length;i++){
+            html["type"+tasktype[i]["k"]]=[];
+        }
+        // var html={"type4":[],"type1":[],"type2":[],"type3":[]};
+        var tmpl=getTmpl();
+        var regex;
+        for (var i=0;i<list.length;i++){
+            var one=tmpl;
+            for(var key in list[i]){
+                regex=new RegExp("#"+key+"#","gi");
+                var v=list[i][key];
+                if(!v) {v="";}
+                one=one.replace(regex,v);
+            }
+            if(list[i]["ttime"].substring(0,2)==hour){
+                one=one.replace("#CLASS#","warning");
+            }
+            console.log();
+            html["type"+list[i]["ttype"]].push(one);
+        }
+        
+        for(var i in html){
+            $("#"+i).html(html[i].join(""));
+        }
+        
+        if(cnt!=list.length){
+            if($("#refcnt").length==0){
+                //$("body").prepend("<div id='refcnt'  >已更新"+(list.length-cnt)+"条记录</div>");
+                
+                $("#tips").html(lanMap["SEARCHED"]+"&nbsp;&nbsp;"+(list.length)+"&nbsp;&nbsp;"+lanMap["RECORD"]);
+            }
+            cnt=list.length;
+            setTimeout(function(){
+                       $("#tips").html('');//$("#refcnt").remove();
+                       },1000);
+        }
+        
+        
+        
+    }
+    
+    
+    
+    function goDetail(tid,turl){
+        
+        //绑定目标
+        var obj=GetRequest();
+        var aid=obj["AID"];
+        if(aid){
+            var obj={};
+            obj["Class"]="CommonDataEngine";
+            obj["ID"]=tid;
+            obj["AID"]=aid;
+            obj["T"]="ACT_TASK";
+            obj["O"]="A";
+            asyncommunicate(obj,function(data){
+                            try{
+                                var j=JSON.parse(data);
+                                if(j["CODE"]=="0000"){
+                                    dismiss();
+                                }
+                            }catch(e){
+                                console.log(e);
+                            }
+                            
+                            });
+            
+            
+            
+            //
+            return;
+        }
+        //if(turl){
+            //webGotoRemote(turl);
+        //}else {
+            var dir="html/plan";
+            var page="add.html?tid="+tid;
+            webGotoLocal(dir,page);
+        //}
+    }
+     
+    
+       
+        </script>
+</html>

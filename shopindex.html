@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="format-detection" content="telephone=no">
+<meta name="keywords" content=" 平和蜜柚  琯溪蜜柚 dododido.cn dododido 鲜果味之家 红心蜜柚 黄金蜜柚 白色蜜柚 红肉蜜柚 三红蜜柚   ">
+<meta name="description" content="  平和蜜柚 琯溪蜜柚 ">
+    
+<meta charset="UTF-8">
+<meta name="msapplication-tap-highlight" content="no">
+<meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+
+<title>鲜果味之家</title>
+<link rel="stylesheet" type="text/css"
+	href="mod/bootstrap/css/bootstrap.min.css" />
+<link rel="stylesheet" type="text/css" href="css/common.css" />
+<link rel="stylesheet" type="text/css" href="css/shop.css?v=1.2" />
+<link rel="stylesheet" type="text/css" href="mod/swiper/swiper.min.css">
+<script src="js/jquery.min.js"></script>
+<script src="mod/swiper/swiper.min.js"></script>
+<script src="mod/encrypt/md5.js"></script>
+<script src="mod/bootstrap/js/bootstrap.min.js"></script>
+<script src="js/common.js"></script>
+<script src="js/page.js"></script>
+<script src="js/shop.js?v=1.2"></script>
+<style>
+div.progress {
+	position: relative;
+	top: 8px;
+	left: 0px;
+}
+
+
+
+.item {
+	width: 100%;
+	text-align: left;
+	float: left;
+	padding: 10px;
+	margin-bottom: 20px;
+}
+
+.item-text {
+	float: left;
+}
+
+.logo img{
+ border-radius:10px;
+}
+.logo .pname{
+width:100%;
+overflow:hidden;  
+text-overflow:ellipsis; 
+ white-space:nowrap; 
+}
+
+.item:hover {
+	cursor: pointer;
+}
+
+.price {
+	font-size: 18px;
+	color: #e4393c;
+}
+
+.shop {
+	color: #999;
+}
+
+.proimg {
+	position: relative;
+}
+
+.qr {
+	position: absolute;
+	top: 0px;
+	right: 0px;
+}
+
+
+
+
+</style>
+
+</head>
+<body>
+	<div class="menu">
+		<ul>
+		  
+			<li><a href="shopindex.html">首页</a></li>
+			<li><a href="ownorder.html">我的订单</a></li>
+			<li><a href="service.html">客户服务</a></li>
+			<li><a href="html/user/register.html">注册</a></li>
+			<li><a href="html/user/login.html">登录</a></li>
+		</ul>
+	</div>
+	<!-- 单一广告加上搜索 -->
+	<div id="ad">
+		<div class="searchbox">
+			<form id="qryForm">
+				<input id="keyword" name="keyword" style="width: 240px;" size="120"
+					placeholder="柚" />
+				<button type="button"
+					onclick="search()">
+					<span class="glyphicon glyphicon-search"></span>
+				</button>
+			</form>
+		</div>
+	</div>
+	<!-- 所有种类 -->
+	<div class="types">
+		<ul id="types">
+		</ul>
+	</div>
+	<!-- Swiper -->
+	<div class="swiper-container">
+		<div id="banners" class="swiper-wrapper"></div>
+		<!-- Add Pagination -->
+		<div class="swiper-pagination"></div>
+
+	</div>
+
+
+	<div class=" ">
+		<div id="areas"></div>
+
+		<script>
+		var nologin=true;
+		    function search(){
+		    	
+		    	var name=$("#keyword").val();
+		    	var uriname=encodeURIComponent(name);
+		    	console.log(uriname);
+		        goHtml('productlist.html?name='+uriname);
+		    	
+		    }
+		    
+		    
+		    
+			var sts = {
+				"0" : "编辑",
+				"1" : "上线",
+				"3" : "下线"
+			};
+
+			function goWeb(url) {
+				window.location = url;
+			}
+
+			function refreshData(){
+				
+				location.reload();
+			}
+			function firstcall() {
+               
+				 
+				loadProType();
+				basicinfo();
+
+				configwx("鲜果味之家",
+						"https://dododido.cn/webstore/temp/1536044847810.jpeg",
+						"优质精选，您的佳果！");
+
+			}
+
+			function showBox() {
+				$('#eventModal').modal('show');
+			}
+			
+			//客户端事件回调 
+		     function eventDealer(obj){
+		   	  
+		   	  console.log(obj);
+		     }
+		</script>
+		<script src="https://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+	</div>
+
+</body>
+</html>

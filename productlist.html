@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="format-detection" content="telephone=no">
+<meta charset="UTF-8">
+<meta name="msapplication-tap-highlight" content="no">
+<meta name="viewport"
+	content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+
+<title>鲜果味之家</title>
+<link rel="stylesheet" type="text/css" href="mod/bootstrap/css/bootstrap.min.css" />
+
+<link rel="stylesheet" type="text/css" href="css/common.css" />
+<link rel="stylesheet" type="text/css" href="css/shop.css" />
+<link rel="stylesheet" type="text/css" href="mod/swiper/swiper.min.css">
+<script src="js/jquery.min.js"></script>
+<script src="mod/swiper/swiper.min.js"></script>
+<script src="mod/encrypt/md5.js"></script>
+<script src="mod/bootstrap/js/bootstrap.min.js"></script>
+<script src="js/common.js"></script>
+<script src="js/page.js"></script>
+<script src="js/shop.js?v=1.13"></script>
+
+<style>
+ 
+  
+.item {
+	width: 100%;
+	text-align: left;
+	float: left;
+	padding: 10px;
+	margin-bottom: 20px;
+}
+
+.item-text {
+	float: left;
+}
+
+.logo {
+	float: left;
+	margin-right: 10px;
+}
+
+.item:hover {
+	cursor: pointer;
+}
+.product{
+ padding:10px;
+ border-radius:10px;
+ height:26rem;
+ 
+}
+
+  
+ .plus{
+  position:absolute;
+  left:15px;
+  top:10px;
+ }
+
+</style>
+<script>
+          
+       
+        </script>
+</head>
+<body>
+
+	
+
+ 
+	<div class="menu" style="display:none;">
+		<ul>
+		  
+			<li><a href="shopindex.html">首页</a></li>
+			<li><a href="ownorder.html">我的订单</a></li>
+			<li><a href="service.html">客户服务</a></li>
+			<li><a href="html/user/register.html">注册</a></li>
+			<li><a href="html/user/login.html">登录</a></li>
+		</ul>
+
+	</div>
+	<!-- 单一广告加上搜索 -->
+	<div id="ad">
+		<div class="searchbox">
+			<form id="qryForm">
+				<input id="keyword" name="TITLE" style="width: 240px;" size="120"
+					placeholder="薯" />
+					<input id="ptype" type="hidden" name="ptype" value=""/>
+				<button type="button"
+					onclick="page.loadPage(1)">
+					<span class="glyphicon glyphicon-search"></span>
+				</button>
+			</form>
+		</div>
+	</div>
+	<!-- 所有种类 -->
+	<div class="types">
+		<ul id="types">
+		</ul>
+	</div>
+	<div class="container">
+		 
+		<div   id="response" style="clear:both;"
+			 >
+		</div>
+		
+		
+		<div id="jiazai" class="text-center"></div>
+		
+		<div class="page-footer " style="clear:both;">
+		<div class="text-center">
+
+			<ul id="pp" class="pagination pagination-sm"></ul>
+		</div>
+		
+		<div class="text-center pull-right">
+
+			每页<select name="ps" onchange="page.setPageSize(this.value)">
+
+				<option value="16">16</option>
+				<option value="32">32</option>
+				<option value="64">100</option>
+			</select> 条， 共 <span class="badge" id="tt">0</span>页, 共 <span class="badge"
+				id="trec">0</span>条
+		</div>
+		</div>
+		
+		<div class="btn btn-danger" style="position:fixed;top:40%;left:5px;" onclick="showCart();"><i class="  glyphicon glyphicon-shopping-cart" ></i> <i id="totalAmt">￥0.00</i> <i id='cartNum' class="badge badge-success">0</i></div>
+		
+		<div class="modal fade" id="payModal" tabindex="-1" role="dialog"
+		aria-labelledby="myModalLabel" aria-hidden="false">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+
+					<h4 class="modal-title">购物车下单</h4>
+				</div>
+				<div class="modal-body  "  >
+				
+				
+						 
+								 
+				
+				<div class="form-horizontal  ">
+				  
+				   <div id="btn-mng" style="display:none;" class="form-group btn-group col-sm-12 col-xs-12">
+					
+					 <button class="btn btn-sm btn-danger  " onclick="removeRecInfo()">删除</button>				
+					 <button class="btn btn-sm btn-success  " onclick="newRecInfo()">新增</button>
+					 <button class="btn btn-sm btn-primary  " onclick="$('#addarea').toggle();">编辑</button>
+								
+					</div>
+						
+					<div class="form-group">
+						<div class="col-sm-8 col-xs-8">
+							<select id="recinfos" class="form-control" onchange="setAddr(this.value)"></select>
+						</div>
+						<div class="col-sm-4 col-xs-4" onclick="$('#btn-mng').toggle();">
+						 
+						 <i class="glyphicon glyphicon-cog"></i>
+						
+						</div>
+					</div>
+				</div>
+				<div>
+				<div id="addarea" style="display:none;" >
+          
+				<form class="form-horizontal  " style="margin-top: 20px;" id="pform"
+					role="form">
+					
+					<input id="id" name="id" value="0" type="hidden" />
+					<div class="form-group">
+						<div class="col-sm-4 col-xs-4">
+							<input type="text" class="form-control"  name="recname"
+								id="recname" maxlength="32" placeholder="收货人">
+						</div>
+					 
+						<div class="col-sm-4 col-xs-5">
+							<input type="text"  class="form-control"  name="phone" id="phone"
+								maxlength="32" placeholder="手机号">
+						</div>
+					</div>
+					<div class="form-group">
+						<div class="col-sm-4 col-xs-4">
+							<input type="text" class="form-control"  name="state" id="state"
+								maxlength="32" placeholder="省份">
+						</div>
+						<div class="col-sm-4 col-xs-4">
+							<input type="text" class="form-control"  name="city" id="city"
+								maxlength="32" placeholder="市">
+						</div>
+						<div class="col-sm-4 col-xs-4">
+							<input type="text" class="form-control" style="width:100%;" name="district"
+								id="district" maxlength="32" placeholder="县/区">
+						</div>
+					</div>
+					<div class="form-group">
+						<div class="col-sm-12 col-xs-12">
+							<input type="text" class="form-control" name="addr" id="addr"
+								maxlength="32" placeholder="详细地址（门牌号等）">
+						</div>
+					</div>
+
+
+				</form>
+               			<button class="btn btn-block btn-sm btn-primary" onclick="saveRecInfo();">保存地址</button>
+			
+			</div>
+				<div id="buybtn" style="position:relative;" >
+			 <div id="areaimg"   style="position:absolute;top:0px;right:10px;">
+			
+			 
+		    </div>
+		    
+		     <table class="table  " >
+				
+                <tbody id="cartlist">
+                </tbody>
+              </table>
+			<div class="form-horizontal" class="margin:10px 0px;">
+			 
+			 
+			
+		          <div id="logintip" style="color:#FF0000;"></div>
+			</div>
+			 
+			
+		</div>
+			</div>
+				
+				
+				
+				</div>
+				
+				
+				<div class="modal-footer">
+					<button type="button" class="btn btn-danger pull-left"
+						data-dismiss="modal">
+						<span class="LBL-CLOSE">取消</span>
+					</button>
+					 
+				</div>
+			</div>
+			<!-- /.modal-content -->
+		</div>
+		<!-- /.modal -->
+	</div>
+	
+	<div class="modal fade" id="eventModal" tabindex="-1" role="dialog"
+		aria-labelledby="myModalLabel" aria-hidden="false">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+
+					<h4 class="modal-title">扫码支付</h4>
+				</div>
+				<div class="modal-body text-center" id="wxpaycode"></div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-danger pull-left"
+						data-dismiss="modal">
+						<span class="LBL-CLOSE">取消</span>
+					</button>
+					<button type="button" class="btn btn-success pull-right"
+						onclick="gotoorder()">
+						<span class="LBL-CLOSE">确认支付</span>
+					</button>
+				</div>
+			</div>
+			<!-- /.modal-content -->
+		</div>
+		<!-- /.modal -->
+	</div>
+	
+		
+		<script>
+	var	currproduct=null;
+      var sts={"0":"编辑","1":"上线","3":"下线"};
+      var page=new Page();
+      page.cntreq="/rest/shop/miniproductcount"; 
+      page.listreq="/rest/shop/miniproduct";
+      page.qryForm="qryForm";
+      page.pageSize=16;
+      page.afterLoaded=function(data){
+    	  if(byApp()||isMobile()){
+ 			// var width=document.body.clientWidth*0.8 ;
+ 	      	  //$(".product img").css("width",width+"px");
+ 		 }
+      };
+     
+       //page.append=false;
+      
+      var oldtpl="<div  class='product  col-xs-6 col-sm-4 col-md-3 col-lg-2 ' > <div class='proimg'>"
+      +"<img   style='width:90%;height:auto;border-radius:10px;' onclick='wxbuy(\"#pid#\")'  class='logo' src='#logo#' />"
+      +" <div class=''><p class='pname'>#pname##skuname#</p><p class='price'>¥#full_price# <i onclick='addToCart(#pid#)' class='glyphicon glyphicon-shopping-cart'></i></p><p class='shop'>#appname#</p></div></div></div>"
+      ;
+      //
+		
+      page.tmpl=oldtpl;
+      page.header="";//"<tr><td>产品编号</td><td>产品名称</td><td>产品价格(元)</td><td>代理价格（元）</td><td>创建时间</td> <td>产品状态</td><td>所属商户</td><td></td></tr>";
+      page.recompose=function(record,one,idx){
+    	  
+    	  for(var key in record){
+        	  if(key=="status"){
+        		  var v="<span class='badge #class#'>"+sts[record[key]]+" </span>";
+        		  if(record[key]=="0"){
+        			  v=v.replace("#class#","alert-warning");
+        		  }else if(record[key]=="1"){
+        			  v=v.replace("#class#","alert-success");
+        			  
+        		  }else if(record[key]=="3"){
+        			  v=v.replace("#class#","alert-danger");
+        			  
+        		  }
+        		  one=one.replace("#status#",v)
+        		  
+        	  }else if(key=="logo"){
+        		     var  v=record[key];
+        	   
+        		      var ext = [".jpg", ".jpeg", ".png", ".gif"];
+        		    
+        		      v = v.replace("webstore/temp", "img");
+        		      for (var j = 0; j < ext.length; j++) {
+        		       v = v.replace(ext[j], "_260x260" + ext[j]);
+        		      }
+         		 one=one.replace("#logo#",v)
+        	  }
+              else if(key=="createtime"||key=="paytime"){
+              	var v="";
+              	if(record[key]){
+                   var time=record[key].time;
+              	   v=new Date(time).toLocaleString();
+              	}
+              	 one=one.replace("#"+key+"#",v);
+              }else if (key=="amt"){
+            	  var cc=parseFloat(record["amt"])/100;
+                  one=one.replace("#amt#",cc.toFixed(2));
+              }else if (key=="full_price"||key=="proxy_price"){
+            	  
+            	  var cc=parseFloat(record[key])/100;
+            	  one=one.replace("#"+key+"#",cc.toFixed(2));
+              }
+         }
+      	return one;
+      	
+      }
+      function goWeb(url){
+    	  window.location=url;
+      }
+       
+      
+      
+      function showCartNum(){
+    	  
+      }
+       
+      
+      function firstcall(){
+    	  loadRecInfo();
+     	  if(GetRequest()["code"]){
+     		 
+     		 $("#ptype").val(GetRequest()["code"]);
+     		 
+     	 } 
+     	 if(getQueryString("name")){
+     		 console.log("name:"+getQueryString("name"));
+     		$("#keyword").val(getQueryString("name"));
+     	 }
+     	 if(byApp()||isMobile()){
+     		$(".page-footer").hide();
+     		 page.append=true;
+        	 setScroll();  
+     	 }
+     	 
+     	 
+          page.loadPage(1);
+          loadProType();	  
+          configwx("鲜果味之家","https://dododido.cn/webstore/temp/1522678920774.jpeg","优质精选，您的佳果！");
+        
+     }
+      
+       
+      
+       
+     function wxbuy(pid){
+   	  
+   	  if(isWeiXin()||isMobile()){
+   		 window.location="mprodetail.html?pid="+pid;
+   	  }else{
+   		 window.location="prodetail.html?pid="+pid;
+   	  }
+   	 
+     }
+     
+   //客户端事件回调 
+     function eventDealer(obj){
+   	  
+   	  console.log(obj);
+     }
+     
+      </script>
+		<script src="https://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+	</div>
+	<script src="js/recAddr.js"></script>
+  <script src="js/cart.js"></script>
+	 
+
+</body>
+</html>

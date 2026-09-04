@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html>
+    <head>
+       <meta name="format-detection" content="telephone=no"> 
+        <meta charset="UTF-8"> 
+        <meta name="msapplication-tap-highlight" content="no">
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+       
+        <title>退款订单查询</title>
+        
+       
+	
+<link rel="stylesheet" type="text/css" href="../../mod/swiper/swiper.min.css">       
+ 
+ <!-- bootstrap & fontawesome -->
+		<link rel="stylesheet" href="../../assets/css/bootstrap.min.css" />
+		
+		<link rel="stylesheet" href="../../assets/font-awesome/4.5.0/css/font-awesome.min.css" />
+
+		<!-- page specific plugin styles -->
+
+		<!-- text fonts -->
+		<link rel="stylesheet" href="../../assets/css/fonts.googleapis.com.css" />
+
+		<!-- ace styles -->
+		<link rel="stylesheet" href="../../assets/css/ace.min.css" class="ace-main-stylesheet" id="main-ace-style" />
+
+		<!--[if lte IE 9]>
+			<link rel="stylesheet" href="../../assets/css/ace-part2.min.css" class="ace-main-stylesheet" />
+		<![endif]-->
+		<link rel="stylesheet" href="../../assets/css/ace-skins.min.css" />
+		<link rel="stylesheet" href="../../assets/css/ace-rtl.min.css" />
+
+		<!--[if lte IE 9]>
+		  <link rel="stylesheet" href="../../assets/css/ace-ie.min.css" />
+		<![endif]-->
+
+		<!-- inline styles related to this page -->
+
+		<!-- ace settings handler -->
+		<script src="../../assets/js/ace-extra.min.js"></script>
+
+		<!-- HTML5shiv and Respond.js for IE8 to support HTML5 elements and media queries -->
+
+		<!--[if lte IE 8]>
+		<script src="../../assets/js/html5shiv.min.js"></script>
+		<script src="../../assets/js/respond.min.js"></script>
+		<![endif]-->
+ 
+ <!-- basic scripts -->
+
+		<!--[if !IE]> -->
+		<script src="../../assets/js/jquery-2.1.4.min.js"></script>
+
+		<!-- <![endif]-->
+
+		<!--[if IE]>
+<script src="../../assets/js/jquery-1.11.3.min.js"></script>
+<![endif]-->
+<script src="../../assets/js/bootstrap.min.js"></script>
+        <script src="../../js/common.js"></script> 
+       <script src="../../js/page.js"></script>
+       <style>
+       select, input {
+	appearance: none;
+	-moz-appearance: none;
+	-webkit-appearance: none;
+	font-size: 12px;
+}
+
+html {
+	overflow-x: hidden;
+}
+
+.record {
+	padding: 10px;
+	border: #EEE 1px solid;
+	margin: 10px;
+	border-radius: 10px;
+}
+       
+       </style> 
+         
+    </head>
+    <body>       
+    <section class="page-header">
+       
+      <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i>订单管理</a></li>
+        <li class="active">我的订单</li>
+      </ol>
+    </section>
+          <div class="main-container">
+              <div id="hh" >
+              <form class="form-horizontal" id="qryForm" >
+              
+                  <div class="form-group">
+               <label class="col-sm-2  col-xs-3 control-label"  for="sname"> 关键字</label> 
+                <div class="col-sm-4 col-xs-3">
+                     <input  id="sname" name="TITLE" class="form-control"   placeholder="关键字" 
+                  class="sname PH-KEYWORD"   />  
+                    
+                </div>
+              
+                <div class="col-sm-2 col-xs-3">
+                     <select class="form-control " name="history" onchange="showDays(this.value)"  >
+                      <option value="">全部</option> 
+                      <option value="-1">昨天</option> 
+                      <option value="-7">过去7天</option> 
+                       <option value="-15">过去15天</option> 
+                        <option value="-30">过去30天</option> 
+                    </select>  
+                    
+                </div>
+                <input type="hidden" value="" id="sstatus" name="sts" />
+                
+                 
+                    <div class="col-sm-2 col-xs-3">
+                     <select class="form-control " id="selsts" name="rfsts" >
+                      <option value="Y" selected>退款申请中</option> 
+                      <option value="C" >同意退款</option> 
+                        <option value="S">系统退款中</option> 
+                        
+                    </select>  
+                    
+                </div>
+                 
+                </div>
+                   
+                <div class="form-group">
+               <label class="col-sm-2  col-xs-2 control-label"  for="ttime">付款时间</label> 
+                <div class="col-sm-3 col-xs-3">
+                    <input id="stime" name="StartDate"  class="form-control"   
+                    type="date"/>  
+                     
+                </div>
+                <div class="col-sm-3 col-xs-3">
+                    
+                     <input id="etime" name="EndDate"  class="form-control"   
+                    type="date"/>  
+                </div>
+                <div class="col-sm-4 col-xs-4">
+                 <button type="button" class=" btn btn-primary btn-sm pull-left" onclick="page.loadPage(1)"><span >查询</span></button>
+                 <button type="button" class=" btn btn-primary btn-sm pull-right" onclick="downorder()"><span >下载</span></button>
+                </div>
+              </div>
+               <input type="hidden" name="PID" value="0"/>
+             </form>
+            </div>
+        <form id="formid">
+         
+       </form>
+     <a id="tips" style="float:left;width:100%;text-align:center;margin-top:10px;"></a>
+    <table class="table table-bordered table-hover"  id="response" style="width:100%;margin-top:20px;">
+    </table>
+    
+    <div id="foot" >
+        <div class="text-center">
+                   
+     <ul id="pp" class="pagination pagination-sm"></ul>
+     </div>
+   <div class="text-center pull-right">
+   
+                     每页<select   name="ps" onchange="page.setPageSize(this.value)"  >
+                      
+                     <option value="10">10</option> 
+                      <option value="40">40</option> 
+                       <option value="100">100</option> 
+                        </select> 条，  共 <span  class="badge" id="tt">0</span>页,共 <span  class="badge" id="trec">0</span>条
+   </div>
+</div>
+
+        </div>
+        
+         <div class="modal fade" id="eventModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                       
+                        <h4 class="modal-title" >订单详情</h4>
+                    </div>
+                    <div class="modal-body text-center">
+                    
+                      
+                        <div style="width:320px;height:320px;padding:0px auto;">
+                         <img id="img"   style="width:100%;height:100%;" />
+                       <!--   <img  id="selfdef" style="top:100px;left:30%;position:absolute;width:128px;height:200px;object-fill:contain;"/>
+                        -->
+                         <div style="clear:both;"></div>
+                        </div>   
+                        <table class="table" id="events">
+                         
+                        </table>
+                       <div> 
+                 <form class="form-horizontal" style="margin-top:20px;" id="expressform" role="form">
+                      <input type="hidden"  value="" id="itemid" name="itemid"/>
+                      <input type="hidden"  value="" id="orderid" name="orderid"/>
+                      
+                 
+			     
+			    
+			    </form>
+                       </div>
+                     
+                     
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default pull-left" data-dismiss="modal"><span class="LBL-CLOSE">关闭</span></button>
+                        <button type="button" class="btn btn-default pull-right" onclick="confirmorder()"><span class="LBL-CLOSE">同意退款</span></button>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal -->
+            </div>
+
+ <script>
+ 
+ function setOrdersts(v){
+	 //默认待发货
+	 var sstatus="1";
+	 var sexpsts="N";
+	 if(v=="0"){//all全部
+		 sstatus="";
+		 sexpsts="";
+	 }
+	 
+	 if(v=="2"){//已发货
+		 sstatus="1";
+	     sexpsts="Y"
+	 }
+	 
+	 if(v=="3"){//已完成
+		 sstatus="1";
+	     sexpsts="C";
+	 }
+	 
+	 $("#sstatus").val(sstatus);
+	 $("#sexpsts").val(sexpsts);
+	// page.loadPage(1);
+  
+	 
+ }
+         function confirmorder(){
+        	 //判断付款状态后
+        	 
+        	 var itemid=$("#itemid").val();
+        	 var paid=false;
+        	 var oneorder={};
+        	 for(var i=0;i<page.data.length;i++){
+        		 if(itemid==page.data[i]["itemid"]){
+        			  if(page.data[i]["sts"]=="1"){
+        				 paid=true; 
+        			  }
+        			  oneorder=page.data[i];
+        			 continue;
+        		 }
+        		 
+        	 }
+        	 var pass=true;
+           if(!paid){
+        	   var pass=confirm("该订单尚未付款");
+        	   return;
+           }
+           
+           if(!pass){
+        	   return;
+           }
+           if(!confirm("是否确认退款？一旦同意将无法回撤")){
+        	   return;
+           }
+           
+        	 var obj=getFormJson("#expressform");
+        	 console.log(obj);
+        	 obj["openid"]=oneorder["openid"];
+        	 obj["formid"]=oneorder["formid"];
+        	 obj["frmid"]=oneorder["frmid"];
+        	 obj["pname"]=oneorder["pname"];
+        	 postData(obj,"/rest/product/confirmrefund",function(data){
+        		 if(page.idx){
+        			 page.loadPage(page.idx);
+        		 }else{
+        			 page.loadPage(1);
+        		 }
+        		
+        	 });
+        	 
+         }
+         function chkAll(v){
+        	 if( $("input[name='ordername']:eq(0)").attr("disabled")){
+        		 
+        		 return;
+        	 }
+        	 console.log(v);
+        	 if(v){
+        		 $("input[name='ordername']").prop("checked",true);
+        	 }else{
+        		 $("input[name='ordername']").removeAttr("checked");
+        	 }
+        	
+        	 
+         }
+         
+         
+         function batchcon(){
+        	  
+        	 var ids=[];
+        	 $("input[name='ordername']:checkbox:checked").each(function(){ 
+        		ids.push($(this).val());
+        		 });
+        	 console.log(ids);
+        	 if(ids.length==0){
+        		 alert("请至少选择一条记录。")
+        		 return;
+        	 }
+        	 if(!confirm("确认已发货")){
+          	   return;
+             }
+        	 var obj={itemid:ids.join(","),expsts:"Y"};
+        	 postData(obj,"/rest/product/updateitem",function(data){
+        		 if(page.idx){
+        			 page.loadPage(page.idx);
+        		 }else{
+        			 page.loadPage(1);
+        		 }
+        		
+        	 });
+         }
+         
+          function showDays(days){
+        	 $("#stime").val(getToday8(days));
+         	 $("#etime").val(getToday8(1));
+        	  
+          }
+          
+          function downorder(){
+        	  $("#qryForm").attr("action",webapp+"/rest/product/downorder");
+        	  $("#qryForm").attr("target","_blank");
+        	  $("#qryForm").submit();
+          }
+          
+          var expsts={"N":"待发货","Y":"已发货","C":"已收货"};
+          var rfsts={"Y":"申请退款","C":"同意退款","S":"系统退款中"};
+          var sts={"0":"待付款","1":"已付款","3":"已退款","2":"付款失败","5":"已取消"};
+          var page=new Page();
+          page.cntreq="/rest/product/miniordercount"; 
+          page.listreq="/rest/product/miniorder";
+          page.qryForm="qryForm";
+          page.header="<tr><td><input type='checkbox' name='all' id='chkall'  onclick='chkAll(this.checked);'/></td><td>支付方式</td><td>商品单号<br/>付款单号</td><td>创建时间</td><td>付款时间</td><td>收货人</td><td>联系方式</td><td>商品名称</td><td>数量</td><td>付款金额</td><td>大小</td><td>颜色</td><td>订单状态</td><td>发货状态</td><td>账号</td><td>所属商户</td><td></td></tr>";
+          
+          page.recompose=function(record,one,idx){
+        	  
+        	  if($("#selsts").val()=="1"){
+    			 
+    			  one=one.replace("#disabled#","");
+    		  }else{
+    			  one=one.replace("#disabled#","disabled");
+    		  }
+        	  for(var key in record){
+        		  
+	        	  if(key=="sts"){//以item状态为主，原先以status ，
+	        		  var v="<span class='badge #class#'>"+sts[record[key]]+" </span>";
+	        		  if(record[key]=="0"){
+	        			  v=v.replace("#class#","label-warning");
+	        		  }else if(record[key]=="1"){
+	        			  v=v.replace("#class#","label-success");
+	        			  
+	        		  }else if(record[key]=="3"){
+	        			  v=v.replace("#class#","label-danger");
+	        			  
+	        		  }
+	        		  one=one.replace("#"+key+"#",v)
+	        		  
+	        	  }
+	              else if(key=="createtime"||key=="paytime"){
+	              	var v="";
+	              	if(record[key]){
+	                   var time=record[key].time;
+	              	 v=new Date(time).toLocaleString();
+	              	}
+	              	 one=one.replace("#"+key+"#",v);
+	              }else if (key=="amt"){
+	            	  var cc=parseFloat(record["amt"])/100;
+	                  one=one.replace("#amt#",cc.toFixed(2));
+	              }else if(key=="exsts"){//发货
+	            	  
+	            	  var v="<span class='badge #class#'>"+expsts[record[key]]+" </span>";
+	        		  if(record[key]=="N"){
+	        			  v=v.replace("#class#","label-danger");
+	        		  }else if(record[key]=="Y"&&record["expsts"]!="C"){
+	        			  v=v.replace("#class#","label-warning"); 
+	        		  } 
+	        		  else if(record["expsts"]=="C"){
+	        			  v=v.replace("#class#","label-success");
+	        			  
+	        		  } 
+	        		  one=one.replace("#expsts#",v)
+	              }else if(key=="rfsts"){
+	            	  
+	            	  var v="<span class='badge label-danger'>"+rfsts[record[key]]+" </span>";
+	            	   if(record[key]=="N"){
+	            		   v="";
+	            	   }
+	            	  one=one.replace("#"+key+"#",v);
+	              }
+             }
+          	return one;
+          	
+          }
+          page.tmpl=getTmpl();
+          
+          if (isMobile()) {
+    			$("#foot").hide();
+    			setScroll();
+    			page.header = "";
+    			page.tmpl="<div class='record'>   #paytype# <a href='javascript:view(\"#itemid#\")'>#itemid#</a><br/>#orderid#</><br/> #createtime# #paytime# <br/>  #uid#  #recName# #phone# <br/> #pname# #qty#  <span class='text-danger'>#amt#</span>  #size# #color# #sts# <br/> #rfsts# #expsts#   #appname#(#appkey#)"+
+                "<span onclick='view(\"#itemid#\")'>查看详情</span></div>";
+          }
+          function firstcall(){
+        	 $("#stime").val(getToday8(-7));
+        	 $("#etime").val(getToday8(1));
+        	 var obj=GetRequest();
+        	 console.log(obj);
+        	 //不默认查询了，减少服务器负担；
+        	 // page.loadPage(1);
+          }
+        var detail="<tr><td >商品单号</td><td>#itemid#</td></tr><tr><td>付款单号</td><td>#orderid#</td</tr><tr><td>付款时间</td><td>#paytime#</td></tr><tr><td>产品名称</td><td>#pname#</td></tr><tr><td>付款金额</td><td>#amt#</td></tr><tr><td>购买数量</td><td>#qty#</td><tr><td>订单状态</td><td>#sts##rfsts#</td></tr><tr><td>账号</td><td>#uid#</td></tr><tr><td>收货人手机号</td><td>#phone#</td></tr><tr><td>收货人姓名</td><td>#recName#</td></tr><tr><td>收货地址</td><td>#state##city##district##addr#</td></tr><tr><td>留言</td><td>#msg#</td></tr><tr><td>快递名称</td><td>#exnam#</td></tr><tr><td>快递单号</td><td>#exno#</td></tr><tr><td>退款原因</td><td class='label-warning alert'><span>#rfmemo#<span></td></tr>"
+        function view(itemid){
+        	 console.log(page.data);
+        	 $("#itemid").val(itemid);
+        	 for(var i in page.data){
+        		
+        		if(itemid==page.data[i]["itemid"]){
+        			var one=detail;
+        			$("#exno").val(page.data[i]["exno"]);
+        			$("#exnam").val(page.data[i]["exnam"]);
+        			$("#orderid").val(page.data[i]["orderid"]);
+        			for(var key in page.data[i]){
+						
+        				regex=new RegExp("#"+key+"#","gi");
+                        
+                        if(key=="sts"){
+                        	var v="<span class='badge #class#'>"+sts[page.data[i][key]]+" </span>";
+      	        		  if(page.data[i][key]=="3"){
+      	        			  v=v.replace("#class#","label-danger");
+      	        		  } 
+      	        		  else if(page.data[i][key]=="1"){
+      	        			  v=v.replace("#class#","label-success");
+      	        			  
+      	        		  } 
+      	        		 
+                        	
+                        	one=one.replace("#sts#",v);
+                        	}
+                        if(key=="rfsts"){
+                        	var v="<span class='badge #class#'>"+rfsts[page.data[i][key]]+" </span>";
+              	        	
+                        	if(page.data[i][key]!="N"){
+                        		
+                        		 v=v.replace("#class#","label-danger");
+                        		
+                        	}else{
+                        		v="";
+                        	}
+                        	one=one.replace("#rfsts#",v);
+                        	
+                        
+                        }
+                       
+                        else if(key=="img"){
+                        	$("#img").attr("src",page.data[i][key]);
+                        }
+                        else if(key=="selfdef"){
+                        	$("#selfdef").attr("src",page.data[i][key]);
+                        }
+                        else if(key=="paytime"){
+                        	v="";
+                        	if(page.data[i][key]){
+                        		 
+                        		 var time=page.data[i][key].time;
+                           	     v=new Date(time).toLocaleString();
+                        	}
+                        
+                   	     one=one.replace(regex,v);
+                        }else if(key=="amt"){
+                        	   v=parseFloat(page.data[i][key])/100;
+                        	  one=one.replace(regex,v);
+                        }
+                        else{ one=one.replace(regex,page.data[i][key]);}
+        			}
+        			
+        			$("#events").html(one);
+        		}
+        		
+        	}
+        	$('#eventModal').modal('show');
+        }
+        
+            function getTmpl(){
+             
+                var tmpl="<tr><td><input type='checkbox' name='ordername' #disabled#  id='chk#itemid#' value='#itemid#'/></td><td>#paytype#</td><td ><a href='javascript:view(\"#itemid#\")'>#itemid#</a><br/>#orderid#</><td>#createtime#</td><td>#paytime#</td><td>#recName#</td><td>#phone#</td><td>#pname#</td><td>#qty#</td><td>#amt#</td><td>#size#</td><td>#color#</td><td>#sts##rfsts#</td><td>#expsts#</td><td>#uid#</td><td>#appname#(#appkey#)</td>"+
+                    "<td onclick='view(\"#itemid#\")'>查看详情</td></tr>";
+                
+                return  tmpl;
+                
+            }
+        
+        function refreshData(){
+            loadTask();   
+        }
+       
+        var cnt=0;
+       
+         
+        </script>
+    </body>
+</html>

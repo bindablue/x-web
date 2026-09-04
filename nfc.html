@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="format-detection" content="telephone=no">
+    <meta charset="UTF-8">
+    <meta name="msapplication-tap-highlight" content="no">
+    <meta name="viewport"
+        content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+    <meta name="keywords" content="  ">
+    <meta name="description" content="   ">
+
+    <title>NFC</title>
+
+
+
+    <!-- AdminLTE Skins. Choose a skin from the css/skins
+       folder instead of downloading all of them to reduce the load. -->
+    <link rel="stylesheet" href="mod/bootstrap/css/bootstrap.min.css">
+
+    <script>
+        var isApp = true;
+    </script>
+    <link rel="stylesheet" type="text/css" href="mod/swiper/swiper.min.css">
+
+    <link rel="stylesheet" type="text/css" href="mod/bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="css/common.css" />
+    <script src="mod/swiper/swiper.min.js"></script>
+    <script src="js/jquery.min.js"></script>
+    <script src="js/common.js"></script>
+    <script src="js/echarts.min.js?v=1.1"></script>
+    <script src="mod/moment/moment.min.js"></script>
+    <script src="mod/bootstrap/js/bootstrap.min.js"></script>
+
+    <style>
+        ul {
+            display: block;
+            padding: 0px;
+        }
+
+        li {
+            clear: both;
+        }
+
+        h3,
+        h2,
+        h1 {
+            text-align: center;
+        }
+
+        .link {
+            text-align: center;
+        }
+    </style>
+    <style>
+        .ai-weekly-card {
+            width: 100%;
+            max-width: 1000px;
+            background: linear-gradient(135deg, #87d0f7 0%, #2574ed 100%);
+            border-radius: 24px;
+            padding: 10px;
+            color: #ffffff;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* 背景装饰圆 */
+        .ai-weekly-card::before {
+            content: '';
+            position: absolute;
+            top: -100px;
+            right: -100px;
+            width: 100px;
+            height: 100px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+        }
+
+        .ai-weekly-card::after {
+            content: '';
+            position: absolute;
+            bottom: -80px;
+            right: -80px;
+            width: 150px;
+            height: 150px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 50%;
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+
+        }
+
+        .robot-icon {
+            width: 120px;
+            height: 120px;
+        }
+
+        .card-title {
+            font-size: 24px;
+            font-weight: 700;
+
+        }
+
+        .card-content {
+            /* font-size: 32px; */
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .card-footer {
+            text-align: center;
+        }
+
+        .view-report-btn {
+            /* font-size: 48px; */
+            /* font-weight: 600; */
+            color: #ffffff;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .view-report-btn::after {
+            content: '→';
+            /* //font-size: 56px; */
+            line-height: 1;
+        }
+    </style>
+    <script>
+
+ 
+
+    </script>
+</head>
+
+<body style="padding-bottom:100px;background-color:#f0f8ff;">
+    <div class="container">
+        <div class="ai-weekly-card" >
+            <div class="card-header">
+                <!-- 机器人图标，可替换为实际图片 -->
+                <svg class="robot-icon" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="60" cy="30" r="6" fill="#C4C4C4" />
+                    <rect x="45" y="30" width="30" height="10" rx="2" fill="#C4C4C4" />
+                    <rect x="25" y="40" width="70" height="50" rx="25" fill="#E0E0E0" />
+                    <rect x="30" y="45" width="60" height="30" rx="15" fill="#333333" />
+                    <circle cx="45" cy="60" r="8" fill="#4FC3F7" />
+                    <circle cx="75" cy="60" r="8" fill="#4FC3F7" />
+                    <path d="M55 70 L 65 70" stroke="#E0E0E0" stroke-width="2" stroke-linecap="round" />
+                    <rect x="20" y="45" width="10" height="20" rx="5" fill="#4285F4" />
+                    <rect x="90" y="45" width="10" height="20" rx="5" fill="#4285F4" />
+                    <rect x="40" y="90" width="10" height="20" rx="5" fill="#E0E0E0" />
+                    <rect x="70" y="90" width="10" height="20" rx="5" fill="#E0E0E0" />
+                    <circle cx="60" cy="95" r="8" fill="#4FC3F7" />
+                </svg>
+                <h1 class="card-title">NFC 打卡设置</h1>
+            </div>
+            <div class="card-content">
+                请选择任务和事项后点击【开始写入】，写入成功后，可通过贴近NFC实现自动打卡
+            </div>
+            <div class="card-footer">
+                <button class="view-report-btn" onclick="writeData()">开始写入</button>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div id="txtPeriod" class="text-center"></div>
+
+    <div>
+        <div class="container">
+            <form class="form-horizontal" id="formid" style="margin-top:20px;" role="form">
+                        
+                        <div class="form-group">
+                          <label class="col-sm-4 col-xs-4 control-label LBL-TASK">任务</label> 
+                          <div class="col-sm-12 col-xs-12">
+                            <select class="form-control" name="taskId"   id="taskId"   onchange="taskChange(this.value)">
+                              
+                           </select>
+                            </div>
+                        </div>
+
+                         <div class="form-group">
+                          <label class="col-sm-4 col-xs-4 control-label LBL-ITEM">事项</label> 
+                          <div class="col-sm-12 col-xs-12">
+                            <select class="form-control" name="exeId"   id="exeId"  value="">
+                              
+                           </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                          <label class="col-sm-4 col-xs-4 control-label LBL-ITEM">开始/结束</label> 
+                          <div class="col-sm-12 col-xs-12">
+                            <select class="form-control" name="m"   id="mode"  value="">
+                                <option value="a">自动切换/执行</option>
+                                <option value="s">开始</option>
+                                <option value="e">结束</option>
+                           </select>
+                            </div>
+                         </div>
+                          <div class="form-group">
+                          <label class="col-sm-4 col-xs-4 control-label LBL-ITEM">执行方式</label> 
+                          <div class="col-sm-12 col-xs-12">
+                            <select class="form-control" name="sm"   id="submode"  value="">
+                                <option value="a">自动</option>
+                                <option value="m">手动</option>
+                           </select>
+                            </div>
+                         </div>
+                          
+                        
+                        
+                     
+                      
+                     
+                      <div class="text-center row" style="margin:10px;">
+                        
+                        <div class="col-xs-12 col-sm-12">
+                        <button id="btnExport" type="button" onclick="writeData()"
+                        class="pull-center btn btn-primary btn-lg btn-block LBL-NFCWRITE">开始写入</button>
+                        </div>
+                        </div>
+                    </div>
+                    
+                      </form>
+
+
+            <div style="float:left;height:250px;width:40%;" id="tline"></div>
+            <div style="float:left;height:250px;width:60%;" id="eline"></div>
+
+        </div>
+
+
+
+
+
+
+
+
+    </div>
+
+
+
+
+    <script>
+        var nologin = true;
+    </script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f8f9fa;
+            padding: 10px;
+        }
+
+        #txtPeriod {
+            padding: 5px;
+            font-size: small;
+            margin-top: 5px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            /* background-color: #ffffff; */
+            border-radius: 12px;
+            padding: 40px 20px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .ai-badge {
+            font-size: 14px;
+            color: #8a8a8a;
+            background-color: #f0f0f0;
+            padding: 4px 10px;
+            border-radius: 6px;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 30px;
+            font-weight: 900;
+            color: #000000;
+            margin-bottom: 20px;
+        }
+
+        .subtitle {
+            text-align: center;
+            font-size: 22px;
+            color: #333333;
+            line-height: 1.5;
+            margin-bottom: 40px;
+        }
+
+        .cycle-diagram {
+            width: 220px;
+            height: 220px;
+            margin: 0 auto 50px;
+            position: relative;
+        }
+
+        .cycle-segment {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            clip: rect(0, 110px, 220px, 0);
+        }
+
+        .segment-plan {
+            background-color: #2185d0;
+            transform: rotate(0deg);
+        }
+
+        .segment-do {
+            background-color: #21ba45;
+            transform: rotate(90deg);
+        }
+
+        .segment-check {
+            background-color: #f2711c;
+            transform: rotate(180deg);
+        }
+
+        .segment-act {
+            background-color: #a333c8;
+            transform: rotate(270deg);
+        }
+
+        .cycle-center {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            background-color: #ffffff;
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .cycle-arrow {
+            width: 0;
+            height: 0;
+            border-left: 15px solid transparent;
+            border-right: 15px solid transparent;
+            border-top: 25px solid #000000;
+            transform: rotate(45deg);
+        }
+
+        .cycle-label {
+            position: absolute;
+            color: #ffffff;
+            font-size: 16px;
+            font-weight: 500;
+            text-align: center;
+        }
+
+        .label-plan {
+            top: 30px;
+            right: 30px;
+        }
+
+        .label-do {
+            bottom: 30px;
+            right: 30px;
+        }
+
+        .label-check {
+            bottom: 30px;
+            left: 30px;
+        }
+
+        .label-act {
+            top: 30px;
+            left: 30px;
+        }
+
+        .step-card {
+            /* background-color: #ffffff; */
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            margin-bottom: 20px;
+            display: flex;
+            overflow: hidden;
+        }
+
+        .step-number {
+            width: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            font-weight: 900;
+            color: #ffffff;
+        }
+
+        .step-content {
+            flex: 1;
+            padding: 20px;
+        }
+
+        .step-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: #000000;
+            margin-bottom: 8px;
+        }
+
+        .step-desc {
+            font-size: 18px;
+            color: #444444;
+            margin-bottom: 16px;
+            line-height: 1.4;
+        }
+
+        .step-buttons {
+            display: flex;
+            gap: 12px;
+        }
+
+        .step-btn {
+            background-color: #2185d0;
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 20px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: default;
+        }
+
+        .step-1 .step-number {
+            background-color: #2185d0;
+        }
+
+        .step-2 .step-number {
+            background-color: #21ba45;
+        }
+
+        .step-3 .step-number {
+            background-color: #f2711c;
+        }
+
+        .step-4 .step-number {
+            background-color: #a333c8;
+        }
+
+        .footer {
+            text-align: right;
+            margin-top: 30px;
+            font-size: 14px;
+            color: #8a8a8a;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 8px;
+        }
+
+        .footer-icon {
+            width: 24px;
+            height: 24px;
+            background-color: #e0e0e0;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+            font-size: 12px;
+        }
+    </style>
+
+
+
+</body>
+<script src="js/com_app.js"></script>
+<script>
+    //"https://dododido.cn/service/exeTask.html?taskId=C785BFC4-F6C1-41B7-A661-4E21E97F03EB&exeId=54427B8D-41B5-4278-872F-0E740CA8E4EC&m=a"
+         
+
+    function writeData() {
+        const taskId=$("#taskId").val();
+        const exeId=$("#exeId").val();
+        const mode=$("#mode").val();
+        const submode=$("#submode").val();
+        if(!taskId||!exeId||!mode||!submode){
+            alert("所有选择不能为空")
+            return;
+        }
+
+    
+
+     var content ="https://dododido.cn/service/exeTask.html?taskId="+taskId+"&exeId="+exeId+"&m="+mode+"&sm="+submode
+        communicate({
+            "op": "nfc",
+            "Class": "DeviceDataEngine",
+            "type": "uri",
+            "content": content
+        }
+            , function (data) {
+                if (cb) {
+                    cb(data)
+                }
+
+        });
+
+    }
+
+
+    function firstcall() {
+
+      loadTask(); 
+
+    }
+    function taskChange(taskId){
+
+        $("#exeId").html("");
+
+        for(var i =0;i<tasks.length;i++){
+            let task =tasks[i];
+            if(taskId!=task.taskId){
+                continue;
+            }
+            let exeList=task.executeTimeList;
+            if(exeList){
+
+                var exeOptions=[];
+
+                for(var j=0;j<exeList.length;j++){
+                    var exe =exeList[j];
+                    exeOptions.push("<option value='"+exe["exeId"]+"'>"+exe["exeName"]+"</option>");
+                }
+                $("#exeId").html(exeOptions.join(""));
+            }
+
+        }
+    }
+    var tasks=[];
+     function loadTask(){
+            
+            var obj={};
+            
+            var options=[];
+            obj["Class"]="CommonDataEngine";
+            obj["exeCode"]="taskQuery";
+            obj["taskName"]="";
+            obj["order"]="PRIORITY_IMPORTANCE";
+            obj["groupType"]="1";
+            
+            
+            asyncommunicate(obj,function(data){
+                 tasks=JSON.parse(data)
+               // tasks.unshift({"taskId":"","taskName":allTask});
+                options=tasks.map(opt=>  "<option value='"+opt["taskId"]+"'>"+opt["taskName"]+"</option>" )
+                $("#exeId").html("");
+                $("#taskId").html(options.join(""))
+                var params=GetRequest();
+                var taskId=params["taskId"]
+                var taskName=params["taskName"]
+                if(taskId){
+                    $("#taskId").val(taskId);
+                }else{
+                    
+                    $("#taskId").val("");
+                }
+                if(taskName){
+                    $("#taskName").html(taskName);
+                }
+                
+                
+                
+            });
+            
+            
+     }
+
+
+
+
+
+
+
+
+</script>
+
+</html>

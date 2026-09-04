@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+<head>
+<!--        <meta name="format-detection" content="telephone=no">-->
+<meta charset="UTF-8">
+<meta name="msapplication-tap-highlight" content="no">
+<meta name="viewport"
+	content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+
+<title>已接收目标</title>
+
+<link rel="stylesheet" type="text/css" href="../../css/common.css" />
+<link rel="stylesheet" type="text/css"
+	href="../../mod/bootstrap/css/bootstrap.min.css" />
+
+<script src="../../js/jquery.min.js"></script>
+
+<script src="../../mod/bootstrap/js/bootstrap.min.js"></script>
+
+<script src="../../js/common.js"></script>
+<script src="../../js/meta.js"></script>
+
+<style>
+input, select, textarea {
+	margin-top: 5px;
+	padding: 5px 0px;
+	line-height: 16px;
+	width: 100%;
+	-webkit-appearance: none;
+	border: 1px solid #87CEEB;
+}
+
+
+
+</style>
+<body>
+
+<div id="hh" >
+    <button type="button" class="btn btn-primary pull-left" onclick="dismiss();">
+        <span  class="glyphicon glyphicon-chevron-left"></span>
+    </button>
+    
+ </div>
+	<div class="container">
+      <table id="lst" class="table" style="margin-top:80px" >
+       </table>
+      <div style="padding:10px;">🌲🌲🌲🌲🌲🌲🌲🌲</div>
+
+       <table id="maxtrix" class="table">
+       </table>
+       
+	</div>
+
+
+<div id="tmpl" style="display:none;">
+    
+    
+    <div class="panel #class#" style="margin-top:10px;word-wrap:break-word;">
+        <div class="panel-heading">
+            <h3 class="panel-title">#tname#
+                <a href="add.html?ID=#ID#">&gt;&gt;</a>
+                
+                <span  style="float:right;margin-right:10px;" class="glyphicon glyphicon-info-sign" onclick="webGotoRemote('#turl#');"></span>
+            </h3>
+        </div>
+        <div class="panel-body">
+            #ttime# #tcontent#
+        </div>
+    </div>
+    
+    
+    
+</div>
+
+
+
+</body>
+<script>
+    
+
+    function loadRecGoals(){
+            var obj={};
+            obj["Class"]="CommonDataEngine";
+            obj["O"]="Q";
+            obj["T"]=" (select a.*  from activity a left join activity b on a.rid=b.id where b.id is  null and a.pid!='' and a.CSTS!='D' order by PSD)";
+            obj["C"]="ID,AN,MNAME,PSD,LVL,PID";
+            obj["W"]=" 1=1 ";
+             //document.getElementById("lst").innerHTML="加载后代目标。。。";
+            asyncommunicate(obj,function(data){
+                            try{
+                            
+                            var html=[];
+                            var list=JSON.parse(data);
+                            var tmpl='<tr id="e#ID#"><td>#PSD#</td><td>#AN#</td><td>#MNAME#</td><td><a href="add.html?ID=#ID#">&gt;&gt;</a></td><td><a href="send.html?ID=#ID#">发送</a></td></tr>';
+                            var ddd="2017";
+                            var rrr=-1;
+                            for(var i=0;i<list.length;i++){
+                                    var record=tmpl;
+                                for(var key in list[i]){
+                                    var regex=new RegExp("#"+key+"#","gi");
+                                    record=record.replace(regex,list[i][key]);
+                                }
+                            
+            
+                           
+                           
+                                    html.push(record);
+
+                            
+                            }
+                            if(list.length>0){
+                                //document.getElementById("events").innerHTML+=html.join("");
+                                document.getElementById("lst").innerHTML=html.join("");
+                            
+                            }else{
+                               // $("#lst").html("无数据<a onclick=\"loadSubGoals();\">点击刷新</a>");
+                            }
+                            
+                            }catch(e){
+                            console.log(e);
+                            }
+                            });
+
+        }
+        
+        
+        
+        
+    
+    function firstcall(){
+        
+        loadRecGoals();
+        
+        
+        
+    }
+
+
+    
+     </script>
+
+</html>

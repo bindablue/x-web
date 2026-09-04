@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        
+        <!--        <meta name="format-detection" content="telephone=no">-->
+        <meta charset="UTF-8">
+            <meta name="msapplication-tap-highlight" content="no">
+                <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+                    
+                    <title>价值指数</title>
+                    <link rel="stylesheet" type="text/css" href="../../mod/swiper/swiper.min.css">
+                        
+                        <link rel="stylesheet" type="text/css" href="../../mod/bootstrap/css/bootstrap.min.css"/>
+                        <link rel="stylesheet" type="text/css" href="../../css/common.css"/>
+                        <script src="../../mod/swiper/swiper.min.js"></script>
+                        <script src="../../js/jquery.min.js"></script>
+                        <script src="../../js/common.js"></script>
+                        <script src="../../js/echarts.min.js"></script>
+                        <script src="../../mod/bootstrap/js/bootstrap.min.js"></script>
+                        <script>
+                            var nologin=true;
+                            
+                            
+                            function firstcall(){
+                                if(!byApp()){
+                                    $("#btnShare").hide();
+                                }
+                                
+                                //loadIndex();
+                                //logDays();
+                                //taskline();
+                                outcomeline();
+                                incomeCircle();
+                                assetline();
+                                assetdis();
+                            }
+                        
+                        function loadData(){
+                            
+                            
+                            console.log("开始更新。。。");
+                            
+                            
+                        }
+                        
+                        function refreshData(){
+                            setTimeout(function(){firstcall();},500);
+                        }
+                        
+                        function  scroll(id) {
+                            var scroll_offset =$(id).offset(); //得到pos这个div层的offset，包含两个值，top和left
+                            $("body,html").animate({
+                                                   scrollTop:scroll_offset.top //让body的scrollTop等于pos的top，就实现了滚动
+                                                   },0);
+                        }
+                        
+                            </script>
+                        <style>
+                            .swiper-container, {
+                                width: 100%;
+                                height: 100%;
+                                position:absolute;
+                                bottom:10px;
+                                
+                            }
+                        .swiper-slide {
+                            
+                            text-align: center;
+                            font-size: 18px;
+                            height: 550px;
+                            /*background:url('img/banner.png');*/
+                            
+                            /* Center slide text vertically */
+                            display: -webkit-box;
+                            display: -ms-flexbox;
+                            display: -webkit-flex;
+                            display: flex;
+                            -webkit-box-pack: center;
+                            -ms-flex-pack: center;
+                            -webkit-justify-content: center;
+                            justify-content: center;
+                            -webkit-box-align: center;
+                            -ms-flex-align: center;
+                            -webkit-align-items: center;
+                            align-items: center;
+                        }
+                            </style>
+                        </head>
+    <body>
+     
+        
+        <div id="hh" style="">
+            <button type="button" class="btn btn-primary pull-left" onclick="dismiss();" >
+                <span  class="glyphicon glyphicon-chevron-left"></span>
+            </button>
+             <button id="btnShare" type="button"  class="btn btn-primary pull-right"    onclick="share();" > <span class="LBL-WXSHR" style="padding-bottom:10px;"  >微信分享</span> </button>
+        </div>
+        <input id="data" type="hidden" value="" />
+       
+            <!-- Swiper -->
+            <div class="swiper-container">
+                <div class="swiper-wrapper">
+                    
+                    
+                    
+                    <div class="swiper-slide " style="color:#FFFFFF; ">
+                        <div id="oline"   style="height:90%;width:100%;"></div>
+                    </div>
+
+
+<div class="swiper-slide " style="color:#FFFFFF; ">
+    <div id="iline" style="height:90%;width:100%;"></div>
+</div>
+
+<div class="swiper-slide " style="color:#FFFFFF; ">
+    <div id="yline" style="height:80%;width:100%;"></div>
+</div>
+<div class="swiper-slide " style="color:#FFFFFF; ">
+    <div id="zline" style="height:80%;width:100%;"></div>
+</div>
+
+                   <div class="swiper-slide" style="text-align:center;vertical-align:middle;padding-top:40%;"  >
+                       更多内容，敬请期待
+                    </div>
+                    
+                    
+                </div>
+                <!-- Add Pagination -->
+                <div class="swiper-pagination"></div>
+                
+            </div>
+            
+       
+        
+ 
+        
+    </body>
+    
+    <script>
+          function share(){
+            var idx=swiper.activeIndex;
+            console.log("swipe idx:"+idx);
+            var obj={};
+            //obj["URL"]=domain+webapp+"/html/social/share.html";
+           // obj["PARAM"]=$("#data").val();
+            obj["IMG"]=swipers[idx].getDataURL();
+            obj["op"]="wximgshare";
+            obj["TITLE"]=titles[idx];
+            obj["DESC"]="";
+            obj["scene"]=1;
+            obj["Class"]="TaskDataEngine";
+            asyncommunicate(obj,function(data){
+                            });
+                          // window.location.href="http:share.html?RESULT="+encodeURI(lineChart.getDataURL());
+                          // console.log(lineChart.getDataURL());
+                           
+            
+        }
+        function getTmpl(){
+            
+            return "<tr><td>#LOC#</td><td>#CNT#</td></tr>";
+        }
+    
+        var swipers=[];
+        var titles=[];
+       
+       
+        var odom=document.getElementById("oline");
+        var oChart=echarts.init(odom);
+        swipers.push(oChart);
+        titles.push("消费图");
+        
+        var idom=document.getElementById("iline");
+        var iChart=echarts.init(idom);
+        swipers.push(iChart);
+        titles.push("收入图");
+        
+        var ydom=document.getElementById("yline");
+        var yChart=echarts.init(ydom);
+        swipers.push(yChart);
+        titles.push("资产负债");
+        
+        var zdom=document.getElementById("zline");
+        var zChart=echarts.init(zdom);
+        swipers.push(zChart);
+        titles.push("资产收益");
+        //select  sum(case when ass.id is not null and mark='-' then amt when ass.id is not null and mark='+' then (-1)*amt  else 0 end),sum(case when acctid='JYYJ' then amt else 0 end) as NET,sum(case when ass.id is not null and mark='+' then cnt when ass.id is not null and mark='-' then (-1)*cnt else 0 end) as HOLD,sum(case when ass.id is not null and mark='+' then cnt*ass.price when ass.id is not null and mark='-' then (-1)*cnt*ass.price  else 0 end) AS PRESENT,name from trans t left join (select distinct     fno as ffno from trans t left join asset a on t.acctid=a.id where a.id is not null) a on t.fno=a.ffno  left join acct at on at.id=t.acctid left join asset ass on ass.id=t.acctid  where ffno is not null group by name
+       
+       //select  sum(amt),uname from trans t left join (select distinct fno as ffno from trans t left join acct a on t.acctid=a.id where a.atype='INCOME') b on t.fno=b.ffno left join acct a on t.acctid=a.id where a.atype!='INCOME' group by uname
+       
+       
+       
+       function assetdis(){
+           
+           var obj={};
+           obj["Class"]="CommonDataEngine";
+           obj["O"]="Q";
+           obj["C"]="NET,FEE,HOLD,PRESENT,bb.NAME,bb.CURRENCY,aa.price";
+           obj["T"]="(select sum(case when acctid='JYYJ' then (-1)*amt else 0 end) AS FEE,sum(case when ass.id is not null and mark='-' then amt when ass.id is not null and mark='+' then (-1)*amt  else 0 end) AS NET,sum(case when ass.id is not null and mark='+' then cnt when ass.id is not null and mark='-' then (-1)*cnt else 0 end) as HOLD,sum(case when ass.id is not null and mark='+' then cnt*ass.price when ass.id is not null and mark='-' then (-1)*cnt*ass.price  else 0 end) AS PRESENT,a.name,a.currency from trans t left join (select distinct     fno as ffno,name,a.currency from trans t left join asset a on t.acctid=a.id where a.id is not null) a on t.fno=a.ffno  left join acct at on at.id=t.acctid left join asset ass on ass.id=t.acctid  where ffno is not null group by a.name,a.CURRENCY) bb left join asset aa on bb.currency=aa.code ";
+           obj["W"]="  1=1  ";
+           
+           asyncommunicate(obj,function(data){
+                           // try{
+                           var tdata=JSON.parse(data);
+                           
+                           var tnames=tdata.map(function(tt){return tt["bb.NAME"]+"("+tt["bb.CURRENCY"]+")";});
+                           var ttimes=tdata.map(function(o){
+                                                var d=(parseFloat(o["NET"])+parseFloat(o["FEE"])+parseFloat(o["PRESENT"]))*parseFloat(o["aa.price"]);
+                                                return d.toFixed(2);});
+                           var onets=tdata.map(function(o){
+                                              var d=(parseFloat(o["NET"])+parseFloat(o["PRESENT"]))*parseFloat(o["aa.price"]);
+                                               return d.toFixed(2);});
+                           
+                           var cnts=tdata.map(function(o){
+                                               var d=parseInt(o["HOLD"]);
+                                               return d;});
+                           var income=0.00;
+                           var outcome=0.00;
+                           
+                           //alert(data);
+                           option = {
+                           title: {
+                           top:60,
+                           text: "资产收益",
+                           subtext:"",
+                           x: 'right',
+                           y:'bottom'
+                           },
+                           tooltip: {
+                           trigger: 'axis',
+                           axisPointer: {
+                           animation: false
+                           }
+                           },
+                           legend: {
+                           
+                           data:["资产值" ],
+                           x: 'right',
+                           //align:'left',
+                           y:'bottom'
+                           
+                           
+                           },
+                           
+                           xAxis : [
+                                    {
+                                    type : 'category',
+                                    boundaryGap : false,
+                                    axisLine: {onZero: true},
+                                    data:tnames
+                                    }
+                                    ],
+                           yAxis : [
+                                    {
+                                    name : '',//lanMap["TOTALSPEND"],
+                                    type : 'value',
+                                    scale:  0.1
+                                    }
+                                    ],
+                           series : [
+                                     {
+                                     name:"净收益(扣佣金等)",
+                                     type:'bar',
+                                     data:ttimes
+                                     },
+                                     {
+                                     name:"收益",
+                                     type:'bar',
+                                     data:onets
+                                     },
+                                     {
+                                     name:"持有数量",
+                                     type:'bar',
+                                     data:cnts
+                                     }
+                                     ]
+                           };
+                           
+                           
+                           
+                           
+                           
+                           zChart.setOption(option, true);
+                           
+                           
+                           
+                           
+                           });
+                           
+       }
+
+
+
+       function incomeCircle(){
+           
+           
+           var obj={};
+           obj["Class"]="CommonDataEngine";
+           obj["O"]="Q";
+           obj["C"]="sum(amt),uname";
+           obj["T"]="trans t left join (select distinct fno as ffno from trans t left join acct a on t.acctid=a.id where a.atype='INCOME' and a.csts!='D' and t.csts!='D') b on t.fno=b.ffno left join acct a on t.acctid=a.id";
+           obj["W"]="  ffno is not null and a.atype!='INCOME' and a.csts!='D' and t.csts!='D' group by uname";
+           var json0;
+           var json1;
+            asyncommunicate(obj,function(data){
+                           //alert(data);
+                            json0=JSON.parse(data);
+                            
+                            var obj1={};
+                            obj1["Class"]="CommonDataEngine";
+                            obj1["O"]="Q";
+                            obj1["C"]="sum(amt),uname";
+                            obj1["T"]="trans t left join acct a on t.acctid=a.id";
+                            obj1["W"]="a.atype='INCOME' and t.csts!='D' and a.csts!='D' group by uname";
+                            //select sum(amt),uname from trans t left join acct a on t.acctid=a.id
+                            //where a.atype='INCOME' group by uname
+                            
+                            
+                            asyncommunicate(obj1,function (data1){
+                            
+                            json1=JSON.parse(data1);
+                            
+                                            
+                                            
+                                            var dd=json0.map(function(o){
+                                                            var et={};
+                                                            et.name=o["uname"];
+                                                            et.value=parseFloat(o["sum(amt)"]);
+                                                            return et;
+                                                            });
+                                            var dd1=json1.map(function(o){
+                                                             var et={};
+                                                             et.name=o["uname"];
+                                                             et.value=parseFloat(o["sum(amt)"]);
+                                                             return et;
+                                                             });
+                                            
+                                            
+                                            var option = {
+                                            title: {
+                                            text: "收入",
+                                            subtext: "最内环为税前工资，次内环为工资的分配。",
+                                            x: 'center',
+                                            y:'bottom'
+                                            },
+                                            tooltip: {
+                                            trigger: 'item',
+                                            formatter: "{a} <br/>{b}: {c}  ({d}%)"
+                                            },
+                                            
+                                            series: [
+                                                     
+                                                     {
+                                                     name:"收入分配",
+                                                     type:'pie',
+                                                     radius: ['40%', '55%'],
+                                                     data: dd
+                                                     },
+                                                     {
+                                                     name:"收入来源",
+                                                     type:'pie',
+                                                     radius: ['10%', '30%'],
+                                                     data: dd1
+                                                     }
+                                                     ]
+                                            };
+                                            
+                                            
+                                            iChart.setOption(option, true);
+
+                            
+                            
+                            });
+                            
+                          
+                           
+                           });
+       }
+       //select sum(case when mark='+' then amt else amt*(-1) end) as v,uname from trans t left join acct a on t.acctid=a.id where t.csts!='D' and a.csts!='D' and a.atype in ('DEBIT','CREDIT','OTHER') group by uname
+       function assetline(){
+           
+           var obj={};
+           obj["Class"]="CommonDataEngine";
+           obj["O"]="Q";
+           obj["C"]="v,uname,bb.currency,aa.price";
+           obj["T"]=" (select sum(case when mark='+' then amt else amt*(-1) end) as v,uname,a.currency from trans t left join acct a on t.acctid=a.id where t.csts!='D' and a.csts!='D' and a.atype in ('DEBIT','CREDIT','OTHER','USER','SECURITIES') group by uname,a.currency) bb left join asset aa on aa.code=bb.currency";
+           obj["W"]=" (v<-0.001 or v>0.001) union select  v,uname,bb.currency,aa.price FROM  (select sum(case when mark='+' then cnt else cnt*(-1) end)*a.price as v,name as uname,a.currency from trans t left join asset a on t.acctid=a.id where t.csts!='D' and a.csts!='D'   group by name,a.currency) bb left join asset aa on aa.code=bb.currency order by v desc ";
+           
+           asyncommunicate(obj,function(data){
+                           
+                           // try{
+                           var tdata=JSON.parse(data);
+                           
+                           var tnames=tdata.map(function(tt){return tt["uname"]+"("+tt["bb.currency"]+")";});
+                           var ttimes=tdata.map(function(o){
+                                                var d=parseFloat(o["v"])*parseFloat(o["aa.price"]);
+                                                return d.toFixed(2);});
+                           var income=0.00;
+                           var outcome=0.00;
+                           for(var i=0;i<ttimes.length;i++){
+                            if(ttimes[i]>0.0){
+                             income+=parseFloat(ttimes[i]);
+                           
+                             }else{
+                                outcome+=parseFloat(ttimes[i]);
+                             }
+                           }
+                            //alert(data);
+                           option = {
+                           title: {
+                           top:60,
+                           text: "资产负债",
+                           subtext:"净资产:"+(parseFloat(income)+parseFloat(outcome)).toFixed(2)+";资产:"+(parseFloat(income).toFixed(2))+";负债:"+parseFloat(outcome).toFixed(2),
+                           x: 'right',
+                           y:'bottom'
+                           },
+                           tooltip: {
+                           trigger: 'axis',
+                           axisPointer: {
+                           animation: false
+                           }
+                           },
+                           legend: {
+                           
+                           data:["资产值" ],
+                           x: 'right',
+                           //align:'left',
+                           y:'bottom'
+                           
+                           
+                           },
+                           
+                           xAxis : [
+                                    {
+                                    type : 'category',
+                                    boundaryGap : false,
+                                    axisLine: {onZero: true},
+                                    data:tnames
+                                    }
+                                    ],
+                           yAxis : [
+                                    {
+                                    name : '',//lanMap["TOTALSPEND"],
+                                    type : 'value',
+                                    scale:  0.1
+                                    }
+                                    ],
+                           series : [
+                                     {
+                                     name:"金额",
+                                     type:'bar',
+                                     data:ttimes
+                                     }
+                                     ]
+                           };
+                           
+                           
+                           
+                           
+                           
+                           yChart.setOption(option, true);
+                           
+                           
+                           
+                           
+                           });
+                           
+       }
+    
+
+       //outcome
+       function outcomeline(){
+           
+           var obj={};
+           obj["Class"]="CommonDataEngine";
+           obj["O"]="Q";
+           obj["C"]="sum(amt),uname";
+           obj["T"]=" trans t left join acct  a on t.acctid=a.id";
+           obj["W"]=" a.atype='OUTCOME' and t.csts!='D' and a.csts!='D' group by uname order by sum(amt) desc";
+           
+           asyncommunicate(obj,function(data){
+                           // try{
+                           var tdata=JSON.parse(data);
+                           
+                           var tnames=tdata.map(function(tt){return tt["uname"];});
+                           var ttimes=tdata.map(function(o){
+                                                var d=o["sum(amt)"];
+                                                return d;});
+                           
+                           //alert(data);
+                           option = {
+                           title: {
+                           top:60,
+                           text: "消费图",
+                           subtext: "",
+                           x: 'right',
+                           y:'bottom'
+                           },
+                           tooltip: {
+                           trigger: 'axis',
+                           axisPointer: {
+                           animation: false
+                           }
+                           },
+                           legend: {
+                           
+                           data:["消费金额" ],
+                           x: 'right',
+                           //align:'left',
+                           y:'bottom'
+                           
+                           
+                           },
+                           
+                           xAxis : [
+                                    {
+                                    type : 'category',
+                                    boundaryGap : false,
+                                    axisLine: {onZero: true},
+                                    data:tnames
+                                    }
+                                    ],
+                           yAxis : [
+                                    {
+                                    name : '',//lanMap["TOTALSPEND"],
+                                    type : 'value',
+                                    scale:  0.1
+                                    }
+                                    ],
+                           series : [
+                                     {
+                                     name:"消费金额",
+                                     type:'bar',
+                                     data:ttimes
+                                     }
+                                     ]
+                           };
+                           
+                           
+                           
+                           
+                           
+                           oChart.setOption(option, true);
+                           
+                           
+                           
+                           
+                           });
+                           
+       }
+    
+
+        
+        
+     
+    
+    
+    
+    
+    
+    
+    
+    
+    var swiper = new Swiper('.swiper-container', {
+                            pagination: '.swiper-pagination',
+                            paginationClickable: true,
+                            spaceBetween: 30,
+                            centeredSlides: true,
+                            autoplay: 2500,
+                            autoplayDisableOnInteraction: true
+                            });
+    
+        </script>
+    
+</html>

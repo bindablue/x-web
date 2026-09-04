@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+        <style type="text/css">
+            body, html,#allmap
+             {width: 100%;height: 100%;overflow: hidden;margin:0;font-family:"微软雅黑";}
+            </style>
+      
+      <link rel="stylesheet" type="text/css" href="../../css/common.css" />
+      <link rel="stylesheet" type="text/css"
+      href="../../mod/bootstrap/css/bootstrap.min.css" />
+      
+      <script src="../../js/jquery.min.js"></script>
+      
+      <script src="../../mod/bootstrap/js/bootstrap.min.js"></script>
+      
+      <script src="../../js/common.js"></script>
+        <script type="text/javascript" src="https://api.map.baidu.com/api?v=1.4&ak=您的密钥"></script>
+         
+        <title>我的足迹</title>
+        <style>
+            input,select,textarea {
+                
+                margin-top:2px;
+                padding:10px 0px;
+                line-height:16px;
+                -webkit-appearance:none;
+                border:1px solid #87CEEB;
+            }
+            </style>
+    </head>
+    <script>
+        
+    
+    </script>
+    <body>
+    
+         
+        <div class="container" >
+            <div id="hh" >
+                <button type="button" class="btn btn-primary pull-left" onclick="dismiss();">
+                    <span style="padding-bottom: 10px;">&lt;&lt;</span>
+                </button>
+                </div>
+            <button type="button" class="btn btn-primary pull-right"  >
+                <a style="padding-bottom: 10px;" href="add.html">&gt;&gt;</a>
+            </button>
+        </div>
+    <div id="allmap" style="height:50%;background:#FFFFFF;margin-top:100px;"></div>
+     </body>
+
+<script>
+   
+   var map= new BMap.Map("allmap");    // 创建Map实例
+   var geoc = new BMap.Geocoder();
+   map.addControl(new BMap.MapTypeControl());   //添加地图类型控件
+   map.setCurrentCity("北京");          // 设置地图显示的城市 此项是必须设置的
+   map.enableScrollWheelZoom(true);     //开启鼠标滚轮缩放
+   
+function firstcall(){
+    
+   if (window.navigator.geolocation) {
+        var options = {
+            enableHighAccuracy: true,
+        };
+        
+        window.navigator.geolocation.getCurrentPosition(handleSuccess, handleError, options);
+    } else {
+        alert("浏览器不支持html5来获取地理位置信息");
+    }
+    
+  	 if(byApp()){//app用app定位
+         
+       myLocal();
+         
+         
+         return;
+     }
+     
+  
+
+}
+
+ 
+ function handleSuccess(position){
+    // 获取到当前位置经纬度  本例中是chrome浏览器取到的是google地图中的经纬度
+    var lng = position.coords.longitude;
+    var lat = position.coords.latitude;
+    // 调用百度地图api显示
+    // 创建Map实例
+    //showBaidu(lng,lat);
+
+    
+    
+}
+
+function myLocal(){
+    var obj={};
+    obj["O"]="Q";
+    obj["T"]="LOC";
+    obj["W"]="1=1";
+    obj["C"]="LNG,LAT";
+    obj["Class"]="CommonDataEngine";
+    
+    asyncommunicate(obj,function(data){
+                
+                console.log(data);
+                    var list=JSON.parse(data);
+                    for(var i=0;i<list.length;i++){
+                    
+                    showBaidu(list[i]["LAT"],list[i]["LNG"]);
+                    if(i>3){break;}
+                    }
+                
+                });
+}
+
+function showBaidu(lng,lat){
+    //if(lng<0) lng=-1*lng;
+    var point=new BMap.Point(lng, lat);
+    map.centerAndZoom(point, 20);  // 初始化地图,设置中心点坐标和地图级别
+    var marker = new BMap.Marker(point);  // 创建标注
+    map.addOverlay(marker);               // 将标注添加到地图中
+    //marker.setAnimation(BMAP_ANIMATION_BOUNCE); //跳动的动画
+    var label = new BMap.Label("<a href='http://baidu.com'>查看</a>",{offset:new BMap.Size(20,-10)});
+    marker.setLabel(label);
+    //marker.addEventListener("click",getAttr);
+    
+    //marker.disableDragging();
+    
+    
+
+}
+function displayMap(point){
+  
+  
+}
+
+function handleError(error){
+   
+}
+</script>
+  
+</html>

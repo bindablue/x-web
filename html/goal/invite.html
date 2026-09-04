@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <!--        <meta name="format-detection" content="telephone=no">-->
+    <meta charset="UTF-8">
+    <meta name="msapplication-tap-highlight" content="no">
+    <meta name="viewport"
+        content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+
+    <title>推荐下载</title>
+
+    <link rel="stylesheet" type="text/css" href="../../mod/bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/common.css" />
+    <script src="../../js/jquery.min.js"></script>
+    <script src="../../js/common.js"></script>
+    <script>
+
+ // 设置推荐码 Cookie（专门为 iOS 同源共享优化）
+        function setCookie(key,val) {
+            var domain = ".dododido.cn"; // 前面必须带点，支持主域+子域
+            var expires = 30; // 30天有效期
+
+            document.cookie = key+"=" + val +
+                "; domain=" + domain +
+                "; path=/" +
+                "; max-age=" + (expires * 24 * 60 * 60) +
+                "; secure" +
+                "; samesite=lax";
+        }
+       
+      
+       
+
+
+        // 2. 生成一次性 32位 SID
+        function randomSID() {
+            let chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            let s = "";
+            for (let i = 0; i < 32; i++) {
+                s += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return s;
+        }
+       function firstcall(){
+
+        
+       }
+        function clipboard(text){
+                
+                navigator.clipboard.writeText(text).then(() => {
+
+
+                    console.log('Text copied to clipboard');
+                    window.location.href="https://itunes.apple.com/cn/app/ji-xian/id1190108058?mt=8"
+                   // webGotoRemote("https://chat.deepseek.com/") //
+                    // https://www.doubao.com/chat
+
+                }).catch(err => {
+
+
+                    console.error('Error in copying text: ', err);
+
+
+                });
+            }
+
+        function goDownload() {
+            const sid = randomSID();
+           
+          
+            // 3. 存入当前Safari localStorage（关键，后面APP读这个）
+            
+            setCookie("invite_sid", sid);
+             // 1. 从链接拿到推荐码 ?rc=INVITE123
+            const urlParams = new URLSearchParams(window.location.search);
+            const referCode = urlParams.get("rc");
+            
+            if (referCode) {
+             setCookie("invite_code",referCode);
+
+             clipboard(referCode);
+            // window.location.href = "https://itunes.apple.com/cn/app/ji-xian/id1190108058?mt=8";
+            }
+             console.log(sid + ":" + referCode);
+            $("#inviteCode").html(sid + ":" + referCode);
+            // var obj = GetRequest();
+            // var ID = obj["ID"];
+            // $("#im").attr("href", "dadadida://goal/get/" + ID);
+        }
+
+
+        var nologin = true;
+
+    </script>
+
+    <style>
+        a {
+            margin: 20px;
+        }
+    </style>
+
+</head>
+
+<body>
+    <div class="container">
+        <div class="pull-center">
+            <div class="text-center">
+                <div class="pull-center">
+                 <img src="https://dododido.cn/img/x.png" />
+                 </div>
+                <a class="btn btn-primary" style="margin:50px;padding:20px;"
+                    onclick="goDownload()"> 点击下载</a><br />
+                <div class="panel panel-warning" style="padding:20px;">请在Safari浏览器中打开</div>
+            </div>
+           
+        </div>
+       <div id="inviteCode" class="small text-center"></div>
+    </div>
+
+
+
+
+</body>
+
+</html>

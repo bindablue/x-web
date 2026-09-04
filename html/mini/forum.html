@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="format-detection" content="telephone=no">
+<meta charset="UTF-8">
+<meta name="msapplication-tap-highlight" content="no">
+<meta name="viewport"
+	content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+<title>论坛</title>
+<link rel="stylesheet" type="text/css"
+	href="../../mod/bootstrap/css/bootstrap.min.css" />
+<link rel="stylesheet" type="text/css"
+	href="../../mod/upload/css/fileinput.min.css" />
+<link rel="stylesheet" type="text/css" href="../../css/other.css" />
+<script src="../../js/jquery.min.js"></script>
+<script src="../../mod/bootstrap/js/bootstrap.min.js"></script>
+<script src="../../js/common.js"></script>
+<script src="../../js/page.js"></script>
+<script src="../../mod/upload/js/fileinput.min.js"></script>
+<script src="../../mod/upload/js/locales/zh.js"></script>
+<style>
+#hh btn {
+	background: #FFFF00;
+}
+
+.tab-pane {
+	margin-top: 10px;
+}
+
+.title:hover {
+	cursor: pointer;
+}
+
+.ctime {
+	font-size: 13px;
+	color: #808080;
+}
+
+.topic {
+	padding: 20px;
+	border-bottom: 1px solid #EEE;
+}
+</style>
+
+</head>
+<body>
+	<nav class="navbar navbar-inverse navbar-default" role="navigation">
+		<div class="container-fluid">
+			<div>
+				<ul class="nav navbar-nav">
+					<li class="col-xs-4"><a href="../../../">网站首页</a></li>
+					<li class="col-xs-4"><a href="forum.html">论坛首页</a></li>
+					<li class="col-xs-4"><a href="../../index.html" target="_blank">个人中心</a></li>
+				</ul>
+			</div>
+		</div>
+	</nav>
+	<div class="container">
+		<div id="hh">
+			<form class="form-horizontal" id="qryForm">
+
+				<div class="form-group">
+					<label class="col-sm-2  col-xs-3 control-label" for="sname"> 关键字</label>
+					<div class="col-sm-4 col-xs-3">
+						<input id="sname" name="TITLE" class="form-control"
+							placeholder="关键字" class="sname PH-KEYWORD" /> <input
+							type="hidden" name="all" value="1" />
+					</div>
+
+					<div class="col-sm-2 col-xs-2">
+						<button type="button"
+							class=" btn btn-primary btn-sm pull-left"
+							onclick="page.loadPage(1)">
+							<span>查询</span>
+						</button>
+					</div>
+					<div class="col-sm-2 col-xs-2">
+						<button type="button"
+							class=" btn btn-primary btn-sm pull-left" onclick="addSub()">
+							<span> 发布帖子</span>
+						</button>
+					</div>
+				</div>
+
+
+			</form>
+		</div>
+		<form id="formid"></form>
+		<a id="tips"
+			style="float: left; width: 100%; text-align: center; margin-top: 10px;"></a>
+		<div class="alert   alert-danger" style="font-size: 10px;">
+			【发帖须知】：论坛 信息分享、问题求助及相关购买经历，请勿发布与该平台无关的内容帖; <br />
+			【求助问题】：请在标题处注明求助的相关内容，以便于查找和解决；请不要使用“跪求”等极端词语，网络世界人人平等，不要轻易践踏自己的尊严，禁止发布求“某某”联系方式，求鉴定类帖子。
+			<br />
+			【回复注意】：尊重他人劳动成果，请不要进行无意义回复或者灌水，在这里没有需要回复才能查看或下载的限制，言之有物才是对发布者最好的支持和感谢。
+			<br /> 【严禁内容】：
+			严禁发表代购、价格查询、广告、黄赌毒等违规内容帖子，不得上传含有病毒、木马、流氓等性质的下载链接或资源，只要发现，立即永久禁止ID。 <br />
+			【注意文明】：严禁不文明行为，回帖注意措辞，禁止对他人进行人身攻击，辱骂，禁止挑拨离间。违者按情况扣除金钱，极其恶劣的直接永久封禁！ <br />
+			售卖以及广告嫌疑的内容： 1.论坛各版块中禁止发布含有咨询渠道价格折扣的帖子 2.论坛各版块中禁止在回帖内容中报价
+			3.论坛各版块中禁止以任何形式发广告贴 4.论坛各版块中不能发布带有“求鉴定”“看真假”标题的帖子内容
+			5.论坛各版块中发贴和跟贴时请不要留联系方式
+		</div>
+		<div id="response"></div>
+		<div id="foot">
+			<div class="text-center">
+
+				<ul id="pp" class="pagination pagination-sm"></ul>
+			</div>
+			<div class="text-center pull-right">
+
+				每页<select name="ps" onchange="page.setPageSize(this.value)">
+
+					<option value="10">10</option>
+					<option value="40">40</option>
+					<option value="100">100</option>
+				</select> 条， 共 <span class="badge" id="tt">0</span>页,共 <span class="badge"
+					id="trec">0</span>条
+			</div>
+		</div>
+
+	</div>
+
+
+	<!-- /.modal -->
+
+
+	<script>
+		function showDays(days) {
+			$("#stime").val(getToday8(days));
+			$("#etime").val(getToday8(1));
+
+		}
+
+		var page = new Page();
+		page.cntreq = "/rest/product/minitopiccount";
+		page.listreq = "/rest/product/minitopic";
+		page.qryForm = "qryForm";
+		page.header = '';
+
+		page.tmpl = getTmpl();
+		if (isMobile()) {
+			$("#foot").hide();
+			setScroll();
+		}
+		var comType = {
+			"GRAD" : "阶梯代理价",
+			"RATIO" : "分成比例"
+		};
+		var appSts = {
+			"1" : "通过",
+			"3" : "待审核",
+			"4" : "拒绝"
+		};
+		var usertype = {
+			"APP" : "商户",
+			"USER" : "用户"
+		};
+		page.recompose = function(record, one, idx) {
+			for ( var key in record) {
+				if (key == "comType") {
+
+					one = one.replace("#" + key + "#", comType[record[key]]);
+				} else if (key == "usertype") {
+					console.log()
+					one = one.replace("#" + key + "#", usertype[record[key]]);
+				} else if (key == 'status') {
+
+					var v = "<span class='badge #class#'>"
+							+ appSts[record[key]] + "</span>";
+					if (record[key] == "3") {
+						v = v.replace("#class#", "alert-warning");
+					} else if (record[key] == "1") {
+						v = v.replace("#class#", "alert-success");
+
+					} else if (record[key] == "4") {
+						v = v.replace("#class#", "alert-danger");
+
+					}
+					one = one.replace("#" + key + "#", v);
+				}
+
+			}
+			return one;
+		};
+		var controls = [ "certurl", "idfront", "idback" ];
+		function firstcall() {
+			$("#stime").val(getToday8(-7));
+			$("#etime").val(getToday8(1));
+			var obj = GetRequest();
+			console.log(obj);
+
+			page.loadPage(1);
+
+		}
+
+		function addSub() {//添加商户
+
+			window.location.href = "topicdetail.html";
+		}
+
+		function setapp(appkey, status) {//删除
+			var tips = "";
+			if (status == "0") {
+				tips = "删除";
+
+			}
+			if (status == "4") {
+				tips = "拒绝";
+			}
+			if (status == "1") {
+				tips = "通过";
+			}
+
+			if (confirm("确认" + tips + "?")) {
+
+				postData({
+					"id" : appkey,
+					"status" : status
+				}, "/rest/product/settopic", function(data) {
+					if (page.idx) {
+						page.loadPage(page.idx);
+					} else {
+						page.loadPage(1);
+					}
+					$('#eventModal').modal('hide');
+				});
+			}
+
+		}
+
+		function view(id) {
+			window.location.href = "textdetail.html?id=" + id;
+		}
+
+		function getTmpl() {
+
+			var tmpl = "<div class='topic' > <h4 class='title' onclick='view(#id#)'> #title# <span class='badge alert-success'>#comments#</span></h4><div class='ctime'> 【#usertype#】<a href='#'>#username#</a> #createtime# </div></div>"
+			return tmpl;
+
+		}
+
+		function refreshData() {
+
+		}
+
+		var cnt = 0;
+	</script>
+
+</body>
+</html>

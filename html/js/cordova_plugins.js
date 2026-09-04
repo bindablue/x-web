@@ -1,0 +1,1 @@
+function DataChannel(){}DataChannel.prototype.communicate=function(n,a,o){cordova.exec(n,a,"DataChannel","communicate",[o])},DataChannel.prototype.asyncommunicate=function(n,a,o){cordova.exec(n,a,"DataChannel","asyncommunicate",[o])},cordova.addConstructor(function(){window.plugins||(window.plugins={}),console.log(".. constructor.."),window.plugins.DataChannel=new DataChannel});

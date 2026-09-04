@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <!--        <meta name="format-detection" content="telephone=no">-->
+        <meta charset="UTF-8">
+            <meta name="msapplication-tap-highlight" content="no">
+                <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+                    
+                    <title>群聊</title>
+                   
+                   
+                        <link rel="stylesheet" type="text/css" href="../../mod/bootstrap/css/bootstrap.min.css"/>
+     
+                            <script src="../../js/jquery.min.js"></script>
+                            <script src="../../mod/swiper/swiper.min.js"></script>
+                            <script src="../../js/common.js"></script>
+                            <script type="text/javascript">
+                                var nologin=true;
+                                    var webSocket =
+                                new WebSocket('ws://dadadida.cn/PlanX/websocket');
+                                
+                                webSocket.onerror = function(event) {
+                                    onError(event);
+                                };
+                            
+                            webSocket.onopen = function(event) {
+                                onOpen(event);
+                                start() ;
+
+
+                                
+                            };
+                            
+                            webSocket.onmessage = function(event) {
+                                onMessage(event);
+                            };
+                            
+                            
+                             var last={"TOPIC":"","OFFSET":""};
+                            function onMessage(event) {
+                                var dd={};
+                                try{
+                                    console.log(event.data);
+                                    dd=JSON.parse(event.data);
+                                    if(last["TOPIC"]==dd["TOPIC"]&&last["OFFSET"]==dd["OFFSET"]&&last["VALUE"]==dd["VALUE"]){
+                                        return;
+                                    }
+                                    
+                                    
+                                    if(dd.VALUE.UNAME=="Spark"){
+                                        //document.getElementById('messages').innerHTML+="<br />"+dd.VALUE.CONTENT;
+                                    }else{
+                                    document.getElementById('messages').innerHTML
+                                    
+                                    +="<br />【" +dd.TOPIC+"("+dd.OFFSET+")】:"+dd.VALUE.UNAME
+                                    +"<br/>&nbsp;&nbsp;"+dd.VALUE.CONTENT;
+                                    }
+                                    var oo=dd.VALUE;
+                                    $('#messages').scrollTop($('#messages')[0].scrollHeight);
+                                    if(dd.VALUE["TYPE"]=="NONE"){
+                                        //document.getElementById('messages').innerHTML+="<br/>"+dd.VALUE.CONTENT;
+                                        return;
+                                    }
+                                    oo["TOPIC"]=dd["TOPIC"];
+                                    oo["OFFSET"]=dd["OFFSET"];
+                                    saveData(oo);
+                                    last=dd;
+                                }catch(e){
+                                    alert(e);
+                                }
+                                
+                            }
+                            
+                            function  saveData(obj){
+                                
+                                obj["Class"]="CommonDataEngine";
+                                obj["O"]="A";
+                                obj["T"]="MSG";
+                                
+                                
+                                //asyncommunicate(obj,callback);
+                            }
+                            
+                            function callback(data){
+                                
+                            }
+                            
+                            function onOpen(event) {
+                                document.getElementById('messages').innerHTML
+                                = 'Connection established';
+                            }
+                            
+                            function onError(event) {
+                                alert(event.data);
+                            }
+                            
+                            function start() {
+                                var timestamp = Date.parse(new Date());
+                                webSocket.send("{'TYPE':'HELLO','gid':"+timestamp+"}");
+                                return false;
+                            }
+                            </script>
+                            
+                            <script>
+                                
+                                
+                                var TID="";
+                                function send(){
+                                    var obj={};
+                                    obj["TYPE"]="GROUP";
+                                    var txt=$("#tcontent").val();
+                                    obj["CONTENT"]=txt;
+                                    $("#tcontent").val("");
+                                    
+                                    try{
+                                        webSocket.send(JSON.stringify(obj));
+                                    }
+                                    catch(e){
+                                        document.getElementById('messages').innerHTML
+                                        
+                                        += '<br /><span style="color:red;">&nbsp;&nbsp;'+e+'</span>';
+                                    }
+                                    
+                                    
+                                    /*
+                                    var obj={};
+                                    obj["url"]=domain+webapp+"/rest/msg/send?msg="+txt+"&topic="+TID;
+                                    obj["Class"]="WebDataEngine";
+                                    obj["op"]="get";
+                                    
+                                    asyncommunicate(obj,function(data){
+                                                    $("#tcontent").val("");
+                                                   
+                                                    
+                                                    });*/
+                                }
+                                
+                                
+                            function firstcall(){
+                                var dat=new Date();
+                                var h=dat.getHours();
+                                var hh=(h<10)?"0"+h:h;
+                                var m=dat.getMinutes();
+                                var mm=(m<10)?"0"+m:m;
+                                var s=dat.getSeconds();
+                                var ss=(s<10)?"0"+s:s;
+                                var str=hh+":"+mm+":"+ss;
+                                
+                                var obj=GetRequest();
+                                var tid="";
+                                if(obj){
+                                    tid=obj["tid"];
+                                    TID=tid;
+                                }
+                                //alert(tid);
+                                
+                                if(tid){
+                                 //加载历史数据
+                                 obj["Class"]="CommonDataEngine";
+                                 obj["O"]="Q";
+                                 obj["T"]="MSG";
+                                 obj["C"]="TOPIC,OFFSET,CONTENT,UNAME";
+                                 obj["W"]=" 1=1 order by CAST(OFFSET AS INTEGER)";
+                                 
+                                 
+                                 asyncommunicate(obj,function(data){
+                                                 try{
+                                                    var msgs=JSON.parse(data);
+                                                    for (var rec in msgs){
+                                                    document.getElementById('messages').innerHTML
+                                                    +="<br />【" +msgs[rec]["TOPIC"]+"("+msgs[rec]["OFFSET"]+")】:"
+                                                 +msgs[rec]["UNAME"]
+                                                    +"<br/>&nbsp;&nbsp;"+msgs[rec]["CONTENT"];
+                                                 
+                                                    }
+                                                 
+                                                // alert(data);
+                                                 
+
+                                                 }catch(e){
+                                                 
+                                                 }
+                                                 
+                                 });
+                                    
+                                               
+                                }else{
+                                         //加载历史数据
+                                    
+                                }
+                               
+                                
+
+ 
+                            }
+                            
+                            
+                            
+                                
+                                
+                                function getTmpl(){
+                                    
+                                    return "<tr><td>tname</td><td>tcontent</td><td>tcycle</td><td>tday</td><td>ttime</td></tr>";
+                                }
+                            
+                           
+                           
+                            
+
+
+
+                        </script>
+                            <style>
+                                input,select,textarea {
+                                    
+                                    margin-top:5px;
+                                    padding:10px 0px;
+                                    line-height:16px;
+                                    width:100%;
+                                    -webkit-appearance:none;
+                                    
+                                    border:1px solid #87CEEB;
+                                }
+                            #ttime{
+                                padding:2px;
+                            }
+                            .middle{
+                                text-align:left;
+                                position:absolute;
+                                width:90%;
+                                height:60%;
+                                overflow-y:scroll;
+                                left:5%;
+                                top:30px;
+                                background-color:#000000;
+                                color:#008B00;
+                                
+                            }
+                           
+                                
+                                </style>
+    <body>
+        
+        <nav  style="padding-top:10px;padding-bottom:0px;text-align:center;" >
+            
+            Communication
+            
+        </nav>
+        
+        <div class="container">
+    <!--
+             <button type="button" class="btn btn-primary" onclick="dismiss();" > <span style="padding-bottom:10px;"  >&lt;&lt;</span> </button>
+             <button id="btnShare" type="button" class="btn btn-primary" style="float:right;" onclick="share();" > <span style="padding-bottom:10px;"  >微信好友分享</span> </button>-->
+        <form id="formid"> 
+          <div style="text-align:center;">
+            <div style="width:100%;text-align:center;">
+                <div id="messages" class="middle">
+                
+                </div>
+            
+            <div style="position:absolute;left:5%;width:90%;bottom:10px;">
+                
+                
+                <textarea id="tcontent" rows="4" cols="20" name="tcontent"  placeholder="信息" class="message"  ></textarea>
+            
+             
+           <div class="tAc mT20" style="margin-top:5px;">
+            <button type="button" class="btn btn-primary btn-block " onclick="send()">发送</button>
+            </div>
+           </div>
+         </div>
+         </div>
+         </form>
+        
+        </div>
+    </body>
+</html>

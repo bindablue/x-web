@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        
+        <!--        <meta name="format-detection" content="telephone=no">-->
+        <meta charset="UTF-8">
+            <meta name="msapplication-tap-highlight" content="no">
+                <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+                    
+                    <title>时间指数</title>
+                    <link rel="stylesheet" type="text/css" href="../../mod/swiper/swiper.min.css">
+                        
+                        <link rel="stylesheet" type="text/css" href="../../mod/bootstrap/css/bootstrap.min.css"/>
+                        <link rel="stylesheet" type="text/css" href="../../css/common.css"/>
+                        <script src="../../mod/swiper/swiper.min.js"></script>
+                        <script src="../../js/jquery.min.js"></script>
+                        <script src="../../js/common.js"></script>
+                        <script src="../../js/echarts.min.js"></script>
+                        <script src="../../mod/bootstrap/js/bootstrap.min.js"></script>
+                        <script>
+                            var nologin=true;
+                            
+                            
+                            function firstcall(){
+                                if(!byApp()){
+                                    $("#btnShare").hide();
+                                }
+                                
+                               
+                               loadIndex();
+                                
+                            }
+                        
+                        function loadData(){
+                            
+                            
+                            console.log("开始更新。。。");
+                            
+                            
+                        }
+                        
+                        function refreshData(){
+                            setTimeout(function(){firstcall();},500);
+                        }
+                        
+                        function  scroll(id) {
+                            var scroll_offset =$(id).offset(); //得到pos这个div层的offset，包含两个值，top和left
+                            $("body,html").animate({
+                                                   scrollTop:scroll_offset.top //让body的scrollTop等于pos的top，就实现了滚动
+                                                   },0);
+                        }
+                        
+                            </script>
+                        <style>
+                            .swiper-container{
+                                text-align:center;
+                            }
+                            </style>
+                        </head>
+    <body>
+     
+        
+        <div id="hh" style="">
+            <button type="button" class="btn btn-primary pull-left" onclick="dismiss();" >
+                <span  class="glyphicon glyphicon-chevron-left"></span>
+            </button>
+             <button id="btnShare" type="button"  class="btn btn-primary pull-right"    onclick="share();" > <span class="LBL-WXSHR" style="padding-bottom:10px;"  >微信分享</span> </button>
+        </div>
+        <input id="data" type="hidden" value="" />
+       
+            <!-- Swiper -->
+            <div class="container" >
+                
+                    
+                   
+                    
+                    <div class="swiper-slide " style="color:#FFFFFF; ">
+                        <div id="eline"   style="height:400px;width:100%;margin-top:30px;">
+                        
+                        </div>
+                    </div>
+              
+                
+            </div>
+            
+       
+        
+ 
+        
+    </body>
+    
+    <script>
+          function share(){
+            var idx=0;
+            console.log("swipe idx:"+idx);
+            var obj={};
+            //obj["URL"]=domain+webapp+"/html/social/share.html";
+           // obj["PARAM"]=$("#data").val();
+            obj["IMG"]=swipers[idx].getDataURL();
+            obj["op"]="wximgshare";
+            obj["TITLE"]=titles[idx];
+            obj["DESC"]="";
+            obj["scene"]=1;
+            obj["Class"]="TaskDataEngine";
+            asyncommunicate(obj,function(data){
+                            });
+                          // window.location.href="http:share.html?RESULT="+encodeURI(lineChart.getDataURL());
+                          // console.log(lineChart.getDataURL());
+                           
+            
+        }
+        function getTmpl(){
+            
+            return "<tr><td>#LOC#</td><td>#CNT#</td></tr>";
+        }
+    
+        var swipers=[];
+        var titles=[];
+       
+       
+       
+        var ldom = document.getElementById("eline");
+        var lineChart = echarts.init(ldom);
+        swipers.push(lineChart);
+        titles.push("时间都去哪儿了");
+        
+         
+        
+    
+    function loadIndex(){
+        var obj={};
+        obj["Class"]="CommonDataEngine";
+        obj["C"]="MSPAN,TTYPE,MDAY";
+        obj["T"]="(select sum(mspan) AS MSPAN,TTYPE,MDAY from task t left join event e  on  t.tid=e.tid where csts!='D' and tsts!='D'  group by ttype,mday )";
+        obj["O"]="Q";
+        obj["W"]="1=1 order by MDAY";
+        
+        asyncommunicate(obj,function(data){
+                        
+                        var list=JSON.parse(data);
+                        //$("#data").val(encodeURI(data));
+                        
+                        //tasktype.pop();
+                        var idt=tasktype.map(function(o){
+                                             var oo={};
+                                             oo.text=o["v"];
+                                             oo.max=200;//800
+                                             return oo;
+                                             });
+                        
+                        var series=[];
+                        
+                        var v=tasktype;
+                        var dd="YYYY-MM-DD";
+                        var lgd=[];
+                        
+                        for(var i=0;i<list.length;i++){
+                        if(dd!=list[i]["MDAY"]){//换日期了
+                        
+                        
+                        dd=list[i]["MDAY"];
+                        
+                        v=tasktype;
+                        if(i!=0){
+                        lgd.push(list[i-1]["MDAY"]);
+                        var nv=v.map(function(o){return o.p;});
+                        series.push({
+                                    name:'能力发展指数',
+                                    type: 'radar',
+                                    symbol: 'none',
+                                    itemStyle: {
+                                    normal: {
+                                    lineStyle: {
+                                    width:1
+                                    }
+                                    },
+                                    emphasis : {
+                                    areaStyle: {color:'rgba(0,250,0,0.3)'}
+                                    }
+                                    },
+                                    data:[
+                                          {
+                                          value:nv,
+                                          name: list[i-1]["MDAY"]
+                                          }
+                                          ]
+                                    });
+                        }// end if
+                        }//end if
+                        
+                        if(dd==list[i]["MDAY"]){
+                        
+                        v[list[i]["TTYPE"]-1]["p"]=parseInt(list[i]["MSPAN"])*1.00/4;//*200/800
+                        
+                        continue;
+                        }
+                        
+                        
+                        }//end for
+                        console.log(series);
+                        console.log(idt);
+                        console.log(lgd);
+                        //$("#data").val(JSON.stringify(series));
+                        
+                        var  option = {
+                        title: {
+                        text: lanMap["IENERGY"],
+                        subtext:lanMap["IETIP"],
+                        x:'right',
+                        y:'bottom'
+                        },
+                        tooltip: {
+                        trigger: 'item',
+                        backgroundColor : 'rgba(0,0,250,0.2)'
+                        },
+                        legend: {data: []},//lgd
+                        visualMap: {
+                        color: ['red', 'yellow']
+                        
+                        },
+                        grid:{
+                        left:'20%',
+                        top:'100'
+                        },
+                        
+                        radar: {
+                        indicator : idt
+                        },
+                        series :  series
+                        };
+                        
+                        lineChart.setOption(option, true);
+                        
+                        
+                        
+                        });
+                        
+                        
+    }
+    
+     
+
+    
+    
+    
+    
+   
+    
+        </script>
+    
+</html>

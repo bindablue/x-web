@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+		<meta charset="utf-8" />
+		<title>管理系统</title>
+		<meta name="description" content="top menu &amp; navigation" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+
+		<!-- bootstrap & fontawesome -->
+		<link rel="stylesheet" href="assets/css/bootstrap.min.css" />
+		<link rel="stylesheet" href="assets/font-awesome/4.5.0/css/font-awesome.min.css" />
+
+		<!-- page specific plugin styles -->
+
+		<!-- text fonts -->
+		<link rel="stylesheet" href="assets/css/fonts.googleapis.com.css" />
+
+		<!-- ace styles -->
+		<link rel="stylesheet" href="assets/css/ace.min.css" class="ace-main-stylesheet" id="main-ace-style" />
+
+		<!--[if lte IE 9]>
+			<link rel="stylesheet" href="assets/css/ace-part2.min.css" class="ace-main-stylesheet" />
+		<![endif]-->
+		<link rel="stylesheet" href="assets/css/ace-skins.min.css" />
+		<link rel="stylesheet" href="assets/css/ace-rtl.min.css" />
+
+		<!--[if lte IE 9]>
+		  <link rel="stylesheet" href="assets/css/ace-ie.min.css" />
+		<![endif]-->
+
+		<!-- inline styles related to this page -->
+
+		<!-- ace settings handler -->
+		<script src="assets/js/ace-extra.min.js"></script>
+
+		<!-- HTML5shiv and Respond.js for IE8 to support HTML5 elements and media queries -->
+
+		<!--[if lte IE 8]>
+		<script src="assets/js/html5shiv.min.js"></script>
+		<script src="assets/js/respond.min.js"></script>
+		<![endif]-->
+	</head>
+
+	<body class="skin-1">
+		<div id="navbar" class="navbar navbar-default    navbar-collapse       h-navbar ace-save-state">
+			<div class="navbar-container ace-save-state" id="navbar-container">
+				<div class="navbar-header pull-left">
+					<a href="index.html" class="navbar-brand">
+						<small>
+							<i class="fa fa-leaf"></i>
+							 
+						</small>
+					</a>
+
+					<button class="pull-right navbar-toggle navbar-toggle-img collapsed" type="button" data-toggle="collapse" data-target=".navbar-buttons,.navbar-menu">
+						<span class="sr-only">Toggle user menu</span>
+
+						<img class="avatar" src="assets/images/avatars/user.jpg" alt="头像" />
+					</button>
+
+					<button class="pull-right navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#sidebar">
+						<span class="sr-only">Toggle sidebar</span>
+
+						<span class="icon-bar"></span>
+
+						<span class="icon-bar"></span>
+
+						<span class="icon-bar"></span>
+					</button>
+				</div>
+
+				<div class="navbar-buttons navbar-header pull-right  collapse navbar-collapse" role="navigation">
+					<ul class="nav ace-nav">
+						<li class="transparent dropdown-modal">
+							<a data-toggle="dropdown" class="dropdown-toggle" href="#">
+								<i class="ace-icon fa fa-bell icon-animated-bell"></i>
+							</a>
+
+							<div class="dropdown-menu-right dropdown-navbar dropdown-menu dropdown-caret dropdown-close">
+								<div class="tabbable">
+									<ul class="nav nav-tabs">
+										<li class="active">
+											<a data-toggle="tab" href="#navbar-tasks">
+												Tasks
+												<span class="badge badge-danger">4</span>
+											</a>
+										</li>
+
+										<li>
+											<a data-toggle="tab" href="#navbar-messages">
+												Messages
+												<span class="badge badge-danger">5</span>
+											</a>
+										</li>
+									</ul><!-- .nav-tabs -->
+
+									<div class="tab-content">
+										<div id="navbar-tasks" class="tab-pane in active">
+											<ul class="dropdown-menu-right dropdown-navbar dropdown-menu">
+												<li class="dropdown-content">
+													<ul class="dropdown-menu dropdown-navbar">
+														<li>
+															<a href="#">
+																<div class="clearfix">
+																	<span class="pull-left">Software Update</span>
+																	<span class="pull-right">65%</span>
+																</div>
+
+																<div class="progress progress-mini">
+																	<div style="width:65%" class="progress-bar"></div>
+																</div>
+															</a>
+														</li>
+
+														<li>
+															<a href="#">
+																<div class="clearfix">
+																	<span class="pull-left">Hardware Upgrade</span>
+																	<span class="pull-right">35%</span>
+																</div>
+
+																<div class="progress progress-mini">
+																	<div style="width:35%" class="progress-bar progress-bar-danger"></div>
+																</div>
+															</a>
+														</li>
+
+														<li>
+															<a href="#">
+																<div class="clearfix">
+																	<span class="pull-left">Unit Testing</span>
+																	<span class="pull-right">15%</span>
+																</div>
+
+																<div class="progress progress-mini">
+																	<div style="width:15%" class="progress-bar progress-bar-warning"></div>
+																</div>
+															</a>
+														</li>
+
+														<li>
+															<a href="#">
+																<div class="clearfix">
+																	<span class="pull-left">Bug Fixes</span>
+																	<span class="pull-right">90%</span>
+																</div>
+
+																<div class="progress progress-mini progress-striped active">
+																	<div style="width:90%" class="progress-bar progress-bar-success"></div>
+																</div>
+															</a>
+														</li>
+													</ul>
+												</li>
+
+												<li class="dropdown-footer">
+													<a href="#">
+														See tasks with details
+														<i class="ace-icon fa fa-arrow-right"></i>
+													</a>
+												</li>
+											</ul>
+										</div><!-- /.tab-pane -->
+
+										<div id="navbar-messages" class="tab-pane">
+											<ul class="dropdown-menu-right dropdown-navbar dropdown-menu">
+												<li class="dropdown-content">
+													<ul class="dropdown-menu dropdown-navbar">
+														<li>
+															<a href="#">
+																<img src="assets/images/avatars/avatar.png" class="msg-photo" alt="Alex's Avatar" />
+																<span class="msg-body">
+																	<span class="msg-title">
+																		<span class="blue">Alex:</span>
+																		Ciao sociis natoque penatibus et auctor ...
+																	</span>
+
+																	<span class="msg-time">
+																		<i class="ace-icon fa fa-clock-o"></i>
+																		<span>a moment ago</span>
+																	</span>
+																</span>
+															</a>
+														</li>
+
+														<li>
+															<a href="#">
+																<img src="assets/images/avatars/avatar3.png" class="msg-photo" alt="Susan's Avatar" />
+																<span class="msg-body">
+																	<span class="msg-title">
+																		<span class="blue">Susan:</span>
+																		Vestibulum id ligula porta felis euismod ...
+																	</span>
+
+																	<span class="msg-time">
+																		<i class="ace-icon fa fa-clock-o"></i>
+																		<span>20 minutes ago</span>
+																	</span>
+																</span>
+															</a>
+														</li>
+
+														<li>
+															<a href="#">
+																<img src="assets/images/avatars/avatar4.png" class="msg-photo" alt="Bob's Avatar" />
+																<span class="msg-body">
+																	<span class="msg-title">
+																		<span class="blue">Bob:</span>
+																		Nullam quis risus eget urna mollis ornare ...
+																	</span>
+
+																	<span class="msg-time">
+																		<i class="ace-icon fa fa-clock-o"></i>
+																		<span>3:15 pm</span>
+																	</span>
+																</span>
+															</a>
+														</li>
+
+														<li>
+															<a href="#">
+																<img src="assets/images/avatars/avatar2.png" class="msg-photo" alt="Kate's Avatar" />
+																<span class="msg-body">
+																	<span class="msg-title">
+																		<span class="blue">Kate:</span>
+																		Ciao sociis natoque eget urna mollis ornare ...
+																	</span>
+
+																	<span class="msg-time">
+																		<i class="ace-icon fa fa-clock-o"></i>
+																		<span>1:33 pm</span>
+																	</span>
+																</span>
+															</a>
+														</li>
+
+														<li>
+															<a href="#">
+																<img src="assets/images/avatars/avatar5.png" class="msg-photo" alt="Fred's Avatar" />
+																<span class="msg-body">
+																	<span class="msg-title">
+																		<span class="blue">Fred:</span>
+																		Vestibulum id penatibus et auctor  ...
+																	</span>
+
+																	<span class="msg-time">
+																		<i class="ace-icon fa fa-clock-o"></i>
+																		<span>10:09 am</span>
+																	</span>
+																</span>
+															</a>
+														</li>
+													</ul>
+												</li>
+
+												<li class="dropdown-footer">
+													<a href="inbox.html">
+														See all messages
+														<i class="ace-icon fa fa-arrow-right"></i>
+													</a>
+												</li>
+											</ul>
+										</div><!-- /.tab-pane -->
+									</div><!-- /.tab-content -->
+								</div><!-- /.tabbable -->
+							</div><!-- /.dropdown-menu -->
+						</li>
+
+						<li class="light-blue dropdown-modal user-min">
+							<a data-toggle="dropdown" href="#" class="dropdown-toggle">
+								<img class="nav-user-photo avatar" src="assets/images/avatars/user.jpg" alt="头像" />
+								<span class="user-info">
+									<small>欢迎</small>
+									<span class="uname">Jason </span>
+								</span>
+
+								<i class="ace-icon fa fa-caret-down"></i>
+							</a>
+
+							<ul class="user-menu dropdown-menu-right dropdown-menu dropdown-yellow dropdown-caret dropdown-close">
+								<li>
+									<a onclick="goframe('html/user/reset.html')">
+										<i class="ace-icon fa fa-cog"></i>
+										密码设置
+									</a>
+								</li>
+
+								<li>
+									<a onclick="goframe('html/user/infoset.html')">
+										<i class="ace-icon fa fa-user"></i>
+										 个人信息设置
+									</a>
+								</li>
+
+								<li class="divider"></li>
+
+								<li>
+									<a onclick="logout()">
+										<i class="ace-icon fa fa-power-off"></i>
+										注销
+									</a>
+								</li>
+							</ul>
+						</li>
+					</ul>
+				</div>
+
+				<nav role="navigation" class="navbar-menu pull-left collapse navbar-collapse">
+					<ul class="nav navbar-nav" id="syslist" >
+						
+
+						
+						
+						
+						 
+					</ul>
+
+					<!-- <form class="navbar-form navbar-left form-search" role="search">
+						<div class="form-group">
+							<input type="text" placeholder="search" />
+						</div>
+
+						<button type="button" class="btn btn-mini btn-info2">
+							<i class="ace-icon fa fa-search icon-only bigger-110"></i>
+						</button>
+					</form> -->
+				</nav>
+			</div><!-- /.navbar-container -->
+		</div>
+
+		<div class="main-container ace-save-state" id="main-container">
+			<script type="text/javascript">
+				try{ace.settings.loadState('main-container')}catch(e){}
+			</script>
+
+			<div id="sidebar" class="sidebar      h-sidebar                navbar-collapse collapse          ace-save-state">
+				<script type="text/javascript">
+					try{ace.settings.loadState('sidebar')}catch(e){}
+				</script>
+
+				<div class="sidebar-shortcuts" id="sidebar-shortcuts">
+					<div class="sidebar-shortcuts-large" id="sidebar-shortcuts-large">
+					<!-- Subsystem -->
+						
+
+						 
+					</div>
+
+					<div class="sidebar-shortcuts-mini" id="sidebar-shortcuts-mini">
+						<span class="btn btn-success"></span>
+
+						<span class="btn btn-info"></span>
+
+						<span class="btn btn-warning"></span>
+
+						<span class="btn btn-danger"></span>
+					</div>
+				</div><!-- /.sidebar-shortcuts -->
+
+				<ul id="mm" class="nav nav-list">
+				 
+
+	
+					 
+				</ul><!-- /.nav-list -->
+			</div>
+
+			<div class="main-content">
+				<div class="main-content-inner">
+					<div class="page-content">
+						<div class="ace-settings-container" id="ace-settings-container">
+							<div class="btn btn-app btn-xs btn-warning ace-settings-btn" id="ace-settings-btn">
+								<i class="ace-icon fa fa-cog bigger-130"></i>
+							</div>
+
+							<div class="ace-settings-box clearfix" id="ace-settings-box">
+								<div class="pull-left width-50">
+									<div class="ace-settings-item">
+										<div class="pull-left">
+											<select id="skin-colorpicker" class="hide">
+											<option data-skin="skin-1" value="#222A2D">#222A2D</option>
+												<option data-skin="no-skin" value="#438EB9">#438EB9</option>
+												
+												<option data-skin="skin-2" value="#C6487E">#C6487E</option>
+												<option data-skin="skin-3" value="#D0D0D0">#D0D0D0</option>
+											</select>
+										</div>
+										<span>&nbsp; 选择皮肤</span>
+									</div>
+
+									<div class="ace-settings-item">
+										<input type="checkbox" class="ace ace-checkbox-2 ace-save-state" id="ace-settings-navbar" autocomplete="off" />
+										<label class="lbl" for="ace-settings-navbar"> 固定导航栏</label>
+									</div>
+
+									<div class="ace-settings-item">
+										<input type="checkbox" class="ace ace-checkbox-2 ace-save-state" id="ace-settings-sidebar" autocomplete="off" />
+										<label class="lbl" for="ace-settings-sidebar"> 固定菜单</label>
+									</div>
+
+									<!-- <div class="ace-settings-item">
+										<input type="checkbox" class="ace ace-checkbox-2 ace-save-state" id="ace-settings-breadcrumbs" autocomplete="off" />
+										<label class="lbl" for="ace-settings-breadcrumbs"> Fixed Breadcrumbs</label>
+									</div> -->
+
+									<div class="ace-settings-item">
+										<input type="checkbox" class="ace ace-checkbox-2" id="ace-settings-rtl" autocomplete="off" />
+										<label class="lbl" for="ace-settings-rtl"> 从右到左</label>
+									</div>
+
+									<div class="ace-settings-item">
+										<input type="checkbox" class="ace ace-checkbox-2 ace-save-state" id="ace-settings-add-container" autocomplete="off" />
+										<label class="lbl" for="ace-settings-add-container">
+											缩小居中
+										 
+										</label>
+									</div>
+								</div>
+								<!-- /.pull-left -->
+
+								<!-- <div class="pull-left width-50">
+									<div class="ace-settings-item">
+										<input type="checkbox" class="ace ace-checkbox-2" id="ace-settings-hover" autocomplete="off" />
+										<label class="lbl" for="ace-settings-hover"> Submenu on Hover</label>
+									</div>
+
+									<div class="ace-settings-item">
+										<input type="checkbox" class="ace ace-checkbox-2" id="ace-settings-compact" autocomplete="off" />
+										<label class="lbl" for="ace-settings-compact"> Compact Sidebar</label>
+									</div>
+
+									<div class="ace-settings-item">
+										<input type="checkbox" class="ace ace-checkbox-2" id="ace-settings-highlight" autocomplete="off" />
+										<label class="lbl" for="ace-settings-highlight"> Alt. Active Item</label>
+									</div>
+								</div> -->
+								<!-- /.pull-left -->
+							</div><!-- /.ace-settings-box -->
+						</div><!-- /.ace-settings-container -->
+
+						<!-- <div class="page-header">
+							<h1>
+								Top Menu Style
+								<small>
+									<i class="ace-icon fa fa-angle-double-right"></i>
+									top menu &amp; navigation
+								</small>
+							</h1>
+						</div> --><!-- /.page-header -->
+
+						<div class="row">
+							<div class="col-xs-12">
+								<!-- PAGE CONTENT BEGINS -->
+								<!-- <div class="alert alert-info visible-sm visible-xs">
+									 
+									 
+								</div>
+
+								<div class="well well-sm visible-sm visible-xs">
+									 
+								</div> -->
+
+								<!-- <div class="hidden-sm hidden-xs">
+									<button type="button" class="sidebar-collapse btn btn-white btn-primary" data-target="#sidebar">
+										<i class="ace-icon fa fa-angle-double-up" data-icon1="ace-icon fa fa-angle-double-up" data-icon2="ace-icon fa fa-angle-double-down"></i>
+										收缩/展开菜单
+									</button>
+								</div> -->
+
+								<div id="" class="center">
+									 <iframe id="iff"  src="" style="border:0px;width:100%;height:800px;"></iframe>
+								</div>
+
+								<!-- PAGE CONTENT ENDS -->
+							</div><!-- /.col -->
+						</div><!-- /.row -->
+					</div><!-- /.page-content -->
+				</div>
+			</div><!-- /.main-content -->
+
+			<div class="footer">
+				<div class="footer-inner">
+					<div class="footer-content">
+						<span class="bigger-120">
+							<span class="blue bolder">$$</span>
+							Application &copy;  2018
+						</span>
+
+						&nbsp; &nbsp;
+						<span class="action-buttons">
+							<a href="#">
+								<i class="ace-icon fa fa-twitter-square light-blue bigger-150"></i>
+							</a>
+
+							<a href="#">
+								<i class="ace-icon fa fa-facebook-square text-primary bigger-150"></i>
+							</a>
+
+							<a href="#">
+								<i class="ace-icon fa fa-rss-square orange bigger-150"></i>
+							</a>
+						</span>
+					</div>
+				</div>
+			</div>
+
+			<a href="#" id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse">
+				<i class="ace-icon fa fa-angle-double-up icon-only bigger-110"></i>
+			</a>
+		</div><!-- /.main-container -->
+
+		<!-- basic scripts -->
+
+		<!--[if !IE]> -->
+		<script src="assets/js/jquery-2.1.4.min.js"></script>
+
+		<!-- <![endif]-->
+
+		<!--[if IE]>
+<script src="assets/js/jquery-1.11.3.min.js"></script>
+<![endif]-->
+		<script type="text/javascript">
+			if('ontouchstart' in document.documentElement) document.write("<script src='assets/js/jquery.mobile.custom.min.js'>"+"<"+"/script>");
+		</script>
+		<script src="assets/js/bootstrap.min.js"></script>
+
+		<!-- page specific plugin scripts -->
+
+		<!-- ace scripts -->
+		<script src="assets/js/ace-elements.min.js"></script>
+		<script src="assets/js/ace.min.js"></script>
+
+		<!-- inline scripts related to this page -->
+		<script type="text/javascript">
+			jQuery(function($) {
+			 var $sidebar = $('.sidebar').eq(0);
+			 if( !$sidebar.hasClass('h-sidebar') ) return;
+			
+			 $(document).on('settings.ace.top_menu' , function(ev, event_name, fixed) {
+				if( event_name !== 'sidebar_fixed' ) return;
+			
+				var sidebar = $sidebar.get(0);
+				var $window = $(window);
+			
+				//return if sidebar is not fixed or in mobile view mode
+				var sidebar_vars = $sidebar.ace_sidebar('vars');
+				if( !fixed || ( sidebar_vars['mobile_view'] || sidebar_vars['collapsible'] ) ) {
+					$sidebar.removeClass('lower-highlight');
+					//restore original, default marginTop
+					sidebar.style.marginTop = '';
+			
+					$window.off('scroll.ace.top_menu')
+					return;
+				}
+			
+			
+				 var done = false;
+				 $window.on('scroll.ace.top_menu', function(e) {
+			
+					var scroll = $window.scrollTop();
+					scroll = parseInt(scroll / 4);//move the menu up 1px for every 4px of document scrolling
+					if (scroll > 17) scroll = 17;
+			
+			
+					if (scroll > 16) {			
+						if(!done) {
+							$sidebar.addClass('lower-highlight');
+							done = true;
+						}
+					}
+					else {
+						if(done) {
+							$sidebar.removeClass('lower-highlight');
+							done = false;
+						}
+					}
+			
+					sidebar.style['marginTop'] = (17-scroll)+'px';
+				 }).triggerHandler('scroll.ace.top_menu');
+			
+			 }).triggerHandler('settings.ace.top_menu', ['sidebar_fixed' , $sidebar.hasClass('sidebar-fixed')]);
+			
+			 $(window).on('resize.ace.top_menu', function() {
+				$(document).triggerHandler('settings.ace.top_menu', ['sidebar_fixed' , $sidebar.hasClass('sidebar-fixed')]);
+			 });
+			
+			
+			});
+		</script>
+		 
+		<script src="js/common.js"></script>
+		<script>
+	function getmsg(){
+		
+		/*
+		var obj={};
+	    obj["Class"]="CommonDataEngine";
+	    obj["T"]="msg";
+	    obj["O"]="Q";
+	    obj["C"]="count(1)";
+	    obj["W"]=" csts!='A' and csts!='D'";
+	    asyncommunicate(obj,function(data){
+	                    
+	                    try{
+	                   	 console.log(data);
+	                   	var tcnt=JSON.parse(data);
+	                   	$(".msgcnt").html(tcnt[0]["count(1)"]);
+	                         
+	                    }catch(e){
+	                    
+	                    }
+	    });
+		*/
+	}
+	 
+	  
+	 function getOneMenu(){
+		var m=['<li class="hover">',
+		   '<a onclick="goframe(\'#url#\')">',
+				'<i class="menu-icon #ico#"></i>',
+				'<span class="menu-text">#mname#</span>',
+			'</a>',
+
+			'<b class="arrow"></b>',
+		'</li>'];
+		 
+		 return  m.join("");//'<li><a href="#" onclick="goframe(\'#url#\')"><span class="#ico#" aria-hidden="true"></span>&nbsp;#mname#</a></li>';
+
+	 }
+	 
+	 
+	 
+	 function getTopMenu(){
+		 
+		 var arr=['<li class="treeview"><a href="#"><i class="#ico#"></i>',
+			'<span>#mname#</span> <span class="pull-right-container"> <i class="fa fa-angle-left pull-right"></i>',
+		    '</span> </a>',
+		   '<ul id="#mcode#" class="treeview-menu">',
+			'</ul>',
+		    '</li>'];
+		 arr=['<li class="hover" >',
+			'<a href="#">',
+			'<i class="menu-icon #ico#"></i>',
+			'<span class="menu-text"> #mname# </span>',
+		    '</a>',
+		    '<b class="arrow"></b>',
+	        '<ul id="#mcode#" class="submenu"></ul> </li>']
+		 return arr.join("");
+	 }
+	 var menus=[];
+	  
+	 
+	 
+	 function makemenu(syscode){
+		 $("#mm").html("");
+		   var list=menus;
+		    var scans=[];
+	        var regex;
+	        var one;
+	        
+	        for (var i in list){
+	            if($.inArray(list[i]["mcode"], scans)!=-1){
+	            	console.log(list[i]["mcode"]+" has dealed.");
+	            	continue;
+	            }
+	            //var length=$("#syslist").find("option[value*='"+list[i]["syscode"]+"']").length;
+	            var length=$("#"+list[i]["syscode"]).length;
+	            if(length==0){
+	            	if(!syscode) syscode=list[i]["syscode"];//默认指定第一个系统
+	            	//$("#syslist").append("<option value='"+list[i]["syscode"]+"'>"+list[i]["sysname"]+"</option>");
+	            	var tmpl='<li id="'+list[i]["syscode"]+'" onclick="makemenu(\''+list[i]["syscode"]+'\')" ><a href="#"> '+list[i]['sysname']+'</a></li>';
+	            	//var tmpl='<li><a onclick="makemenu(\''+list[i]["syscode"]+'\')" >'+list[i]["sysname"]+'</a></li>';
+	            	 
+	            	$("#syslist").append(tmpl);
+	            }
+	            
+	            
+	        	if(!list[i]["pcode"]){//第一个菜单
+	        		
+	            	one=getTopMenu();
+	            	
+	             
+	            }else{
+	            	one=getOneMenu();
+	            }
+	        	
+	        	for(var key in list[i]){
+	                regex=new RegExp("#"+key+"#","gi");
+	                one=one.replace(regex,list[i][key]);
+	                
+	            }
+	            if(!list[i]["pcode"]){//顶级菜单的父级菜单为空
+	            	
+	            	//指定系统下的菜单
+	            	if(syscode&&list[i]["syscode"]==syscode){
+	            		
+	            		if(list[i]["mtype"]=='i'){
+		                	goframe(list[i]["url"]);
+		                }else{
+		                	$("#mm").append(one);  
+		                }
+	            	}
+	            	
+	            	  
+	            }else{
+	            	//首页和可视化菜单
+	                if(list[i]["mtype"]=='m'||list[i]["mtype"]=="i"){
+	                	if(syscode&&list[i]["syscode"]==syscode){
+	                	  $("#"+list[i]["pcode"]).append(one);
+	                	  
+	                	  if(list[i]["mtype"]=='i'){
+			                	goframe(list[i]["url"]);
+			                }
+	                	}
+	                	
+	                }
+	                
+	            	
+	            }
+	            scans.push(list[i]["mcode"]);
+	          
+	        }
+		 
+	 }
+	 
+	 
+	 
+	 function loadmenu(){
+		 var user=JSON.parse(localStorage.user);
+		 $(".uname").html(user.uname+"["+user.uid+"]");
+		 $(".avatar").attr("src",user.avatar);
+         menus=user.menus;
+         makemenu();
+         //alert(menus);		 
+         return;
+         postData({},"/rest/user/mymenus",function(data){
+		   	 
+		   	  console.log(data);
+		    menus=data;
+		    makemenu();
+	        
+	    
+		   	  
+		   	 
+		    });
+		 
+		 
+	 }
+	 
+	 function lastdays(){
+		 
+		 var now = new Date();
+		 var firstDay = new Date(now.getFullYear(),0,1);
+		 //计算当前时间与本年第一天的时差(返回一串数值，代表两个日期相差的毫秒数)
+		 var dateDiff = now - firstDay;
+		 //一天的毫秒数
+		 var msPerDay = 1000 * 60 * 60 * 24;
+		 //计算天数
+		 var diffDays = Math.ceil(dateDiff/ msPerDay);
+		return diffDays;
+	 }
+	 
+	 function getuserinfo(){
+	 	//加载手机号，邮箱
+	 	
+			 
+	  }
+	 function firstcall(){
+		 
+			loadmenu();
+			//getmsg();
+			 getuserinfo();
+			
+			checkSts(0);
+			setInterval(function(){
+				
+				checkSts(1);
+			},120000);
+			loadcurrentrole();
+			 
+	 }
+	 function checkSts(v){
+		 
+		 
+		 
+		return;	
+		 postData({},"/rest/user/status",function(data){
+			    console.log(data);
+			    if(data["UNAME"]){
+			    $(".uname").html(data["UNAME"]);
+			    $("#sts").html('<i class="fa fa-circle text-success"></i>在线');
+			    }else{
+			    	
+			    	$("#sts").html('<i class="fa fa-circle text-warning"></i>离线');
+			    	if(v==0){
+			    		logout();
+			    	}
+			    	return;
+			    }
+			    
+			    if(data["CTIME"]){
+			    	
+			    	$(".regtime").html(data["CTIME"]);
+			    }
+			    
+			    
+			   
+		   });
+			getmsg();
+	 }
+	 
+	function logout(){
+		var token=getCookie("token");
+		postData({"jwt":token},"/user/api/logout",function(data){
+	   	 
+	   	  window.location.href="/user/login.html";
+	   	 
+	    });
+	}
+	
+	function loadcurrentrole(){
+		
+		 
+		
+		
+	}
+	
+	
+	    function goframe(url){
+	    	//alert(url);
+	    	var iframe = document.getElementById("iff");
+	    	iframe.src=url;  		 
+	    	iframe.onload=function(){
+	    		console.log("onloaded iframe.")
+	    		setTimeout(function(){changeFrameHeight();},2000)
+	    		};
+	    }
+	    
+	    
+	     
+	     
+	    $('#iff').load(function() { // 自适应iframe高度
+	        var iframeHeight=$(this).contents().height();
+	        $(this).height(iframeHeight+'px'); 
+	    });
+	    
+	    function changeFrameHeight(){
+	        var ifm= document.getElementById("iff");
+	        ifm.height=document.documentElement.clientHeight-56;
+	    }
+	    window.onresize=function(){ changeFrameHeight();}
+	    $(function(){changeFrameHeight();});
+
+         var nologin=true;
+	</script>
+		 
+		
+		 
+		
+		
+		
+	</body>
+</html>

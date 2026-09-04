@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="format-detection" content="telephone=no">
+<meta charset="UTF-8">
+<meta name="msapplication-tap-highlight" content="no">
+<meta name="viewport"
+	content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+
+<title>活动</title>
+<link rel="stylesheet" type="text/css" href="mod/bootstrap/css/bootstrap.min.css" />
+<link rel="stylesheet" type="text/css" href="css/common.css" />
+<link rel="stylesheet" type="text/css" href="css/shop.css" />
+<link rel="stylesheet" type="text/css" href="mod/swiper/swiper.min.css">
+<script src="js/jquery.min.js"></script>
+<script src="mod/swiper/swiper.min.js"></script>
+<script src="mod/encrypt/md5.js"></script>
+<script src="mod/bootstrap/js/bootstrap.min.js"></script>
+<script src="js/common.js"></script>
+<script src="js/page.js"></script>
+<script src="js/shop.js"></script>
+<style>
+body{
+background:url(http://qnm.hunliji.com/o_1cnoif48hdn01317v8bv0tfdfbe.png);
+}
+div.progress {
+	position: relative;
+	top: 8px;
+	left: 0px;
+}
+
+#areabtn {
+	padding: 10px;
+}
+
+.btnbuy {
+	margin-top: 40px;
+	padding: 10px;
+}
+
+img {
+	width: 100%;
+}
+
+#pdesc {
+	margin-top: 20px;
+}
+
+#pname {
+	
+}
+
+img {
+	width: auto;
+	height: auto;
+	max-width: 100%;
+	max-height: 100%;
+}
+
+.pricearea {
+	text-align: center;
+}
+
+.orgprice {
+	text-decoration: line-through;
+	color: #B8B8B8;
+	font-size: inherit;
+	margin-right: 10px;
+	font-size: 20px;
+	padding: 5px;
+}
+
+.price {
+	text-align: center;
+	font-size: 20px;
+	padding: 5px;
+	color: #e4393c;
+}
+
+.proname {
+	clear: both;
+	color: #999;
+	text-align: center;
+	padding: 5px;
+	font-size: 25px;
+}
+
+.appname {
+	margin: 20px;
+	padding: 10px;
+}
+.proinfo{
+width:30%;
+float:left;
+}
+.buyarea{
+float:left;
+ width:50%;
+ margin-left:30px;
+
+}
+.uparea{
+width:100%:
+clear:both;
+}
+ 
+select{
+ padding:8px;
+ text-decoration:none;
+ appearance:none;
+-moz-appearance:none;
+-webkit-appearance:none;
+}
+ input:focus,select:focus,textarea:focus {outline:none;}
+ input,select,textarea{
+ border:0px;
+ border-bottom:1px #EEE solid;
+ }
+ #pdesc img{
+ width:100%;
+ }
+ .msg{
+ background:#f47983;
+ color:#FFFFFF;
+ border-radius:5px;
+ text-align:left;
+ }
+ .memo{
+  font-size:20px;
+  padding:10px;
+  
+ }
+ a{font-size:12px;color:#f47983;}
+a:hover{color:#f47983;}
+#lottery-area{
+  width:333px;
+ margin:10px auto;
+ display:none;
+
+  
+ border:1px #EEE solid;
+ border-radius:3px;
+}
+.top ,.middle, .bottom,.center{
+ width:110px;
+ height:110px;
+ /* background:#00FF00; */
+ display:inline-block;
+ border:2px #FFF solid;
+ margin-right:-3px;
+ padding:10px;
+ word-spacing:0;
+ font-size:12px;
+}
+.selected-block{
+ border-radius:3px;
+ border:3px #FF0000 solid;
+}
+.center{
+    
+}
+</style>
+<script>
+          
+       
+        </script>
+</head>
+<body>
+
+	 
+	 
+	 
+	<!-- 主区域 -->
+	<div class=" text-center container">
+	<!-- 上区域 -->
+	 
+      
+      <div>
+       <img src=""  style="with:100%;height:auto;" id="banner" />
+      </div>
+        <div class="row memo" id="memo"></div>
+        <div class="row addr" id="addr"> </div>
+        <div class="row">
+      开始日期：<span id="startDate"></span> 
+      </div>
+      <div>
+      截止日期：<span id="endDate"></span>  
+          </div>
+       
+   <div style="padding:10px;color:#f47983;">
+    </div>
+       <!-- Swiper -->
+	<div class="swiper-container">
+		<div id="apps" class="swiper-wrapper"></div>
+		<!-- Add Pagination -->
+		<!-- <div class="swiper-pagination"></div> -->
+
+	</div>
+	 
+	<div  onclick="$('#qryFrm').toggle()" style="margin:10px;padding:10px;">个人信息登记<i class="glyphicon glyphicon-hand-up"></i> </div>
+	 <form id="qryFrm" class="form-horizontal  " style="margin-top: 20px;display:none; " id="pform"
+				role="form">
+	 <input type="hidden" value="0" name="actid" id="id"/>
+	 
+	<div class="form-group">
+					<div class="col-sm-12">
+					 <select  id="itemlist" class="form-control"    name="itemname">	</select>
+					 </div>
+	</div>
+	<div class="form-group">
+					<div class="col-sm-12">
+					 <input type="text" id="phone" class="form-control"  maxlength="12" placeholder="手机号" name="phone"/>
+					 					</div>
+	</div>
+	<div class="form-group">
+					<div class="col-sm-12">
+					 <input type="text" id="realname"  class="form-control" maxlength="32" placeholder="真实姓名" name="realname"/>	</div>
+	</div>
+	
+	<div class="form-group">
+					<div class="col-sm-12">
+					 <input type="text" id="addr" class="form-control" maxlength="32" placeholder="收货地址" name="addr"/>	</div>
+	</div>
+	
+	<div class="form-group">
+					<div class="col-sm-12">
+					 <input type="text" id="msg" class="form-control" maxlength="32" placeholder="留言" name="msg"/>	</div>
+	</div>
+	<div id="apply" class="btn btn-danger btn-block" onclick="goAct()">确定登记</div>
+	 </form>
+
+	  <!--  <a onclick='drawAct()' style="margin-top:10px;" 
+	   class="btn btn-warning btn-block "> 拼手气，抽小红包</a> -->
+	
+	  
+	  <div id="lottery-area" >
+	  <div id="prize-0"class="top">&nbsp;</div>
+	  <div id="prize-1" class="top">&nbsp;</div>
+	  <div id="prize-2"class="top">&nbsp;</div>
+	  <div id="prize-7"class="middle">&nbsp;</div>
+	  <div id="prize-00" class="center label-danger"  onclick='lottery()'><span>开始抽</span></div>
+	  <div id="prize-3" class="middle "  >&nbsp;</div>
+	  
+	  <div id="prize-6" class="bottom"> &nbsp;</div>
+	  <div id="prize-5" class="bottom"> &nbsp;</div>
+	  <div id="prize-4" class="bottom"> &nbsp;</div>
+	  
+	  
+	  </div>
+	 
+	  <audio id="musicAudio"  class="hide"  controls="controls" style="margin-top:20px;"  >
+ 
+  <!-- <source src="https://qnvideo.hunliji.com/n-LvZJP0teoKD9I40PDyXmbhuJQ=/FlZtKADvtrVpvaleJd4jWm5CRDM9.mp3" type="audio/mpeg" />
+ --> 
+</audio>
+ </div>
+ 
+  
+  
+ 
+	 
+		 <div id="pubqrcode" class="text-center " style="margin-top: 25px; margin-bottom:30px;display:none;">
+				<div>
+					<b>关注公众号，优质精选水果～</b>
+				</div>
+				<img src="https://dododido.cn/store/wximg/1000005.jpg"
+					style="width: 150px; heigth: 150px;">
+               <div>
+					<b onclick="wxrelogin()" style="padding:20px;margin:10px;border:#BBB;border-radius:5px;">若关注后还提示未关注，请点击此连接</b>
+				</div>
+			</div>
+			
+		 
+	 
+ 
+
+	<script>
+       function goAct(){
+    	  
+    	   var id=$("#id").val();
+    	   var obj=getFormJson("#qryFrm");
+    	   //alert(JSON.stringify(obj));
+    	   postData(obj,"/rest/shop/goact",function(data){
+        		 alert(data.MSG);
+    	       	 console.log(data);
+    	       	 if(data.CODE=="9999"){
+    	       		 $("#pubqrcode").show();
+    	       		 
+    	       	 }
+    	         loadAct();
+    	   
+          });
+       }
+       
+     function loadAct( ){
+    	 
+    	  var id=$("#id").val();
+    	 postData({id:id},"/rest/shop/getact",function(data){
+      		 
+       	  console.log(data);
+       	  for(var k in data){
+       		  $("#"+k).html(data[k]);
+       		  if(k=="banner") {
+       			 $("#"+k).attr("src",data[k]);
+       			 }
+       	  }
+       	  if(data["hittype"]=="REALTIME"){
+       		  $("#lottery-area").show();
+       	  }
+       	  //alert(JSON.stringify(data));
+       	  if(data["items"]){
+       		  $("#itemlist").html("");
+       	  
+       		  var items=data["items"].split("#");
+       		  for(var i=0;i<items.length;i++){
+       			  
+       			  $("#itemlist").append("<option value='"+items[i]+"'>"+items[i]+"</option>")
+       		  }
+       	  }
+       	 $("title").html(data["name"]); 
+       	  var app=data["applicants"];
+       	  $("#banner").attr("src",data["banner"]);
+       	 $("#apps").html("");
+       	  for(var i=0;i<app.length;i++){
+       		  $("#apps").append("<div class='swiper-slide msg '> <img style='width:50px;height:50px;border-radius:25px;' src='"+app[i]["avatar"]+"'/>"+app[i]["nickname"]+":"+app[i]["itemname"]+":"+app[i]["msg"]+"</div>");
+       	       if(app[i]["mine"]){
+       	    	   
+       	    	   for(var k in app[i]){
+       	    		   $("#"+k).val(app[i][k]);
+       	    	   }
+       	    	   $("#itemlist option[value='"+app[i]["itemname"]+"']").attr("selected","selected");
+       	       }
+       	  
+       	  }
+       	  var prizes=data["prizes"];
+       	  for(var i=0;i<prizes.length;i++){
+       		  
+       		  if($("#prize-"+i).length>0){
+       			  $("#prize-"+i).data("prizeid",prizes[i]["id"]);
+       			  $("#prize-"+i).html(prizes[i]["prizename"]);
+       		  }
+       	  }
+       	 var swiper = new Swiper('.swiper-container', {
+             pagination: '.swiper-pagination',
+             paginationClickable: true,
+             spaceBetween: 30,
+             centeredSlides: true,
+             autoplay: 2500,
+             autoplayDisableOnInteraction: false
+             });
+       	  if(data["inAct"]){
+       		//$("#qryFrm").hide();
+       		//$("#apply").hide();
+       	    //$(".container").append("<div>您已参加,恭候您的到来！ </div>");
+       	  }else{
+       		
+       		  
+       	  }
+       	  
+       	 $("body").css("background-image",data["banner"]);
+       	 configwx(data["name"],
+       			data["banner"],
+					data["memo"]);
+
+       	 
+       	  });
+     }
+     
+      function firstcall(){
+    	 
+          var obj=GetRequest();
+          var id=obj["id"];
+          
+          $("#id").val(id);
+          loadAct(id);
+     }
+
+      var step=0;//步调 
+      var idx=0;
+      var speed=2;
+ function roll(prize){
+	 
+	 requestAnimationFrame(function(){
+		   			  
+			    idx=(step%8);
+			    console.log(idx);
+			    console.log(speed);
+			    //调整速度
+			     
+			    if(counter%speed==0){
+			    	 $("#lottery-area *").removeClass("selected-block")
+					 $("#prize-"+idx).addClass("selected-block");
+			    	 step++;
+			    	// 放慢速度：
+			    	if(step%8==0) { speed+=1};
+			    }
+				  
+			     
+			    
+			    
+			   if(counter>300){
+				   
+				   if($("#prize-"+idx).data("prizeid")==prize.id){
+					 //中奖了，不继续转 
+					   console.log($("#prize-"+idx).data("prizeid"));
+					   console.log(prizeid);
+					   $("#lottery-area *").removeClass("selected-block")
+					   $("#prize-"+idx).addClass("selected-block");
+					   setTimeout(function(){alert("恭喜中奖了~")},1500);
+					   counter=0;
+					   step=0;
+					   idx=0;
+					   $("#prize-00").removeAttr("disabled");
+				   }
+				   if(!prize.id){//说明没中奖，然后 选中一个没中奖的 
+					   
+					   
+				   }
+				   
+			   }
+			   else { 
+				   counter++; 
+				   requestAnimationFrame(arguments.callee);
+				 }
+		  
+		});
+	 
+ }
+ var counter=0;
+ 
+function lottery(){
+	
+	
+    	  var id=$("#id").val();
+   	    var obj=getFormJson("#qryFrm");
+   	    $("#prize-00").attr("disabled",true);
+   	   postData(obj,"/rest/shop/lottery",function(data){
+       		 //alert(JSON.stringify(data));
+       		    
+       		
+       		 	 if(data.CODE=="9999"){
+       		 		 alert(data.MSG);
+       				 $("#pubqrcode").show();
+       			 }
+       		 	 
+       		 	 else if(data.DATA&&data.DATA.id){
+       				roll(data.DATA);
+       				 
+       			 }else{
+       				 alert(data.MSG);
+       			 }
+       			 
+       		 
+   	       	 console.log(data);
+   	       	 
+   	        
+   	   
+         }); 
+    	  
+      }
+      function drawAct(){
+    	  
+    	  var id=$("#id").val();
+   	   var obj=getFormJson("#qryFrm");
+   	   postData(obj,"/rest/shop/drawact",function(data){
+       		 //alert(JSON.stringify(data));
+       		  alert(data.MSG);
+       		 
+       		 	 if(data.CODE=="9999"){
+       				 $("#pubqrcode").show();
+       			 }
+       			 
+       		 
+   	       	 console.log(data);
+   	       	 
+   	        
+   	   
+         });
+    	  
+      }
+      </script>
+    
+
+
+	<script src="https://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+	<script>
+ 
+
+ 
+	document.addEventListener('DOMContentLoaded', function() {
+
+		function audioAutoPlay() {
+		/* var audio = document.getElementById('musicAudio');
+		audio.play();
+		document.addEventListener("WeixinJSBridgeReady", function() {
+		audio.play();
+		}, false); */
+		}
+		//audioAutoPlay();
+		}); 
+		 
+  
+</script>
+
+
+
+
+</body>
+</html>

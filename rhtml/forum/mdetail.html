@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="format-detection" content="telephone=no"> 
+<meta charset="UTF-8">
+<meta name="msapplication-tap-highlight" content="no">
+<meta name="viewport"
+	content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+
+<title>话题</title>
+
+
+
+<link rel="stylesheet" type="text/css" href="../../css/nav.css" />
+
+<link rel="stylesheet" href="../../dist/css/AdminLTE.min.css">
+<link rel="stylesheet"
+	href="../../plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css">
+<link rel="stylesheet" type="text/css"
+	href="../../mod/bootstrap/css/bootstrap.min.css" />
+
+<script src="../../js/jquery.min.js"></script>
+
+<script src="../../mod/bootstrap/js/bootstrap.min.js"></script>
+
+<script src="../../js/common.js"></script>
+<script src="../../js/page.js"></script>
+<style>
+#formid {
+	z-index: 1000;
+}
+#content img{
+ width:100%;
+}
+.container {
+	font-size:16px;
+}
+</style>
+<script>
+	var clvl = [ "warning", "primary", "default", "danger" ];
+	var page = new Page();
+	page.cntreq = "/rest/forum/myordercount";
+	page.listreq = "/rest/forum/myorder";
+	page.qryForm = "qryForm";
+	page.recompose = function(record, one, idx) {
+		one = one.replace("#cc#", clvl[idx % clvl.length]);
+		var img="../../img/x.jpg";
+		var exts=[".jpeg",".jpg",".gif",".png"];
+		if (record.avatar) {
+		
+			for(var i=0;i<exts.length;i++){
+				record.avatar=record.avatar.replace("/temp/","/img/").replace(exts[i],"_50x50"+exts[i]);
+				
+			}
+			img = record.avatar;
+	
+		}
+		one=one.replace("#avatar#","<img class='avatar' src='"+img+"' width='30' height='30'/>");
+		if(record.ctime){
+			record.ctime=record.ctime.replace(".0","");
+		}
+		return one;
+
+	}
+	var nologin = true;
+	
+	function refreshData() {
+
+		//location.reload();
+
+	}
+	
+	 function share(scene){
+          
+         var obj={};
+         obj["op"]="arcshare";
+         obj["ID"]=$("#id").html();
+         obj["TITLE"]=$("#title").html();
+         obj["DESC"]="";
+         obj["scene"]=scene;
+         obj["Class"]="TaskDataEngine";
+         asyncommunicate(obj,function(data){
+                         });
+                        
+                        
+         
+     }
+
+	function reply(uid, uname) {
+		$("#touid").val(uid);
+		if (uname!= '') {
+			$("#tcontent").val("@" + uname + ":");
+		} else {
+			$("#tcontent").val("");
+
+		}
+
+		var obj = $("iframe").contents().find("body");
+
+		$("iframe").contents().find("body").html("@" + uname);
+		$("#myModal").modal("show");
+	}
+
+	function getTmpl() {
+
+		var tpl = [
+				'<div class="box box-#cc#">',
+				'<div class="box-header with-border">',
+				' <h3 class="box-title">#avatar# #uname#:</h3>  ',
+				'</div>',
+				'<div class="box-body">',
+				'#content# ',
+				'</div>',
+				'<div class="box-footer" onclick="reply(#uuid#,\'#uname#\')">#ctime#<a class="pull-right"   >回复</a></div>',
+				'</div>' ];
+
+		return tpl.join("");
+
+	}
+
+	function firstcall() {
+       if(byApp()){
+    	   $(".wxshare").show();
+    	   
+       }
+		var obj = GetRequest();
+		$(".upper").val(obj["id"]);
+		page.tmpl = getTmpl();
+		page.loadPage(1);
+		setScroll();
+		postData(obj, '/rest/forum/sentence', function(data) {
+
+			for ( var i in data) {
+				console.log(data[i]);
+                 
+				$("title").html(data[i]["title"]);
+				$("#titlehidden").val(data[i]["title"]);
+				if(data[i].ctime){
+					data[i].ctime=data[i].ctime.replace(".0","");
+				}
+				for ( var k in data[i]){
+					$("#" + k).html(data[i][k]);
+					if(k=="avatar"){
+						if(data[i][k]){
+							$("#"+k).attr("src",data[i][k]);
+						}
+						
+						else{
+							$("#"+k).attr("src","../../img/x.jpg");
+						}
+					}
+				}
+				 
+					
+			}
+			if(!byApp()){
+				$("#content").prepend("<a class='pull-center'href='https://itunes.apple.com/cn/app/ji-xian/id1190108058?mt=8'>点击下载“极限任务”app</a>");
+
+			}
+		
+		});
+
+	}
+
+	function submitForm() {
+		if (!$("#tcontent").val().trim()) {
+			return;
+		}
+		$("#btnSave").attr("disabled", true);
+		var obj = getFormJson("#formid");
+		console.log(JSON.stringify(obj));
+		postData(obj, "/rest/forum/addmsg", function(data) {
+			$("#btnSave").attr("disabled", false);
+			if ("0000" != data["CODE"]) {
+				
+				if(data["CODE"]=="1111"){//显示登录
+					$("#loginModal").modal("show");
+					
+				}else{
+					alert(data["MSG"]);
+				}
+			} else {
+				$("#tcontent").val("");
+				var obj = $("iframe").contents().find("body");
+				if(!GetRequest()["id"]){
+					$("iframe").contents().find("body").html("");
+				}
+				
+				firstcall();
+				$("#myModal").modal("hide");
+
+			}
+
+		});
+	}
+</script>
+<style>
+pre {
+	width: 100%;
+}
+.box-body img{
+width:100%;
+}
+
+.avatar{
+  border-radius:15px;
+  margin-right:10px;
+}
+.media-heading{
+margin-top:15px;
+}
+#comarea{
+ padding:10px;
+}
+
+#comarea a{
+margin:5px 5px 15px 2px;
+}
+</style>
+<body>
+
+
+
+	<div class="container">
+	 
+	<div class="media">
+   
+  <div class="media-body">
+ <h4 class="media-heading" id="title"></h4>
+   <br/>
+       <img id="avatar" class="media-object" style="width:30px;height:30px;" >
+       
+         <span id="uname"></span>  <span
+					id="ctime"></span> <span class="badge label-success"   >评论 <span id="comments"></span></span>
+					<br/>
+    <div id="content"></div>
+    
+    
+    <div id="comarea">
+ &nbsp;&nbsp;
+				<a class="pull-left" onclick="reply(0,'');">&nbsp;&nbsp; 回复</a> 
+					  <a   class="pull-left wxshare" style="display:none;margin-left:5px;" onclick="share(1)">朋友圈分享</a>
+					  <a   class="pull-left wxshare" style="display:none;margin-left:5px;" onclick="share(0)">朋友分享</a>
+					
+					
+  </div>
+  </div>
+  
+</div>
+		<form class="form-horizontal hide" id="qryForm">
+			<input class="upper" name="PID" value=""> <input
+				name="StartDate" value=""> <input name="EndDate" value="">
+			<input name="TITLE" value="">
+			<span id="id"></span>
+		</form>
+		 
+
+		<div id="response" style="width: 100%; margin-top: 20px;"></div>
+		<div id="jiazai"  class="text-center"><img width='30' height='30' src='../../img/loading.gif'/></div>
+		<div class="text-center pull-center hide">
+			<ul id="pp" class="pagination pagination-sm"></ul>
+		</div>
+
+		<div class="footer text-center pull-center hide">
+			每页<select style="border: 0px;" name="ps"
+				onchange="page.setPageSize(this.value)">
+				<option value="10">10</option>
+				<option value="40">40</option>
+				<option value="100">100</option>
+			</select> 条， 共 <span class="badge" id="tt">#TT#</span>页
+		</div>
+
+		<!-- 模态框（Modal） -->
+		<div class="modal fade" id="myModal" tabindex="-1" role="dialog"
+			aria-labelledby="myModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"
+							aria-hidden="true">×</button>
+						<h4 class="modal-title" id="myModalLabel">回复</h4>
+					</div>
+					<div class="modal-body">
+
+						<form id="formid">
+							<input name="title" type="hidden" id="titlehidden" /> <input
+								name="touid" type="hidden" id="touid" />
+							<div class="form-group">
+
+								<input class="upper" type="hidden" name="upper" value="" />
+								<textarea id="tcontent" class="wysihtml5 form-control" rows="5"
+									style="width: 100%" name="content" placeholder="谈谈您的感想"></textarea>
+							</div>
+
+
+						</form>
+
+
+
+
+
+
+					</div>
+					<div class="modal-footer ">
+						<div class="col-sm-12">
+							<div class="col-sm-3  ">
+								<button type="button" class="btn  btn-default pull-left"
+									data-dismiss="modal">关闭</button>
+
+							</div>
+
+
+
+							<div class="col-sm-3">
+								<button id="btnSave" type="button"
+									class=" btn btn-primary  pull-right " onclick="submitForm()">
+									<span>回复</span>
+								</button>
+							</div>
+						</div>
+
+					</div>
+					<!-- /.modal-content -->
+				</div>
+				<!-- /.modal-dialog -->
+			</div>
+		</div>
+		<!-- /.modal -->
+
+<!-- 未登录提示 -->
+<!-- 模态框（Modal） -->
+<div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+					&times;
+				</button>
+				<h4 class="modal-title" id="myModalLabel">
+					登录提醒
+				</h4>
+			</div>
+			<div class="modal-body">
+			 <div class="col-sm-12">
+				<button type="button" class="btn btn-primary pull-lef col-sm-5" onclick="displaylogin();">登录
+				</button>
+				
+				<button type="button" class="btn btn-success pull-right col-sm-5 " onclick="displayregist();">注册
+				</button>
+				</div>
+			</div>
+			<div class="modal-footer"></div>
+			 
+		</div><!-- /.modal-content -->
+	</div><!-- /.modal -->
+</div>
+
+	</div>
+
+</body>
+<script
+	src="../../plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js"></script>
+<script src="../../plugins/js/editor.js"></script>
+<!-- Page Script -->
+<script>
+function displaylogin(){
+	$("#loginModal").modal("hide");
+	showlogin();
+}
+
+function displayregist(){
+	$("#loginModal").modal("hide");
+	showregist();
+	
+}
+
+</script>
+
+</html>

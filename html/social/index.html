@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <!--        <meta name="format-detection" content="telephone=no">-->
+        <meta charset="UTF-8"> 
+        <meta name="msapplication-tap-highlight" content="no">
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+       
+        <title>我的世界我做主</title>
+        
+        <link rel="stylesheet" type="text/css" href="../../mod/bootstrap/css/bootstrap.min.css"/>
+        <script src="../../js/jquery.min.js"></script>
+        <script src="../../js/common.js"></script>
+       
+        <script>
+          
+          function firstcall(){
+              /// loadTask();
+          }
+            function getTmpl(){
+                var tmpl="<tr><td style=''>#tname#</td><td>#ttime#</td>"+
+                "<td><span  class=\"glyphicon glyphicon-remove\" onclick=\"del('#tid#')\"></span></td>"+
+                "<td><span  class=\"glyphicon glyphicon-pencil\" onclick=\"goUpdate('#tid#');\"></span></td>"+
+                "<td><span  class=\"glyphicon glyphicon-info-sign\" onclick=\"goD('#turl#');\"></span></td>"+
+                "</tr>";
+                
+                return $("#tmpl").html();
+                
+            }
+        
+        function refreshData(){
+            setTimeout(function(){loadTask()},500);
+            
+        }
+         
+        function loadTask(){
+        	 var obj=getFormJson("#formid");
+            
+             var url=domain+webapp+"/service?";
+             url+="BCODE=TTTT";
+             url+="&O=Q";
+             url+="&size=100";
+           
+             var obj=getFormJson("#formid");
+             obj["Class"]="WebDataEngine";
+             obj["op"]="get";
+             obj["url"]=url;
+             asyncommunicate(obj,callback);
+             
+        }
+        
+         
+        function callback(data){
+            
+            
+            try{
+                   //$('#myModal').modal('hide');
+                   var cl="primary,success,info,warning,danger";
+                   var classes=cl.split(",");
+                   var dd=JSON.parse(data);
+                   //alert(data["CODE"]);
+                   var list=dd["data"];
+                   var html="";
+                   var tmpl=getTmpl();
+                   var regex;
+                   for (var i in list){
+                   var one=tmpl;
+                   for(var key in list[i]){
+                   regex=new RegExp("#"+key+"#","gi");
+                   one=one.replace(regex,list[i][key]);
+                   var num=i%5;
+                   one=one.replace("#class#","panel-"+classes[i%5]);
+                   }
+                   html+=one;
+                   
+                   }
+                   
+                   
+                   $("#response").html(html);
+            }catch(e){
+                $("#response").html(e);
+            }
+            
+        
+        }
+        
+        </script>
+        
+        <style>
+            
+            .container{
+                margin-top:30px;
+                text-align:center;
+            }
+        
+            </style>
+       
+    </head>
+    <body>
+        <div class="container pull-center"  >
+                 <br/>
+                 欢迎关注公众号“嗒嗒嘀嗒”(Mydadadida)，<br/>
+                 提出你的想法～
+        </div>
+        
+
+    </body>
+</html>

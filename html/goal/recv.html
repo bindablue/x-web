@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <!--        <meta name="format-detection" content="telephone=no">-->
+        <meta charset="UTF-8">
+            <meta name="msapplication-tap-highlight" content="no">
+                <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+                    
+                    <title>接收目标</title>
+                   
+                      <link rel="stylesheet" type="text/css" href="../../css/common.css" />
+                        <link rel="stylesheet" type="text/css" href="../../mod/bootstrap/css/bootstrap.min.css"/>
+     <style>
+         
+         </style>
+                            <script src="../../js/jquery.min.js"></script>
+                            <script src="../../mod/swiper/swiper.min.js"></script>
+                            <script src="../../js/common.js"></script>
+                            <script type="text/javascript">
+                                //var nologin=true;
+                                    var webSocket =
+                                new WebSocket('wss://dododido.cn/PlanX/websocket');
+                                
+                                webSocket.onerror = function(event) {
+                                    onError(event);
+                                };
+                            
+                            webSocket.onopen = function(event) {
+                                onOpen(event);
+                                start() ;
+
+
+                                
+                            };
+                            
+                            webSocket.onmessage = function(event) {
+                                onMessage(event);
+                            };
+                            
+                            function getTmpl(){
+                                var tmpl="<tr id='row#ID#'><td   style=''>#AN#</td>"+
+                                "<td id='bb#ID#'><a onclick=\"addGoal('#ID#')\">"+lanMap["IMPORT"]+"</a></td>"
+                                +"</tr>";
+                                
+                                return  tmpl;
+                                
+                            }
+                            function refreshData(){
+                                
+                            }
+                            
+                            function onMessage(event) {
+                                
+                                    console.log(event.data);
+                                    try{
+                                        var obj=JSON.parse(event.data);
+                                        if(obj["TYPE"]!="GOAL-REQ"){
+                                            
+                                            var dd=JSON.parse(event.data);
+                                            
+                                            
+                                            
+                                            document.getElementById('messages').innerHTML
+                                            
+                                            +="\n<br/>"+lanMap["HELLO"];
+                                            
+                                            if(dd["USERTYPE"]!="1"){
+                                                document.getElementById('messages').innerHTML+=lanMap["NOLOGINTIP"]+dd["TNAME"]+"】";
+                                                
+                                            }else{
+                                                document.getElementById('messages').innerHTML
+                                                
+                                                +=dd["TNAME"];
+                                            }
+                                            $("#lrecv").html('<img src="../../img/loading.gif" width="50" height="40"/><span style="padding-top:10px;">'+lanMap['RECEIVING']+'</span>');
+                                            
+                                            
+                                            
+                                            return;
+                                        }
+                                        var arr=obj["GOAL"];
+                                        
+                                        for(var i=0;i<arr.length;i++){
+                                            if(typeof recv[arr[i]["ID"]] =="undefined"){
+                                                total++;
+                                                 $("#prg").html(icnt+"/"+total);
+                                                 recv[arr[i]["ID"]]=arr[i];
+                                                    var one=getTmpl();
+                                                 for (var key in arr[i]){
+                                                     var regex;
+                                                     regex=new RegExp("#"+key+"#","gi");
+                                                     one=one.replace(regex,arr[i][key]);
+                                                     
+                                                 }
+                                                 
+                                                 $("#recv").append(one);
+                                            }
+                                           
+                                        }
+                                        
+                                       
+                                       
+                                        //alert("recv:"+JSON.stringify(recv));
+                                    
+                                    }catch(e){console.log(e);}
+                            }
+                            function arrContain(arr,obj){
+                                for(var i=0;i<arr.length;i++){
+                                    if(arr[i]==obj){
+                                        return true;
+                                    }
+                                }
+                                return false;
+                            }
+                            
+                            
+                            function onOpen(event) {
+                                document.getElementById('messages').innerHTML
+                                = 'Connection established';
+                            }
+                            
+                            function onError(event) {
+                                alert(event.data);
+                            }
+                            
+                            function start() {
+                                var timestamp = Date.parse(new Date());
+                                webSocket.send("{'TYPE':'HELLO','gid':"+timestamp+"}");
+                                return false;
+                            }
+                            </script>
+                            
+                            <script>
+                                
+                                
+                                
+                            function firstcall(){
+                                
+                                
+                                
+
+ 
+                            }
+                            
+                            var recv={};
+                            var total=0;
+                            var  icnt=0;
+                            
+                            function addGoal(ID){
+                                var obj=recv[ID];
+                                
+                                obj["O"]="A";
+                                obj["T"]="ACTIVITY";
+                                obj["Class"]="CommonDataEngine";
+                                console.log(JSON.stringify(obj));
+                                asyncommunicate(obj,function(data){
+                                                console.log(data);
+                                                try{
+                                                
+                                                  //$("#bb"+ID).html(data);
+                                                   var res=JSON.parse(data);
+                                                    if(res["CODE"]=="0000"){
+                                                    icnt++;
+                                                   $("#prg").html(icnt+"/"+total);
+                                                   $("#bb"+ID).html(lanMap["ISUCCESS"]);
+                                                   $("#row"+ID).removeClass("alert-danger");
+                                                   $("#row"+ID).addClass("alert-success");
+                                               
+                                                     // delete recv[ID];
+                                                }else{//失败重新导入
+                                                   $("#bb"+ID).html(lanMap["REIMPORT"]);
+                                                   $("#row"+ID).addClass("alert-danger");
+                                                   addGoal(ID);
+                                                }
+                                                
+                                                }catch(e){
+                                                
+                                                }
+                                        
+                                               
+                                                
+                                                });
+                            }
+                            
+                            function addAll(){
+                                var i=0;
+                                 icnt=0;
+                                for(var id in recv){
+                                    
+                                    addGoal(id);
+                                            
+                                   
+                                  
+                                }
+                                
+                                
+                            }
+                               
+                           
+                           
+                            
+
+
+
+                        </script>
+        <body>
+        
+        <div id="hh" >
+            <button type="button" class="btn btn-primary pull-left" onclick="dismiss();">
+                <span  class="glyphicon glyphicon-chevron-left"></span>
+            </button>
+        </div>
+        
+        <div class="container">
+           
+           <div  style="padding-top:60px;padding-bottom:0px;text-align:center;" >
+               
+               Communication
+               
+           </div>
+            <form id="formid">
+               
+          <div style="text-align:center;margin-top:10px;">
+            <div style="width:100%;text-align:center;">
+                <div id="messages"  >
+                <img src="../../img/loading.gif" width="50" height="40"/><span class="LBL-WAITING">正在连接... </span>
+                </div>
+                <table class="table" id="recv" style="margin-bottom:50px;">
+                    <tr><td colspan="2"  id="lrecv"></td></tr>
+                </table>
+           
+         </div>
+         </div>
+         </form>
+        
+        </div>
+        <div style="position:fixed;left:5%;width:90%;bottom:10px;">
+            <button type="button" class="btn btn-primary btn-block " onclick="addAll()"><span class="LBL-IMPORTALL">全部导入</span>
+                (<span id="prg">0/0</span>)</button>
+            
+        </div>
+    </body>
+</html>

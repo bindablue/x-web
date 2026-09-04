@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+
+<!--        <meta name="format-detection" content="telephone=no">-->
+<meta charset="UTF-8">
+<meta name="msapplication-tap-highlight" content="no">
+<meta name="viewport"
+	content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+
+<title>管理系统</title>
+ 
+         <link rel="stylesheet" type="text/css" href="../../mod/swiper/swiper.min.css">       
+ 
+ <!-- bootstrap & fontawesome -->
+		<link rel="stylesheet" href="../../assets/css/bootstrap.min.css" />
+		
+		<link rel="stylesheet" href="../../assets/font-awesome/4.5.0/css/font-awesome.min.css" />
+
+		<!-- page specific plugin styles -->
+
+		<!-- text fonts -->
+		<link rel="stylesheet" href="../../assets/css/fonts.googleapis.com.css" />
+
+		<!-- ace styles -->
+		<link rel="stylesheet" href="../../assets/css/ace.min.css" class="ace-main-stylesheet" id="main-ace-style" />
+
+		<!--[if lte IE 9]>
+			<link rel="stylesheet" href="../../assets/css/ace-part2.min.css" class="ace-main-stylesheet" />
+		<![endif]-->
+		<link rel="stylesheet" href="../../assets/css/ace-skins.min.css" />
+		<link rel="stylesheet" href="../../assets/css/ace-rtl.min.css" />
+
+		<!--[if lte IE 9]>
+		  <link rel="stylesheet" href="../../assets/css/ace-ie.min.css" />
+		<![endif]-->
+
+		<!-- inline styles related to this page -->
+
+		<!-- ace settings handler -->
+		<script src="../../assets/js/ace-extra.min.js"></script>
+
+		<!-- HTML5shiv and Respond.js for IE8 to support HTML5 elements and media queries -->
+
+		<!--[if lte IE 8]>
+		<script src="../../assets/js/html5shiv.min.js"></script>
+		<script src="../../assets/js/respond.min.js"></script>
+		<![endif]-->
+ 
+ <!-- basic scripts -->
+
+		<!--[if !IE]> -->
+		<script src="../../assets/js/jquery-2.1.4.min.js"></script>
+
+		<!-- <![endif]-->
+
+		<!--[if IE]>
+<script src="../../assets/js/jquery-1.11.3.min.js"></script>
+<![endif]-->
+<script src="../../assets/js/bootstrap.min.js"></script>
+   
+ <script src="../../js/common.js"></script>
+<script src="../../js/echarts.min.js"></script>
+<script src="../../js/cross.js"></script>
+<script>
+            function firstcall(){
+                
+            	showDays(-7);
+            	getReport();
+            	
+                
+                
+            }
+        
+        function loadData(){
+            
+           
+            console.log("开始更新。。。");
+            
+            
+        }
+      /*   setInterval(function(){
+                    Cme.loader.load({
+                                    url: [
+                                          domain+webapp+"/rhtml/message/index.js"
+                                          ]
+                                    },function(){
+                                    if(messages){
+                                    $("#today").html(messages);//考虑存放在本地永久Storage
+
+                                    }
+                                    
+                                    });
+                    
+                    
+                    },60000); */
+
+        
+        function refreshData(){
+            setTimeout(function(){firstcall();},500);
+        }
+        
+         
+        
+        </script>
+<style>
+ 
+</style>
+</head>
+<body>
+
+
+
+
+	<section class="page-header">
+
+		<ol class="breadcrumb">
+			<li><a href="#"><i class="fa fa-dashboard"></i> 统计指数</a></li>
+			<li class="active">总览</li>
+		</ol>
+	</section>
+
+
+	<div class="main-container" >
+
+
+
+
+		<div style="color: #3275C1;">
+
+			<div id="tips">
+
+				<marquee id="today" scrollamount="2"> 欢迎登录后台管理系统，请使用Chrome浏览器！</marquee>
+			</div>
+
+		</div>
+
+
+<div id="echart" style="height:400px; width:95%;"></div>
+
+		<!-- Info boxes -->
+		<div class="row">
+
+			<div class="col-sm-12">
+				      
+              <form class="form-horizontal" id="qryForm" >
+              
+                  <div class="form-group">
+                
+              
+                <div class="col-sm-2 col-xs-3">
+                     <select class="form-control " name="history" onchange="showDays(this.value)"  >
+                      <option value="">时间范围</option> 
+                      <option value="-1">昨天</option> 
+                      <option value="-7">过去7天</option> 
+                       <option value="-15">过去15天</option> 
+                        <option value="-30">过去30天</option> 
+                    </select>  
+                    
+                </div>
+                 
+                
+                <div class="col-sm-3 col-xs-3">
+                    <input id="stime" name="startDate"  class="form-control"   
+                    type="date"/>  
+                     
+                </div>
+                <div class="col-sm-3 col-xs-3">
+                    
+                     <input id="etime" name="endDate"  class="form-control"   
+                    type="date"/>  
+                </div>
+                <div class="col-sm-2 col-xs-2">
+                 <button type="button" class=" btn btn-sm  btn-primary  " 
+                 onclick="getReport()"><span >查询</span></button>
+                </div>
+              </div>
+              
+             </form>
+            
+			 <table id="report" class="table">
+			 
+			 
+			 </table>
+			
+			
+			
+			</div>
+
+
+
+		</div>
+		<!-- /.row -->
+
+
+
+	</div>
+
+</body>
+
+<script>
+function showDays(days){
+	 $("#stime").val(getToday8(days));
+	 $("#etime").val(getToday8(0));
+	  
+ }
+ var mers=[];
+function getReport(){
+	 var obj=getFormJson("#qryForm");
+	 console.log(obj);
+	//var obj={"startDate":"2017-12-01","endDate":"2017-12-12"};
+	var url="/rest/product/report";
+	postData(obj,url,function(data){
+		   console.log(data);
+		   var list=data;
+		   mers=data;
+		   
+		   var tmpl="<tr><td>#appname#(#appkey#)</td><td>#netincome#</td><td>#payfee#</td><td>#platfee#</td><td>#merincome#</td><td>#itemcnt#</td><td>#sku#</td></tr>"
+		   var html="<tr><td>商户名称</td><td>总收入</td><td>支付渠道费用</td><td>平台费用</td><td>商户净收入</td><td>订单数</td><td>商品数量</td></tr>";
+		   //关闭弹出，或者toast
+		   for(var i=0;i<list.length;i++){
+			   var one=tmpl;
+			   for(var k in list[i]){
+				   one=one.replace("#"+k+"#",list[i][k]);
+	 		   }
+			   html+=one;
+			   
+		   }
+		   $("#report").html(html);
+		   getDayReport();
+	      }	
+	    );  
+	    }
+	 
+ 
+function getDayArray(){
+	var start=Date.parse($("#stime").val().replace(/-/g,"-"));
+	var end=Date.parse($("#etime").val().replace(/-/g,"-"));
+	var startTime=new Date(start);
+	var endTime=new Date(end);
+	 //console.log(startTime);
+	var days=[];
+	while((endTime.getTime()-startTime.getTime())>=0){
+		var year=startTime.getFullYear();
+		var month =(startTime.getMonth()+1).toString().length==1?"0"+(startTime.getMonth()+1).toString():startTime.getMonth()+1;
+		 var day = startTime.getDate().toString().length==1?"0"+startTime.getDate():startTime.getDate();
+		  console.log(year+"-"+month+"-"+day);
+		  days.push(year+"-"+month+"-"+day);
+		  startTime.setDate(startTime.getDate()+1); 
+	}
+	//console.log(days);
+	return days;
+	
+	
+}
+function getDayReport(){
+	 var obj=getFormJson("#qryForm");
+	 console.log(obj);
+	//var obj={"startDate":"2017-12-01","endDate":"2017-12-12"};
+	var url="/rest/product/dayreport";
+	postData(obj,url,function(data){
+		   console.log(data);
+		   
+		   var days=getDayArray();
+		      var list=data;
+              var all={};
+              
+              for(var i=0;i<list.length;i++){//商户遍历
+              
+              if(typeof all[list[i]["appname"]] == "undefined"){
+              
+              all[list[i]["appname"]]=[];
+              
+	              for(var k=0;k<days.length;k++){
+	              	all[list[i]["appname"]].push({"day":days[k],"netincome":0});
+	              }
+              }
+              
+              for(var j=0;j<all[list[i]["appname"]].length;j++){
+              
+              if(all[list[i]["appname"]][j]["day"]==list[i]["day"]){
+              
+              all[list[i]["appname"]][j]["netincome"]=list[i]["netincome"];
+              }
+              
+              }
+              
+              
+              
+              }//end list for
+              
+              console.log(all);
+              
+              var series=[];
+              var lgd=[];
+              var selectd={};
+              
+              for(var key in all){
+              var obj={};
+              selectd[key]=true;//默认显示
+              //if(!byApp()){//web 访问显示所有选择项
+               lgd.push(key);
+             // }
+             
+              obj.name=key;
+              obj.type="line";
+              obj.data=all[key].map(function(o){
+                                  return o["netincome"];});
+              series.push(obj);
+              
+              
+              }
+              console.log(series);
+              
+              var  option = {
+              title: {
+              text: "商户成交额趋势(供参考)",
+              subtext: lanMap["TASKLINEDES"],
+              x: 'center',
+              y:'bottom'
+              },
+              tooltip: {
+              trigger: 'axis',
+              axisPointer: {
+              animation: false
+              }
+              },
+              legend: {
+              selected:selectd,
+              data:lgd,
+              top:'50',
+              itemGap:5,
+              itemHeight:10,
+              x: 'right',
+              //align:'left',
+              //y:'bottom',
+              orient:'vertical'
+              
+              },
+              xAxis : [
+                       {
+                       type : 'category',
+                       boundaryGap : false,
+                       axisLine: {onZero: true},
+                       data:days
+                       }
+                       ],
+              yAxis : [
+                       {
+                       name : "元",
+                       type : 'value',
+                       scale:  1
+                       }
+                       ],
+              series :  series
+              };
+              
+              
+           
+           tChart.setOption(option, true);
+	    	 	
+	      }	
+	    );  
+	    }
+	
+  
+   
+    function showWeek(){
+        viewmode=getToday8(-7);
+        displayChart();
+    }
+    function showAll(){
+        viewmode="";
+        displayChart();
+        
+    }
+ 
+ function showMon(){
+     
+     viewmode=getToday8(-30);
+     displayChart();
+ }
+ 
+    
+   
+ var tdom=document.getElementById("echart");
+ var tChart=echarts.init(tdom);             
+                            
+                            
+     
+        </script>
+
+</html>

@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <!--        <meta name="format-detection" content="telephone=no">-->
+        <meta charset="UTF-8">
+            <meta name="msapplication-tap-highlight" content="no">
+                <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+                    
+                    <title>实时分析</title>
+                   
+                   
+                        <link rel="stylesheet" type="text/css" href="../../mod/bootstrap/css/bootstrap.min.css"/>
+     
+     
+     <script src="../../js/jquery.min.js"></script>
+     <script src="../../mod/swiper/swiper.min.js"></script>
+     <script src="../../js/echarts.min.js"></script>
+                            <script type="text/javascript">
+                                var nologin=true;
+                                    var webSocket =
+                                new WebSocket('ws://dadadida.cn/PlanX/websocket');
+                                
+                                webSocket.onerror = function(event) {
+                                    onError(event);
+                                };
+                            
+                            webSocket.onopen = function(event) {
+                                onOpen(event);
+                                
+                                start() ;
+
+
+                                
+                            };
+                            
+                            webSocket.onmessage = function(event) {
+                                onMessage(event);
+                            };
+                            
+                            
+                            var last={"TOPIC":"","OFFSET":""};
+                            var fred=1;
+                            function onMessage(event) {
+                                var dd={};
+                                try{
+                               // console.log(event.data);
+                                    dd=JSON.parse(event.data);
+                                    if(last["TOPIC"]==dd["TOPIC"]&&last["OFFSET"]==dd["OFFSET"]&&last["VALUE"]==dd["VALUE"]){
+                                        return;
+                                    }
+                                    
+                                    
+                                    if(dd.VALUE.UNAME=="Spark"){
+                                        fred++;
+                                       var code=dd.VALUE.CONTENT.split(",")[0];
+                                       if(typeof stocks[code] == "undefined"){
+                                           stocks[code]=1;
+                                       }else{
+                                           stocks[code]=stocks[code]+1;
+                                       }
+                                       if(fred>10){
+                                            display();
+                                            fred=1;
+                                       }
+                                      
+                                        document.getElementById('messages').innerHTML
+                                        +="<br />"+dd.VALUE.CONTENT;
+                                    }else{
+                                    document.getElementById('messages').innerHTML
+                                    
+                                    +="<br />【" +dd.TOPIC+"("+dd.OFFSET+")】:"+dd.VALUE.UNAME
+                                    +"<br/>&nbsp;&nbsp;"+dd.VALUE.CONTENT;
+                                    }
+                                    var oo=dd.VALUE;
+                                    $('#messages').scrollTop($('#messages')[0].scrollHeight);
+                                    if(dd.VALUE["TYPE"]=="NONE"){
+                                        //document.getElementById('messages').innerHTML+="<br/>"+dd.VALUE.CONTENT;
+                                        return;
+                                    }
+                                    oo["TOPIC"]=dd["TOPIC"];
+                                    oo["OFFSET"]=dd["OFFSET"];
+                                    saveData(oo);
+                                    last=dd;
+                                }catch(e){
+                                    alert(e);
+                                }
+                                
+                            }
+                            
+                            function  saveData(obj){
+                                
+                                obj["Class"]="CommonDataEngine";
+                                obj["O"]="A";
+                                obj["T"]="MSG";
+                                
+                                
+                                //asyncommunicate(obj,callback);
+                            }
+                            
+                            function callback(data){
+                                
+                            }
+                            
+                            function onOpen(event) {
+                                document.getElementById('messages').innerHTML
+                                = 'Connection established';
+                            }
+                            
+                            function onError(event) {
+                                alert(event.data);
+                            }
+                            
+                            function start() {
+                                var timestamp = Date.parse(new Date());
+                                webSocket.send("{'TYPE':'HELLO','gid':"+timestamp+"}");
+                                
+                                
+                                return false;
+                            }
+                            </script>
+                            
+                            <script>
+                                
+                                
+                                var TID="";
+                                function send(){
+                                    var obj={};
+                                    obj["TYPE"]="GROUP";
+                                    var txt=$("#tcontent").val();
+                                    obj["CONTENT"]=txt;
+                                    $("#tcontent").val("");
+                                    
+                                    try{
+                                        webSocket.send(JSON.stringify(obj));
+                                    }
+                                    catch(e){
+                                        document.getElementById('messages').innerHTML
+                                        
+                                        += '<br /><span style="color:red;">&nbsp;&nbsp;'+e+'</span>';
+                                    }
+                                    
+                                    
+                                    /*
+                                    var obj={};
+                                    obj["url"]=domain+webapp+"/rest/msg/send?msg="+txt+"&topic="+TID;
+                                    obj["Class"]="WebDataEngine";
+                                    obj["op"]="get";
+                                    
+                                    asyncommunicate(obj,function(data){
+                                                    $("#tcontent").val("");
+                                                   
+                                                    
+                                                    });*/
+                                }
+                                
+                                
+                            function firstcall(){
+                                var dat=new Date();
+                                var h=dat.getHours();
+                                var hh=(h<10)?"0"+h:h;
+                                var m=dat.getMinutes();
+                                var mm=(m<10)?"0"+m:m;
+                                var s=dat.getSeconds();
+                                var ss=(s<10)?"0"+s:s;
+                                var str=hh+":"+mm+":"+ss;
+                                
+                                var obj=GetRequest();
+                                var tid="";
+                                if(obj){
+                                    tid=obj["tid"];
+                                    TID=tid;
+                                }
+                                //alert(tid);
+                                
+                                if(tid){
+                                 //加载历史数据
+                                 obj["Class"]="CommonDataEngine";
+                                 obj["O"]="Q";
+                                 obj["T"]="MSG";
+                                 obj["C"]="TOPIC,OFFSET,CONTENT,UNAME";
+                                 obj["W"]=" 1=1 order by CAST(OFFSET AS INTEGER)";
+                                 
+                                 
+                                 asyncommunicate(obj,function(data){
+                                                 try{
+                                                    var msgs=JSON.parse(data);
+                                                    for (var rec in msgs){
+                                                    document.getElementById('messages').innerHTML
+                                                    +="<br />【" +msgs[rec]["TOPIC"]+"("+msgs[rec]["OFFSET"]+")】:"
+                                                 +msgs[rec]["UNAME"]
+                                                    +"<br/>&nbsp;&nbsp;"+msgs[rec]["CONTENT"];
+                                                 
+                                                    }
+                                                 
+                                                // alert(data);
+                                                 
+
+                                                 }catch(e){
+                                                 
+                                                 }
+                                                 
+                                 });
+                                    
+                                               
+                                }else{
+                                         //加载历史数据
+                                    
+                                }
+                               
+                                
+
+ 
+                            }
+                            
+                            
+                            
+                                
+                                
+                                function getTmpl(){
+                                    
+                                    return "<tr><td>tname</td><td>tcontent</td><td>tcycle</td><td>tday</td><td>ttime</td></tr>";
+                                }
+                            
+                           
+                           
+                            
+
+
+
+                        </script>
+                            <style>
+                            .middle{
+                            text-align:left;
+                            position:absolute;
+                            width:90%;
+                            height:250px;
+                            overflow-y:scroll;
+                            left:5%;
+                            top:5px;
+                            background-color:#000000;
+                            color:#008B00;
+                            
+                            }
+                            </style>
+                            
+    <body>
+        
+        <nav  style="padding-top:10px;padding-bottom:0px;text-align:center;" >
+            
+            Communication
+            
+        </nav>
+        
+        <div class="container">
+    <!--
+             <button type="button" class="btn btn-primary" onclick="dismiss();" > <span style="padding-bottom:10px;"  >&lt;&lt;</span> </button>
+             <button id="btnShare" type="button" class="btn btn-primary" style="float:right;" onclick="share();" > <span style="padding-bottom:10px;"  >微信好友分享</span> </button>-->
+        <form id="formid"> 
+          <div style="text-align:center;">
+            <div style="width:100%;text-align:center;">
+                <div id="messages" class="middle" style="height:100px;">
+                
+                </div>
+            
+<!--            <div style="position:absolute;left:5%;width:90%;bottom:10px;">-->
+<!--                -->
+<!--                -->
+<!--                <textarea id="tcontent" rows="4" cols="20" name="tcontent"  placeholder="信息" class="message"  ></textarea>-->
+<!--            -->
+<!--             -->
+<!--           <div class="tAc mT20" style="margin-top:5px;">-->
+<!--            <button type="button" class="btn btn-primary btn-block " onclick="send()">发送</button>-->
+            </div>
+           </div>
+        
+         </form>
+         
+         
+        </div>
+        <div id="echart" style="left:5%;bottom:5px;height:550px;width:80%;position:absolute;"></div>
+
+    </body>
+    
+  
+
+    <script>
+        
+        //得到标准时区的时间的函数
+        function getLocalTime(i) {
+            //参数i为时区值数字，比如北京为东八区则输进8,西5输入-5
+            if (typeof i !== 'number') return;
+            var d = new Date();
+            //得到1970年一月一日到现在的秒数
+            var len = d.getTime();
+            //本地时间与GMT时间的时间偏移差
+            var offset = d.getTimezoneOffset() * 60000;
+            //得到现在的格林尼治时间
+            var utcTime = len + offset;
+            return new Date(utcTime + 3600000 * i);
+        }
+    
+        //9:30到11:30 ，13点到15点
+        function isChinaStockOpen(){
+            
+            var stockdate=getLocalTime(8);
+            if(stockdate.getHours()>13&stockdate.getHours()<15){
+                return true;
+            }
+            if(stockdate.getHours()>10&&stockdate.getHours()<11){
+                return true;
+            }
+            if(stockdate.getHours()==9&&stockdate.getMinutes()>29){
+                return true;
+                
+            }
+            if(stockdate.getHours()==11&&stockdate.getMinutes()<29){
+                return true;
+            }
+            return false;
+        
+        }
+    
+        //alert(isChinaStockOpen());
+        var dom = document.getElementById("echart");
+        var myChart = echarts.init(dom);
+        
+        
+        
+    
+    var data = [];
+    
+    
+    //alert(data);
+    option = {
+        title: {
+            top:60,
+            text: "前十图",
+            subtext: "",
+            x: 'right',
+            y:'bottom'
+        },
+        tooltip: {
+            trigger: 'axis',
+            axisPointer: {
+                animation: false
+            }
+        },
+        legend: {
+            
+            data:["=="],
+            x: 'right',
+            //align:'left',
+            y:'bottom'
+            
+            
+        },
+        
+        xAxis : [
+                 {
+                 type : 'category',
+                 boundaryGap : false,
+                 axisLine: {onZero: true},
+                 data:["a","b"]
+                 }
+                 ],
+                 yAxis : [
+                          {
+                          name : '',
+                          type : 'value',
+                          scale:  0.1
+                          }
+                          ],
+                          series : [
+                                    {
+                                    name:"==",
+                                    type:'bar',
+                                    data:[12,21]
+                                    }
+                                    ]
+    };
+    
+    
+    
+    
+    
+    myChart.setOption(option,true);
+    var stocks={};
+    
+    function  display(){
+        var xdata=[];
+        var ydata=[];
+        for(var key in stocks){
+            xdata.push(key);
+            ydata.push(stocks[key]);
+        }
+        
+        
+        option = {
+            title: {
+                top:60,
+                text: "前十图",
+                subtext: "",
+                x: 'right',
+                y:'bottom'
+            },
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: {
+                    animation: false
+                }
+            },
+            legend: {
+                
+                data:["前十频率" ],
+                x: 'right',
+                //align:'left',
+                y:'bottom'
+                
+                
+            },
+            
+            xAxis : [
+                     {
+                     type : 'category',
+                     boundaryGap : false,
+                     axisLine: {onZero: true},
+                     data:xdata
+                     }
+                     ],
+                     yAxis : [
+                              {
+                              name : '',
+                              type : 'value',
+                              scale:  0.1
+                              }
+                              ],
+                              series : [
+                                        {
+                                        name:"前十图",
+                                        type:'bar',
+                                        data:ydata
+                                        }
+                                        ]
+        };
+        
+         myChart.setOption(option,true);
+
+        
+        
+    }
+
+        </script>
+</html>

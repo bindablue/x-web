@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="format-detection" content="telephone=no">
+<meta charset="UTF-8">
+<meta name="msapplication-tap-highlight" content="no">
+<meta name="viewport"
+	content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+
+<title>帖子查询</title>
+
+<link rel="stylesheet" type="text/css"
+	href="../../mod/swiper/swiper.min.css">
+
+<!-- bootstrap & fontawesome -->
+<link rel="stylesheet" href="../../assets/css/bootstrap.min.css" />
+
+<link rel="stylesheet"
+	href="../../assets/font-awesome/4.5.0/css/font-awesome.min.css" />
+
+<!-- page specific plugin styles -->
+
+<!-- text fonts -->
+<link rel="stylesheet" href="../../assets/css/fonts.googleapis.com.css" />
+
+<!-- ace styles -->
+<link rel="stylesheet" href="../../assets/css/ace.min.css"
+	class="ace-main-stylesheet" id="main-ace-style" />
+
+<!--[if lte IE 9]>
+			<link rel="stylesheet" href="../../assets/css/ace-part2.min.css" class="ace-main-stylesheet" />
+		<![endif]-->
+<link rel="stylesheet" href="../../assets/css/ace-skins.min.css" />
+<link rel="stylesheet" href="../../assets/css/ace-rtl.min.css" />
+
+<!--[if lte IE 9]>
+		  <link rel="stylesheet" href="../../assets/css/ace-ie.min.css" />
+		<![endif]-->
+
+<!-- inline styles related to this page -->
+
+<!-- ace settings handler -->
+<script src="../../assets/js/ace-extra.min.js"></script>
+
+<!-- HTML5shiv and Respond.js for IE8 to support HTML5 elements and media queries -->
+
+<!--[if lte IE 8]>
+		<script src="../../assets/js/html5shiv.min.js"></script>
+		<script src="../../assets/js/respond.min.js"></script>
+		<![endif]-->
+
+<!-- basic scripts -->
+
+<!--[if !IE]> -->
+<script src="../../assets/js/jquery-2.1.4.min.js"></script>
+
+<!-- <![endif]-->
+
+<!--[if IE]>
+<script src="../../assets/js/jquery-1.11.3.min.js"></script>
+<![endif]-->
+<script src="../../assets/js/bootstrap.min.js"></script>
+
+
+
+<script src="../../js/common.js"></script>
+<script src="../../js/page.js"></script>
+
+
+
+
+<style>
+#hh btn {
+	background: #FFFF00;
+}
+
+.tab-pane {
+	margin-top: 10px;
+}
+html {
+	overflow-x: hidden;
+}
+
+.record {
+	padding: 10px;
+	border: #EEE 1px solid;
+	margin: 10px;
+	border-radius: 10px;
+}
+       
+    
+</style>
+
+</head>
+<body>
+	<section class="page-header">
+
+		<ol class="breadcrumb">
+			<li><a href="#"><i class="fa fa-dashboard"></i>论坛管理</a></li>
+			<li class="active">我的帖子</li>
+		</ol>
+	</section>
+	<div class="main-container">
+		<div id="hh">
+			<form class="form-horizontal" id="qryForm">
+
+				<div class="form-group">
+					<div class="col-sm-2 col-xs-3">
+						<button type="button" class=" btn btn-success btn-sm pull-left"
+							onclick="window.open('forum.html')">
+							<span> 论坛首页</span>
+						</button>
+					</div>
+
+					<div class="col-sm-4 col-xs-3">
+						<input id="sname" name="TITLE" class="form-control"
+							placeholder="关键字" class="sname PH-KEYWORD" />
+
+					</div>
+
+					<div class="col-sm-2 col-xs-2">
+						<button type="button" class=" btn btn-primary btn-sm pull-left"
+							onclick="page.loadPage(1)">
+							<span>查询</span>
+						</button>
+					</div>
+					<div class="col-sm-2 col-xs-2">
+						<button type="button" class=" btn btn-primary btn-sm pull-left"
+							onclick="addSub()">
+							<span> 发布帖子</span>
+						</button>
+					</div>
+
+				</div>
+
+
+			</form>
+		</div>
+		<form id="formid"></form>
+		<a id="tips"
+			style="float: left; width: 100%; text-align: center; margin-top: 10px;"></a>
+		<table class="table table-bordered table-hover" id="response"
+			style="width: 100%; margin-top: 20px;   ">
+		</table>
+		<div id="foot">
+			<div class="text-center">
+
+				<ul id="pp" class="pagination pagination-sm"></ul>
+			</div>
+			<div class="text-center pull-right">
+
+				每页<select name="ps" onchange="page.setPageSize(this.value)">
+
+					<option value="10">10</option>
+					<option value="40">40</option>
+					<option value="100">100</option>
+				</select> 条， 共 <span class="badge" id="tt">0</span>页,共 <span class="badge"
+					id="trec">0</span>条
+			</div>
+
+		</div>
+	</div>
+
+
+	<!-- /.modal -->
+
+
+	<script>
+		 
+
+	   
+
+		function showDays(days) {
+			$("#stime").val(getToday8(days));
+			$("#etime").val(getToday8(1));
+
+		}
+
+		var page = new Page();
+		page.cntreq = "/rest/product/minitopiccount";
+		page.listreq = "/rest/product/minitopic";
+		page.qryForm = "qryForm";
+		page.header = "<tr><td>发布者</td><td>标题</td><td>创建时间</td> <td>状态</td><td></td><td></td><td></td><td></td><td></td></tr>";
+
+		page.tmpl = getTmpl();
+		
+		
+
+		if (isMobile()) {
+			$("#foot").hide();
+			setScroll();
+			page.header = "";
+			page.tmpl = "<div class='record'>【#usertype#】#username#（#userid#） #title# #createtime#  "
+				+ " #status# <br/> <span onclick='view(\"#id#\")'>编辑</span>   <span onclick=\"window.open('textdetail.html?id=#id#')\">查看</span>   <span onclick='setapp(\"#id#\",\"0\")'>删除</span>   <span onclick='settop(\"#id#\",\"#status#\",\"#top#\")'>#txtsts#</span> <span>#txttop#</span>  </div>";
+
+		}
+		var comType = {
+			"GRAD" : "阶梯代理价",
+			"RATIO" : "分成比例"
+		};
+		var appSts = {
+			"1" : "通过",
+			"3" : "待审核",
+			"4" : "拒绝"
+		};
+		var usertype={
+				"APP":"商户",
+				"USER":"用户"
+		};
+		page.recompose = function(record, one, idx) {
+			for ( var key in record) {
+				if (key == "comType") {
+					 
+					one = one.replace("#" + key + "#", comType[record[key]]);
+				} else if (key=="usertype"){
+					console.log()
+					one = one.replace("#" + key + "#", usertype[record[key]]);
+				}else if (key == 'status') {
+
+					var v = "<span class='label  #class#'>"
+							+ appSts[record[key]] + "</span>";
+					if (record[key] == "3") {
+						v = v.replace("#class#", "label-warning");
+					} else if (record[key] == "1") {
+						v = v.replace("#class#", "label-success");
+
+					} else if (record[key] == "4") {
+						v = v.replace("#class#", "label-danger");
+
+					}
+					one = one.replace("#" + key + "#", v);
+				}else if(key =='top'){
+					
+					if (record[key] == "0") {
+						  one=one.replace("#top#",1);
+						  one=one.replace("#txtsts#","置顶");
+						  one=one.replace("#txttop#","<span class='label label-danger'>未置顶</span>")
+					}else{
+						  one=one.replace("#top#",0);
+						  one=one.replace("#txtsts#","取消置顶");
+						  one=one.replace("#txttop#","<span class='label label-success'>已置顶</span>")
+						
+					}
+				}
+
+			}
+			return one;
+		};
+		 var controls=["certurl","idfront","idback"];
+		function firstcall() {
+			$("#stime").val(getToday8(-7));
+			$("#etime").val(getToday8(1));
+			var obj = GetRequest();
+			console.log(obj);
+			
+			 
+			page.loadPage(1);
+           
+          
+		}
+          
+		 
+		function addSub() {//添加商户
+
+			 window.location.href="topicdetail.html";
+		}
+		function settop(appkey, status,top) {//置顶
+	 
+			postData({
+				"id" : appkey,
+				"status" : status,
+				"top":top
+			}, "/rest/product/settopic", function(data) {
+				if (page.idx) {
+					page.loadPage(page.idx);
+				} else {
+					page.loadPage(1);
+				}
+				$('#eventModal').modal('hide');
+			});
+		}
+		
+		
+		function setapp(appkey, status) {//删除
+			var tips = "";
+			if (status == "0") {
+				tips = "删除";
+
+			}
+			if (status == "4") {
+				tips = "拒绝";
+			}
+			if (status == "1") {
+				tips = "通过";
+			}
+
+			if (confirm("确认" + tips + "?")) {
+
+				postData({
+					"id" : appkey,
+					"status" : status
+				}, "/rest/product/settopic", function(data) {
+					if (page.idx) {
+						page.loadPage(page.idx);
+					} else {
+						page.loadPage(1);
+					}
+					$('#eventModal').modal('hide');
+				});
+			}
+
+		}
+
+		function view(id) {
+             window.location.href="topicdetail.html?id="+id;
+		}
+
+		function getTmpl() {
+
+			var tmpl = "<tr><td>【#usertype#】#username#（#userid#）</td><td>#title#</><td>#createtime#</td>"
+					+ "<td>#status#</td><td onclick='view(\"#id#\")'>编辑</td><td onclick=\"window.open('textdetail.html?id=#id#')\">查看</td><td onclick='setapp(\"#id#\",\"0\")'>删除</td><td onclick='settop(\"#id#\",\"#status#\",\"#top#\")'>#txtsts#</td><td>#txttop#</td>  </tr>";
+
+			return tmpl;
+
+		}
+
+		function refreshData() {
+			 
+		}
+
+		var cnt = 0;
+	</script>
+
+</body>
+</html>

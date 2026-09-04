@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="format-detection" content="telephone=no">
+<meta charset="UTF-8">
+<meta name="msapplication-tap-highlight" content="no">
+<meta name="viewport"
+	content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+
+<title>产品详情</title>
+<link rel="stylesheet" type="text/css" href="css/common.css"/>
+<link rel="stylesheet" type="text/css" href="mod/bootstrap/css/bootstrap.min.css" />
+<script src="js/jquery.min.js"></script>
+<script src="mod/encrypt/md5.js"></script>
+<script src="mod/bootstrap/js/bootstrap.min.js"></script>
+<script src="js/common.js"></script>
+<script src="js/page.js"></script>
+<script src="js/shop.js?v=1.1"></script>
+<style>
+div.progress {
+	position: relative;
+	top: 8px;
+	left: 0px;
+}
+
+#areabtn{
+padding:10px;
+}
+.btnbuy{
+  
+}
+
+ 
+img{
+width:100%;
+}
+#pdesc{
+margin-top:20px;
+  
+}
+#pname{
+ 
+}
+img{  
+    width: auto;  
+    height: auto;  
+    max-width: 100%;  
+    max-height: 100%;     
+}
+.pricearea{
+text-align:center;
+}
+.orgprice{
+  text-decoration:line-through;
+  color:#B8B8B8;
+  font-size: inherit;
+  margin-right:10px;
+ font-size:20px;
+ padding:5px;
+  }
+.price{
+ text-align:center;
+ font-size:20px;
+ padding:5px;
+ color:#e4393c;
+ }
+ 
+ .proname{
+ clear:both;
+ color:#999;
+ text-align:center;
+ padding:5px;
+ font-size:25px;
+ }
+ 
+ .appname{
+  margin:20px;
+  padding:10px;
+ 
+ }
+ 
+ .bottom-menu{
+ 
+  position:fixed;
+  bottom:0px;
+  left:0px;
+  width:100%;
+  
+  
+ }
+ .btn{
+ border-radius:0px;
+ }
+ .container{
+ text-align:center;
+ }
+</style>
+<script>
+          
+       
+        </script>
+</head>
+<body>
+	 
+	<div class=" container">		 
+      <div  >
+				 
+						 
+						 <img id="logo" class="logo"  style="border-radius:10px;" src="" /> 
+	</div>					 
+						  <div class="proname">
+							<div ><span id="pname"> 产品名称</span><span id="skuname"></span></div>
+						 
+							</div>
+							<div class="pricearea"><span class="orgprice">¥<span id="org_price">0.00</span></span>
+							<span  class="price">¥<span 	
+							id="full_price">0.00</span></span>
+							
+							</div>
+							<div class="text-center appname"> 
+							供货商:<span id="appname"> </span>
+							</div>
+							 
+							 
+		 
+			<div id="areaimg" class=" " style="background:#FFFFFF;border-radius:5px;position:fixed;text-align:center;top:0px;left:0px;width:100px;height:120px;">
+			
+			<img id="qrimg" width="30px"  onclick="" style="border-radius:10px;" alt="点下我" height="60px"/>  
+			 扫我或长按购买
+			</div>
+			<div style="width:100%;clear:both;"></div>			 
+						
+   <div id="pdesc" style="width:100%;" >产品说明</div>
+		
+		
+		<div style="width:100%;">
+		<div class="text-center" style="margin-top:35px;padding-bottom:40px;">
+		<div ><b>关注公众号，优质精选水果～</b> </div>
+		<img src="https://dododido.cn/store/wximg/1000005.jpg" style="width:150px;heigth:150px;">
+		
+		</div>
+		</div>
+	</div>
+				 
+				 
+	<div class="modal fade" id="infoModal" tabindex="-1" role="dialog"
+		aria-labelledby="myModalLabel" aria-hidden="false">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+
+					<h4 class="modal-title">下单信息填写</h4>
+				</div>
+				
+			  <div class="modal-body text-center" >
+
+					<div id="addrarea">
+						<form class="form-horizontal" style="margin-top: 20px;"
+							id="pform" role="form">
+							<div class="form-group">
+					<div class="col-sm-8  col-xs-8">
+						<select id="recinfos" class="form-control" onchange="setAddr(this.value)"></select>
+					</div>
+					 <div class="  col-sm-3 col-xs-3">
+					
+				    <button class="btn btn-sm btn-danger  " onclick="removeRecInfo()">删除</button>
+		
+				    </div>
+                </div>
+							<input id="id" name="id" value="0" type="hidden" />
+							<div class="form-group">
+								<div class="col-sm-6 col-xs-6">
+									<input type="text" class="form-control" name="recname"
+										id="recname" maxlength="20" placeholder="收货人">
+								</div>
+							 
+								<div class="col-sm-6 col-xs-6">
+									<input type="tel" class="form-control" name="phone" id="phone"
+										maxlength="12" placeholder="手机号">
+								</div>
+							</div>
+							<div class="form-group">
+								<div class="col-sm-4 col-xs-4">
+									<input type="text" class="form-control" name="state" id="state"
+										maxlength="32" placeholder="省份">
+								</div>
+								<div class="col-sm-4 col-xs-4">
+									<input type="text" class="form-control" name="city" id="city"
+										maxlength="32" placeholder="市">
+								</div>
+								<div class="col-sm-4 col-xs-4">
+									<input type="text" class="form-control" name="district"
+										id="district" maxlength="32" placeholder="县/区">
+								</div>
+							</div>
+							<div class="form-group">
+								<div class="col-sm-12 col-xs-12">
+									<input type="text" class="form-control" name="addr" id="addr"
+										maxlength="32" placeholder="详细地址（门牌号等）">
+								</div>
+							</div>
+ 						</form>
+
+						<div class="form-group text-center ">
+						   <button class="btn btn-sm btn-success  col-sm-6 " onclick="newRecInfo()">清空以上信息</button>
+							<button class="btn btn-sm  btn-primary col-sm-6"
+								onclick="saveRecInfo();">保存地址</button>
+						</div>
+					</div>
+					<!-- addarea -->
+                    
+                    <div id="areabtn">
+			<div class="form-horizontal  " style="margin-top: 20px;" role="form" >
+				
+               
+			
+  
+		 <div class="form-group">
+			 <div class="col-sm-12 col-xs-12">
+						<textarea  class="form-control" name="msg" id="msg"   maxlength="32" placeholder="留言"></textarea>
+			 </div>
+				</div>
+				 <div class="form-group">
+				  
+				 <label class="control-label col-sm-4 col-xs-4" for="qty">数量</label>
+				 
+			 <div class="col-sm-4 col-xs-4">
+				<input  class="form-control" type="tel" name="qty" id="qty" value="1"  maxlength="3" placeholder="数量"/> 
+			 </div>
+				</div>
+			<div class="  text-center  form-group ">
+			<button class="btn  btnbuy btn-default btn-success pull-center col-sm-6"
+				onclick="preorder('NATIVE');">微信购买</button>
+				<button id="btn-ali" class="btn btn-default btn-primary pull-center col-sm-6"
+				onclick="preorder('ALIWEB');">支付宝购买</button>
+			</div>
+			 <div id="showEvent" class="text-danger text-center"> </div>
+		</div> 
+		
+		</div><!-- areabtn end  -->
+	
+				</div>
+				<!-- <div class="modal-footer">
+					<button type="button" class="btn btn-danger pull-left"
+						data-dismiss="modal">
+						<span class="LBL-CLOSE">取消</span>
+					</button>
+					 
+				</div> -->
+			</div>
+			<!-- /.modal-content -->
+		</div>
+		<!-- /.modal -->
+	</div>
+				
+				
+	 	<div class="modal fade" id="eventModal" tabindex="-1" role="dialog"
+		aria-labelledby="myModalLabel" aria-hidden="false">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+
+					<h4 class="modal-title">扫码支付</h4>
+				</div>
+				<div class="modal-body text-center" id="wxpaycode">
+
+			 
+                    
+	
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-danger pull-left"
+						data-dismiss="modal">
+						<span class="LBL-CLOSE">取消</span>
+					</button>
+					<button type="button" class="btn btn-success pull-right"
+						onclick="gotoorder()">
+						<span class="LBL-CLOSE">确认支付</span>
+					</button>
+				</div>
+			</div>
+			<!-- /.modal-content -->
+		</div>
+		<!-- /.modal -->
+	</div>
+		 
+		 
+		 <div class='bottom-menu'>
+		
+		 <div class="btn btn-danger btn-lg btn-block" onclick="directBuy()">购买</div>
+		 
+		 </div>
+		 
+		<script>
+		function userLogin(userinfo){
+			
+			//alert(JSON.stringify(userinfo));
+			loadRecInfo();
+		}
+		function directBuy(){
+			queryUserStatus(function(){
+				$('#infoModal').modal('show');
+			},function(){
+				showlogin();
+			})
+			
+		}
+		function setAddr(id){
+			for(var i=0;i<recinfos.length;i++){
+				if(id==recinfos[i].id){
+					for(var key in recinfos[i]){
+						$("#"+key).val(recinfos[i][key]);
+					}
+					
+					break;
+				}
+				
+				
+			}
+			
+			
+			
+		}
+		var recinfos=[];
+		function newRecInfo(){
+			$('#id').val(0);
+			//$('#addrarea').toggle();
+			$('#pform')[0].reset();
+			
+			
+		}
+       function loadRecInfo(){
+    	   
+    	   
+    	   postData({uid:0},"/rest/shop/recinfos",function(data){
+     		  
+     		  console.log(data);
+     		  recinfos=data;
+     		  var options="";
+     		  for(var i in data){
+     			  options+="<option value='"+data[i]["id"]+"'>"
+     			  +data[i]["recname"]+"("+data[i]["phone"]+")"
+     			  +data[i]["state"]+data[i]["city"]
+     			  +data[i]["district"]+data[i]["addr"]
+     			  +"</option>";
+     		  }
+     		  $("#recinfos").html(options);
+     		  $("#recinfos").trigger("change");
+     	  });
+       }
+       
+       function saveRecInfo(){
+    	  var obj=getFormJson("#pform");
+    	   postData(obj,"/rest/shop/saverecinfo",function(data){
+    		   
+    		   loadRecInfo();
+    		   
+    	   });
+       }
+       
+       function removeRecInfo(){
+    	   
+    	   var obj=getFormJson("#pform");
+    	   postData(obj,"/rest/shop/deleterecinfo",function(data){
+    		   
+    		   loadRecInfo();
+    		   
+    	   }); 
+       }
+       
+       
+      function loadProType(){
+    	 
+    	  
+      }
+      var proid=0;
+      var currproduct;
+      function edit(id){
+    	  
+    	  if(!id){
+    		  $("#pid").val("");
+    		  $("#attrpanel").html("");
+       		  return;
+    	  }
+    	  
+    	  $("#pid").attr("readonly",true);
+    	 
+    	  proid=id;
+    	  postData({},"/rest/shop/pro/"+id,function(data){
+    		  console.log(data);
+    		  currproduct=data;
+    		  var marketprice="0.01";
+    		 var obj=$("iframe").contents().find("body");
+    	      $("iframe").contents().find("body").append(data.pdesc);
+     		  for(var k in data){
+    			 if(k=="logo"){
+    				 $("#logo").attr("src",data[k]);
+    				 currproduct["img"]=data[k];
+    			 }
+    			 if (k=="full_price"||k=="proxy_price"||k=="org_price"){ 
+ 	            	 var cc=parseFloat(data[k])/100;
+ 	            	 $("#"+k).html(cc.toFixed(2));
+ 	            	 if(k=="full_price")
+ 	            	   marketprice=cc.toFixed(2);
+ 	              }else{
+    			     $("#"+k).html(data[k]);
+ 	              }	  
+    			 
+    		  }
+     		  if(data["org_price"]<=data["full_price"]){
+     			  $(".orgprice").hide();
+     		  }
+     		  
+    		 $("title").html(data["pname"]+data["skuname"]); 
+    		 $("#ptype").trigger("change");
+    		  //typeattr(data["ptype"],id);
+    		  
+    		  configwx(data["pname"]+data["skuname"]+" ¥"+marketprice,data["logo"],data["desc"]);
+    	  });
+    	  
+    	  
+    	  
+      }
+       
+     var attrgroup='<ul id="ATT#code#" class="list-group">#name#</ul>';
+     var item='<li class="list-group-item"><input id="#id#" type="checkbox" onclick="pa(this.value)" value="#id#" />#memo# <input  id="img#id#"  class=""  style="width:60%;"  type="text" /> <a class="badge alert-primary" onclick="viewimg(\'img#id#\')">预览图片</a></li>';
+     
+     
+     function typeattr(code,pid){
+    	  
+    	  var obj={code:code};
+     	  postData(obj,"/rest/shop/typeattr",function(data){//类型属性
+     		  
+     		  console.log(data);
+     		 
+     	  var typeattr="";
+     	 
+     	  for(var i in data){
+     		 var tmpl=attrgroup;
+     		 
+     		for(var key in data[i]){
+                regex=new RegExp("#"+key+"#","gi");
+                
+                tmpl=tmpl.replace(regex,data[i][key]);
+                
+            }
+     		 
+     		  typeattr+=tmpl;
+     	  }
+     	  $("#attrpanel").html(typeattr);
+     		  
+     		 postData(obj,"/rest/shop/ptypeval",function(data){//类型属性值
+          		 
+     			 
+     			  for(var i in data){
+          			  var tmpl=item;
+          			for(var key in data[i]){
+                        regex=new RegExp("#"+key+"#","gi");
+                        
+                        tmpl=tmpl.replace(regex,data[i][key]);
+                        
+                    }
+          			  
+          			  $("#ATT"+data[i]["acode"]).append(tmpl);
+          			  
+          		  }
+          		  console.log(data);
+          		  if(!pid) {    return;}
+        	       postData(obj,"/rest/shop/attrlist/"+pid,function(data){//产品属性值
+        		   for(var i in data){
+        			   
+        			   $("#"+data[i]["id"]).attr("checked",true);
+        			   $("#img"+data[i]["id"]).val(data[i]["img"]);
+        			   
+        			   
+        		   }
+        	       
+        		  console.log(data);
+        		  
+        	     });
+          	     });
+     	  });
+    	   
+       }//end typeattr
+       
+     function loadQrcode(pid){
+    	 
+    	 if(!pid){
+    		 pid=proid;
+    	 }
+    	 
+    	 postData({},"/rest/shop/qrcode/"+pid,function(data){
+      		 
+       	  console.log(data);
+       	  $("#qrimg").attr("src","https://dododido.cn/store/pro/"+pid+".jpg");
+       	 
+       	  });
+     }
+     
+      function firstcall(){
+          var obj=GetRequest();
+          var pid=obj["pid"];
+          proid=pid;
+          loadRecInfo();
+          edit(pid);
+          loadQrcode(pid);
+         /// loadProType();
+          if(byApp()){
+       		  $("#areaimg").hide(); 
+       	    }
+     }
+
+      //客户端事件回调 
+      function eventDealer(obj){
+    	  
+    	  if(obj.EVENT=="alipay"){
+    		  
+    		  if(obj.resultStatus=="9000"){
+    			  
+    			    $("#showEvent").html("支付宝：支付成功");
+    		  }else{
+    			  
+    			  $("#showEvent").html("支付宝："+obj.memo);
+    		  }
+    		  
+    	  }
+    	  
+    	  console.log(obj);
+      }
+      </script>
+
+
+	 
+<script src="https://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+<script> 
+ if (isWeiXin()) { 
+	 $("#btn-ali").hide();//支付宝不在微信端显示
+     $("#areabtn").show();
+	// $("#areaimg").hide();
+ } else if( isMobile()){ 
+	 $("#areaimg").hide();
+	
+     
+ } else{
+	 $("#areaimg").show();
+ }
+</script>
+  
+</body>
+</html>

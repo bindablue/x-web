@@ -1,0 +1,10 @@
+<!DOCTYPE html>
+<html>
+<body>
+<script>
+let sid = sessionStorage.getItem("invite_sid") || "";
+// 发给iOS客户端
+window.webkit.messageHandlers.sessionBridge.postMessage({sid: sid});
+</script>
+</body>
+</html>

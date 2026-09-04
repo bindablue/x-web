@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <!--        <meta name="format-detection" content="telephone=no">-->
+        <meta charset="UTF-8">
+            <meta name="msapplication-tap-highlight" content="no">
+                <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+                    
+                    <title>任务维护</title>
+                    
+                    <link rel="stylesheet" type="text/css" href="../../css/common.css"/>
+                    <link rel="stylesheet" type="text/css" href="../../mod/bootstrap/css/bootstrap.min.css"/>
+                    
+                    
+                    
+                    
+                    <script src="../../js/jquery.min.js"></script>
+                    
+                    <script src="../../mod/bootstrap/js/bootstrap.min.js"></script>
+                    
+                    <script src="../../js/common.js"></script>
+                    
+                    
+                    <style>
+                        .pull-left{
+                            margin-right:3px;
+                        }
+                        input,select,textarea {
+                            line-height:16px;
+                            width:100%;
+                            -webkit-appearance:none;
+                            border-radius:4px;
+                            border:1px solid #87CEEB;
+                            margin-right:2px;
+                            
+                        }
+                    input[type=date], input[type=time], input[type=datetime-local],
+                    input[type=month] {
+                        line-height:24px;
+                        padding:4px;
+                        margin-right:2px;
+                    }
+                    #ttime{
+                        
+                    }
+                    select{
+                        margin-right:5px;
+                    }
+                    .dd{
+                        width:100px;
+                        height:100px;
+                        margin:10px auto;
+                        border-radius:50px;
+                        padding:10px 10px;
+                        clear:both;
+                    }
+                    .LBL-SAVE{
+                        
+                        margin:10px 0px;
+                    }
+                    .modal-header,.modal-footer{
+                        border:0px;
+                    }
+                    #url{
+                        width:80%;
+                    }
+                    #formid{
+                        margin-top:10px;
+                    }
+                    
+                    
+                        </style>
+                    <body>
+                        
+                        <nav  style="padding-top:30px;padding-bottom:0px;" >
+                            
+                            
+                        </nav>
+                        
+                       
+                        
+                        
+                        <div class="container">
+                            
+                            <button     type="button" class="btn  btn-primary" onclick="dismiss();" >
+                                <span  class="glyphicon glyphicon-chevron-left"></span>
+                            </button>
+                            
+                            <button id="btnSave" type="button" class="btn btn-primary   " onclick="submitForm()">
+                                <span class="LBL-SAVETASK">保存任务信息</span>
+                            </button>
+                            
+                            
+                            <button  type="button" class="btn btn-primary "  onclick="archive('A')" >
+                                <span  id="arc" class="glyphicon glyphicon-volume-off"  ></span>
+                            </button>
+                            
+                            
+                            <button  type="button" class="btn btn-primary "  onclick="archive('C')" >
+                                <span  id="arc" class=" glyphicon glyphicon-volume-down"  ></span>
+                            </button>
+                            
+                            <button id="btnDel" type="button" class="btn btn-danger   " onclick="del()">
+                                <span class="LBL-DEL">删除</span></button>
+                            
+                            <form id="formid" class="form-horizontal" >
+                                <div class="form-group">
+                                    <div class="col-xs-12">
+                                    <div class="pull-left">
+                                        <select id="tcycle" style="width:60px;" name="tcycle"  class="form-control  "  onchange="doCycle(this.value);">
+                                            
+                                        </select>
+                                    </div>
+                                    <div class="pull-left">
+                                        <select id="tday" name="tday"  class="form-control  "  style="display:none;">
+                                        </select>
+                                    </div>
+                                    <div class="pull-left">
+                                        <input  id="tday1" class="form-control  name "  name="tday1" style="padding:3px;display:none;" placeholder=""   value="2016-01-01" type="date" required />
+                                    </div>
+                                    <div class="pull-left">
+                                        <input id="ttime" class="form-control  " name="ttime" value="13:00" placeholder="执行时间" type="time"/>
+                                    </div>
+                                    <div class="pull-left">
+                                        <select id="ttype" name="ttype" class="form-control "
+                                             >
+                                            
+                                        </select>
+                                    </div>
+                                  </div>
+                                    
+                                  
+                                           
+             
+                                    
+                                    
+                                  
+                                    <input name="op" placeholder="operation" type="hidden" class="name" value="add" />
+                                    <input id="tid" name="tid" placeholder="id" type="hidden" class="name" value="" />
+                                    </div>
+                                <div class="form-group">
+                                <div class="col-xs-12 ">   <input  id="tname" name="tname" class="PH-TITLE form-control name " placeholder="标题"  required /></div>
+                                </div>
+                                 <div class="form-group">
+                                <div class="col-xs-12">
+                                    <textarea id="tcontent" rows="2" cols="20"  name="tcontent" placeholder="提醒信息" class="message PH-TIPS form-control"  ></textarea>
+                                </div>
+                                    <input id="turl" name="turl" type="hidden" placeholder="相关链接地址" class="name PH-URL" />
+                                   
+                                    
+                                </div>
+                            </form>
+                            
+                            <div class="tAc mT20" style="margin-top:5px;">
+                                
+                                
+                                <form id="event"style="display:none;">
+                                    
+                                    <div class="alert alert-success"  >
+                                        <input  id="mday" name="mday" style=" text-align:center;padding:1px;width:130px;" placeholder=""
+                                        class="name" value="2016-01-01" type="date" required />
+                                        
+                                        <span style="margin-left:5px;" class="LBL-SPEND">用了</span>
+                                        <input  id="mspan" type="tel" name="mspan"  maxlength="4" placeholder="几" value="0"
+                                        style="width:40px;padding-left:5px;" class="name"  pattern="[0-9]{4}" required />
+                                        <span style="margin-left:5px;" class="LBL-MINUTE">分钟</span>
+                                        
+                                        
+                                        <textarea id="memo" name="memo"  style="margin:5px 0px;"rows="2" type="text"   placeholder="打卡备注" class="name form-control PH-MEMO"   ></textarea>
+                                        
+                                        <button type="button"  class="btn btn-sm  btn-block btn-success pull-right" onclick="exec();">
+                                            
+                                            <span class="LBL-CONFIRMLOG">确认打卡</span>
+                                        </button>
+                                        
+                                        <div class="alert alert-warning "  style="padding:4px 0px;" >
+                                            <small>
+                                                <strong class="LBL-WARNING">注意!</strong>
+                                                <span class="LBL-LOGTIPS">每天每个任务只能打卡一次，若重复登记以最后一次为准。</span>
+                                            </small>
+                                        </div>
+                                        
+                                    </div>
+                                    
+                                    <div style="padding:4px;" > </div>
+                                    <div id="retmsg" class="alert-default" style="padding:8px;text-align:center;"> </div>
+                                    
+                                    
+                                    
+                                    
+                                </form>
+                                
+                                <table class="table" >
+                                    <tr onclick="$('#eventModal').modal('show');"><td ><span class="LBL-LOGLST">打卡记录</span></td><td ><span class="badge" id="tcnt"></span></td></tr>
+                                    
+                                </table>
+                                
+                                
+                                
+                                
+                                
+                                <div class="modal fade" id="eventModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                
+                                                <h4 class="modal-title" ></h4>
+                                            </div>
+                                            <div class="modal-body">
+                                                <table class="table" id="events">
+                                                </table>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-default pull-left" data-dismiss="modal"><span class="LBL-CLOSE">关闭</span></button>
+                                                
+                                            </div>
+                                        </div><!-- /.modal-content -->
+                                    </div><!-- /.modal -->
+                                </div>
+                            </div>
+                        </div>
+                    </body>
+                    <script>
+                        
+                        
+                        
+                        
+                        
+                        </script>
+                    <script>
+                        function add(v){
+                            var vv=$("#mspan").val();
+                            var nv= parseInt(v)+parseInt(vv)
+                            if(nv<0) {nv=0;}
+                            $("#mspan").val(nv);
+                            
+                            
+                        }
+                    function refreshData(){
+                        firstcall();
+                        loadEvents();
+                    }
+                    
+                    function delE(ID){
+                        
+                        //alert(ID);
+                        var obj={};
+                        obj["Class"]="CommonDataEngine";
+                        obj["O"]="D";
+                        obj["ID"]=ID;
+                        obj["T"]="EVENT";
+                        asyncommunicate(obj,function(data){
+                                        try{
+                                        var j=JSON.parse(data);
+                                        if(j["CODE"]=="0000"){
+                                        $(".e"+ID).remove();
+                                        }
+                                        }catch(e){
+                                        
+                                        }
+                                        
+                                        });
+                                        
+                    }
+                    var anchor=5;
+                    
+                    function loadOneEvent(mday,tid){
+                        var obj={};
+                        obj["Class"]="CommonDataEngine";
+                        obj["O"]="Q";
+                        obj["T"]="EVENT";
+                        obj["TID"]=TID;
+                        obj["C"]="ID,MSPAN,MDAY,MEMO";
+                        obj["W"]=" TID='"+tid+"' and CSTS!='D' and mday='"+mday+"'";
+                        events={};
+                        asyncommunicate(obj,function(data){
+                                        try{
+                                        
+                                        var html=[];
+                                        var list=JSON.parse(data);
+                                        
+                                        for(var i=0;i<list.length;i++){
+                                        
+                                        
+                                        
+                                        
+                                        $("#mspan").val(list[i]["MSPAN"]);
+                                        
+                                        $("#mday").val(list[i]["MDAY"]);
+                                        
+                                        $("#memo").val(list[i]["MEMO"]);
+                                        
+                                        
+                                        
+                                        
+                                        }
+                                        
+                                        
+                                        
+                                        }catch(e){
+                                        
+                                        }
+                                        });
+                                        
+                    }
+                    
+                    var events={};
+                    function editE(id){
+                        
+                        if(events[id]){
+                            
+                            $("#mspan").val(events[id]["MSPAN"]);
+                            
+                            $("#mday").val(events[id]["MDAY"]);
+                            
+                            $("#memo").val(events[id]["MEMO"]);
+                            
+                            
+                            
+                        }
+                        $("#eventModal").modal("hide")
+                        
+                        
+                    }
+                    function loadEvents(){
+                        var obj={};
+                        obj["Class"]="CommonDataEngine";
+                        obj["O"]="Q";
+                        obj["T"]="EVENT";
+                        obj["TID"]=TID;
+                        obj["C"]="ID,MSPAN,MDAY,MEMO";
+                        //obj["W"]=" TID='"+TID+"' order by MDAY desc limit "+anchor+","+(anchor+5);
+                        obj["W"]=" TID='"+TID+"' and CSTS!='D' order by MDAY desc limit 0,"+anchor;
+                        events={};
+                        asyncommunicate(obj,function(data){
+                                        try{
+                                        
+                                        var html=[];
+                                        var list=JSON.parse(data);
+                                        var tmpl='<tr class="e#ID#"><td>#MDAY#</td><td>#MSPAN#</td><td onclick="editE(\'#ID#\')"><span class="glyphicon glyphicon-pencil"></span></td><td onclick="delE(\'#ID#\')"><span class="glyphicon glyphicon-remove"></span></td></tr><tr class="e#ID#"><td colspan="4">#MEMO#</td></tr>';
+                                        
+                                        for(var i=0;i<list.length;i++){
+                                        
+                                        var regex=new RegExp("#ID#","gi");
+                                        record=tmpl.replace(regex,list[i]["ID"]);
+                                        regex=new RegExp("#MSPAN#","gi");
+                                        record=record.replace(regex,list[i]["MSPAN"]);
+                                        regex=new RegExp("#MDAY#","gi");
+                                        record=record.replace(regex,list[i]["MDAY"]);
+                                        regex=new RegExp("#MEMO#","gi");
+                                        record=record.replace(regex,list[i]["MEMO"]);
+                                        events[list[i]["ID"]]=list[i];
+                                        html.push(record);
+                                        
+                                        
+                                        
+                                        }
+                                        if(list.length>0){
+                                        //document.getElementById("events").innerHTML+=html.join("");
+                                        document.getElementById("events").innerHTML=html.join("");
+                                        anchor=list.length+5;
+                                        }
+                                        
+                                        }catch(e){
+                                        
+                                        }
+                                        });
+                                        
+                    }
+                    
+                    function exec(){
+                        
+                        var obj=getFormJson("#event");
+                        obj["Class"]="CommonDataEngine";
+                        obj["O"]="A";
+                        obj["T"]="EVENT";
+                        obj["TID"]=TID;
+                        //obj["C"]="TOPIC,OFFSET,CONTENT,UNAME";
+                        // obj["W"]=" 1=1 order by CAST(OFFSET AS INTEGER)";
+                        
+                        
+                        asyncommunicate(obj,function(data){
+                                        try{
+                                        var j=JSON.parse(data);
+                                        if(j["CODE"]=="0000"){
+                                        // $("#myModal").modal("hide");
+                                        //$("#mday").val("");
+                                        
+                                        // if(confirm("打卡成功是否分享微信朋友圈")){
+                                        //    share2();
+                                        //}
+                                        //$("#mspan").val("");
+                                        $("#retmsg").html("["+$("#mday").val()+"]！"+lanMap["LOGSUCC"]);
+                                        if(window.parent.todoTask){
+                                        window.parent.todoTask();
+                                        }
+                                        }else{
+                                        //
+                                        }
+                                        }catch(e){
+                                        
+                                        }
+                                        
+                                        });
+                                        //window.location.href="act.html?tid="+TID;
+                    }
+                    
+                    
+                    var TID="";
+                    function del(){
+                        if(!confirm(lanMap["CONFIRMDELETE"])){
+                            return;
+                        }
+                        var obj={"tid":TID};
+                        obj["Class"]="TaskDataEngine";
+                        obj["op"]="del";
+                        asyncommunicate(obj,function(data){
+                                        
+                                        dismiss();
+                                        /*if(byApp()){
+                                         
+                                         }else{
+                                         webGotoLocal("html/plan","sindex.html");
+                                         }*/
+                                        
+                                        
+                                        });
+                    }
+                    
+                    function loadTask(tid){
+                        var obj={};
+                        obj["Class"]="TaskDataEngine";
+                        obj["tid"]=tid;
+                        obj["op"]="getone";
+                        
+                        asyncommunicate(obj,function(data){
+                                        // alert(data);
+                                        var arr=JSON.parse(data);
+                                        if(arr.length>0){
+                                        
+                                        for(var i in arr[0]){
+                                        $("#"+i).val(arr[0][i]);
+                                        if(i=="tsts"){
+                                        if(arr[0][i]=="C"){
+                                            $("#tsts").removeClass("glyphicon glyphicon-volume-off");
+                                            $("#tsts").addClass("glyphicon glyphicon-volume-down");
+                                        }else{
+                                        
+                                            $("#tsts").removeClass("glyphicon glyphicon-volume-down");
+                                            $("#tsts").addClass("glyphicon glyphicon-volume-off");
+                                        }
+                                        }
+                                        if(i=="tcycle"){
+                                        doCycle($("#tcycle").val(),arr[0]["tday"]);
+                                        }
+                                        if(i=="tname"){
+                                        $(".modal-title").html(arr[0][i]);
+                                        
+                                        }
+                                        if(i=="tcnt"){
+                                        $("#tcnt").html(arr[0][i]);
+                                        }
+                                        if(i=="tday"){
+                                        var dd=arr[0][i]+"";
+                                        if(dd.length==8){
+                                        var fdd=dd.substr(0,4)+"-"+dd.substr(4,2)+"-"+dd.substr(6,2);
+                                        // alert(fdd);
+                                        $("#tday1").val(fdd);
+                                        }
+                                        }
+                                        if("tid"==i){
+                                        TID=arr[0][i];
+                                        }
+                                        }
+                                        
+                                        }
+                                        
+                                        });
+                    }
+                    
+                    function initFields(){
+                        
+                        var obj=document.getElementById('ttype');
+                        if(obj.options.length>0){return;}
+                        for(var i=0;i<tasktype.length;i++){
+                            obj.options.add(new Option(tasktype[i]["v"],tasktype[i]["k"])); //这个兼容IE与firefox
+                            
+                        }
+                        
+                        var cycle=document.getElementById('tcycle');
+                        if(cycle.options.length>0){return;}
+                        for(var i=0;i<frequency.length;i++){
+                            
+                            cycle.options.add(new Option(frequency[i]["v"],frequency[i]["k"]));
+                        }
+                    }
+                    
+                    function firstcall(){
+                        
+                        initFields();
+                        var obj=GetRequest();
+                        var tid="";
+                        if(obj){
+                            tid=obj["tid"];
+                            TID=tid;
+                            if(obj["dat"]){
+                                $("#mday").val(obj["dat"]);
+                                loadOneEvent(obj["dat"],tid);
+                                //$("#mday").val(obj["dat"]);
+                                
+                            }
+                            if(tid){
+                                $("#btnback").show();
+                            }
+                        }
+                        //alert(tid);
+                        
+                        
+                        
+                        if(tid){
+                            loadEvents();
+                            
+                            $("#tid").val(tid);
+                            setTimeout(function(){
+                                       loadTask(tid);
+                                       
+                                       },100);
+                                       $("#btnDel").show();
+                                       $("#event").show();
+                                       // $("#btnShare").hide();
+                                       $("#btnDo").show();
+                                       //$("#btnShare").show();
+                        }else{
+                            doCycle($("#tcycle").val());
+                            //$("#ttime").val("12:00");
+                            $("#btnDel").hide();
+                            $("#event").hide();
+                            // $("#btnShare").hide();
+                            $("#btnDo").hide();
+                            
+                        }
+                        
+                        
+                        
+                        
+                    }
+                    
+                    
+                    
+                    
+                    
+                    function getTmpl(){
+                        
+                        return "<tr><td>tname</td><td>tcontent</td><td>tcycle</td><td>tday</td><td>ttime</td></tr>";
+                    }
+                    
+                    
+                    function archive(sts){
+                        
+                        
+                        var obj=getFormJson("#formid");
+                        if($("#tcycle").val()=="one"){
+                            var regex=new RegExp("-","gi");
+                            obj["tday"]=$("#tday1").val().replace(regex,"");
+                        }
+                        delete obj["tday1"];
+                        delete obj["op"];
+                        obj["O"]="A";
+                        obj["T"]="TASK";
+                        obj["tsts"]=sts;
+                        obj["pk"]="tid";
+                        obj["Class"]="CommonDataEngine";
+                        console.log(JSON.stringify(obj));
+                        asyncommunicate(obj,function(data){
+                                        dismiss();
+                                        
+                                        });
+                    }
+                    
+                    
+                    
+                    
+                    
+                    function submitForm(){
+                        var obj=getFormJson("#formid");
+                        
+                        if(!obj.hasOwnProperty("tday")){
+                            obj["tday"]="19710101";
+                            
+                        }
+                        
+                        if($("#tcycle").val()=="one"){
+                            var regex=new RegExp("-","gi");
+                            obj["tday"]=$("#tday1").val().replace(regex,"");
+                        }
+                        
+                        obj["Class"]="TaskDataEngine";
+                        console.log(JSON.stringify(obj));
+                        asyncommunicate(obj,function(data){
+                                        //alert("保存成功");
+                                        // 
+                                        if(obj["tid"]){
+                                        dismiss();
+                                        }else{
+                                        
+                                        location.href="sindex.html";
+                                        }
+                                        
+                                        });
+                    }
+                    function getToday(){
+                        
+                        var dt=new Date();
+                        var yy=dt.getFullYear();
+                        var mm=(dt.getMonth()+1<10)?("0"+(dt.getMonth()+1)):(dt.getMonth()+1);
+                        var dd=dt.getDate();
+                        var tdy=yy+""+mm+""+dd;
+                        //alert(tdy);
+                        return tdy;
+                    }
+                    function doCycle(v,d){
+                        var options="";
+                        var cnt=0;
+                        if(v=="week"){
+                            cnt=7;
+                        }else if(v=="month"){
+                            cnt=29;
+                        }
+                        var week=lanMap["WEEK"];
+                        
+                        if(v=="week"||v=="month"){
+                            for(var i=0;i<cnt;i++){
+                                var txt="";
+                                if(v=="week") { txt=week[i];}
+                                else { txt=i+""; if (i==0) { continue;}}
+                                var sel="";
+                                if(i==d){
+                                    sel="selected";
+                                }
+                                options+="<option value='"+i+"' "+sel+">"+txt+"</option>";
+                            }
+                            $("#tday").show();
+                            $("#tday1").hide();
+                        }else{//  当天 和每天
+                            $("#tday").hide();
+                            //$("#tday").show();
+                            var tdy=getToday();
+                            console.log(tdy);
+                            options+="<option value='"+tdy+"'>"+tdy+"</option>";
+                            
+                            if(v=="one"){
+                                $("#tday1").show();
+                                
+                            }else{
+                                $("#tday1").hide();
+                            }
+                            
+                            
+                            
+                        }
+                        $("#tday").html(options);
+                        
+                    }
+                    
+                    document.getElementById('tday1').valueAsDate = new Date();
+                    document.getElementById('mday').valueAsDate = new Date();
+                        </script>
+                    
+</html>

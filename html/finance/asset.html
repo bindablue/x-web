@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html>
+<head>
+<!--        <meta name="format-detection" content="telephone=no">-->
+<meta charset="UTF-8">
+<meta name="msapplication-tap-highlight" content="no">
+<meta name="viewport"
+	content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+
+<title>资产创建</title>
+
+<link rel="stylesheet" type="text/css" href="../../css/common.css" />
+<link rel="stylesheet" type="text/css"
+	href="../../mod/bootstrap/css/bootstrap.min.css" />
+
+<script src="../../js/jquery.min.js"></script>
+
+<script src="../../mod/bootstrap/js/bootstrap.min.js"></script>
+<script src="../../js/common.js"></script>
+<script src="../../js/meta.js"></script>
+
+<style>
+input, select, textarea {
+	margin-top: 5px;
+	padding: 5px 0px;
+	line-height: 16px;
+	width: 100%;
+	-webkit-appearance: none;
+	border: 1px solid #87CEEB;
+}
+
+
+</style>
+<body>
+
+<div id="hh" >
+    <button type="button" class="btn btn-primary pull-left" onclick="backgo();">
+        <span  class="glyphicon glyphicon-chevron-left"></span>
+    </button>
+     资产创建
+       <button type="submit" class=" btn btn-primary btn-default pull-right" onclick="submitForm()"><span class="LBL-SAVE">保存</span></button>
+</div>
+	<div class="container">
+
+		<form class="form-horizontal" style="margin-top:80px" id="formid" role="form">
+         
+                <div class="form-group" style="display:none;">
+<!--				<label for="ID" class="col-sm-2 control-label">目标编号</label>-->
+				<div class="col-sm-10">
+					<input type="text" readonly class="form-control PH-TARGET" style='font-size:10px;' name="ID" id="ID"
+						>
+				</div>
+			</div>
+			<div class="form-group" id="lpid">
+<!--				<label for="PID" class="col-sm-2 control-label">父目标编号</label>-->
+				<div class="col-sm-10">
+                    
+                    <select class="form-control" name="ATYPE" id="ATYPE" onchange="loadAssets();">
+                        <option value="STOCK">股票</option>
+                        <option value="BOND">债券</option>
+                        <option value="CURRENCY">货币</option>
+                    </select>
+				</div>
+			</div>
+           
+           <div class="form-group">
+               <!--                <label for="AN" class="col-sm-2 control-label">目标名称</label>-->
+               <div class="col-sm-10">
+                   <input type="text" class="form-control PH-TARGET" name="NAME" id="NAME"
+                       placeholder="资产名称">
+                       </div>
+           </div>
+            <div class="form-group">
+<!--                <label for="AN" class="col-sm-2 control-label">目标名称</label>-->
+                <div class="col-sm-10">
+                    <input type="text" class="form-control PH-TARGET" name="CODE" id="CODE"
+                        placeholder="资产代码">
+                        </div>
+            </div>
+            <div class="form-group">
+<!--                <label for="lastname" class="col-sm-2 control-label">目标内容</label>-->
+                <div class="col-sm-10">
+                    <input type="text" class="form-control PH-MEMO" name="PRICE" id="PRICE"
+                        placeholder="资产现价">
+                        </div>
+            </div>
+            
+            
+              <div class="form-group">
+<!--                <label class="col-sm-2 control-label">状态</label>-->
+                <div class="col-sm-10 ">
+                    <select class="form-control" name="CURRENCY" id="CURRENCY">
+                     <option value="CNY">人民币</option>
+                     <option value="USD">美元</option>
+                      <option value="HKD">港币</option>
+                    </select>
+                    
+                </div>
+            </div>
+
+
+       
+                
+           
+            
+            
+   
+        <input type="hidden" name="O" value="A"/>
+        <input type="hidden" name="T" value="ASSET"/>
+			<div class="form-group">
+				
+			</div>
+			
+		
+		</form>
+        
+        <table class="table"  style="margin-top:10px;" id="lst">
+            
+        </table>
+       
+	</div>
+
+
+
+
+</body>
+<script>
+    
+    function initFields(){
+        
+        var obj=document.getElementById('CSTS');
+        if(obj.options.length>0){return;}
+        for(var i=0;i<goalSts.length;i++){
+            obj.options.add(new Option(goalSts[i]["v"],goalSts[i]["k"])); //这个兼容IE与firefox
+            
+        }
+        
+        var cycle=document.getElementById('ISBRK');
+        if(cycle.options.length>0){return;}
+        for(var i=0;i<goalBreak.length;i++){
+            
+            cycle.options.add(new Option(goalBreak[i]["v"],goalBreak[i]["k"]));
+        }
+    }
+var all=[];
+function edit(seq){
+    var record=all[seq];
+    for(var key in record){
+        $("#"+key).val(record[key]);
+    }
+    
+}
+   function loadAssets(){
+    
+    
+    var obj={};
+    obj["Class"]="CommonDataEngine";
+    obj["C"]="ID,NAME,CODE,PRICE,CURRENCY,ATYPE";
+    obj["O"]="Q";
+    obj["T"]="ASSET";
+    obj["W"]="1=1 AND CSTS!='D'";
+    obj["W"]+=" AND ATYPE='"+$("#ATYPE").val()+"'";
+    $("#lst").html("");
+    asyncommunicate(obj,function(data){
+                    
+                    
+                    var html=[];
+                    var list=JSON.parse(data);
+                    all=list;
+                    //var tmpl='<tr id="e#ID#"><td>#NAME#</td><td>#CODE#</td><td><a onclick="delE(\'#ID#\')">X</a></td></tr>';
+                     var tmpl='<tr id="e#ID#" onclick="edit(#SEQ#)"><td>#NAME#</td><td>#CODE#</td><td><a onclick="delE(\'#ID#\')">X</a></td></tr>';
+                    for(var i=0;i<list.length;i++){
+                    var record=tmpl;
+                    record=record.replace("#SEQ#",i);
+                    for(var key in list[i]){
+                        var regex=new RegExp("#"+key+"#","gi");
+                    
+                        record=record.replace(regex,list[i][key]);
+                    
+                    }
+                    html.push(record);
+                    }
+                    if(list.length>0){
+                    //document.getElementById("events").innerHTML+=html.join("");
+                    document.getElementById("lst").innerHTML=html.join("");
+                    }
+                    
+                    });
+    
+   }
+
+
+    function backgo(){
+        
+        
+            window.history.go(-1);
+       
+         
+    }
+    
+        function refreshData(){
+           
+           
+           
+        }
+   
+function archive(){
+    var id=$("#ID").val();
+    if(!id){
+        return;
+    }
+    $("#CSTS").val("A");//archive
+    submitForm();
+    
+}
+
+    function delE(ID){
+        
+        //alert(ID);
+        var obj={};
+        obj["Class"]="CommonDataEngine";
+        obj["O"]="D";
+        obj["ID"]=ID;
+        obj["T"]="ASSET";
+        asyncommunicate(obj,function(data){
+                        try{
+                        var j=JSON.parse(data);
+                        if(j["CODE"]=="0000"){
+                         $("#e"+ID).remove();
+                        }
+                        }catch(e){
+                            console.log(e);
+                        }
+                        
+                        });
+        
+     }
+
+
+   
+
+
+    function firstcall(){
+       
+       loadAssets();
+    }
+
+
+
+
+    function submitForm(){
+        var obj=getFormJson("#formid");
+        
+        obj["Class"]="CommonDataEngine";
+        console.log(JSON.stringify(obj));
+        asyncommunicate(obj,function(data){
+                        //dismiss();
+                        //backgo();
+                        clear();
+                        
+                        });
+    }
+
+function clear(){
+    var fs="ID,CODE,NAME,PRICE";
+    var afs=fs.split(",");
+    for(var i=0;i<afs.length;i++){
+        $("#"+afs[i]).val("");
+    }
+    
+}
+
+     </script>
+
+</html>
