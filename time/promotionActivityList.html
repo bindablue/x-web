@@ -343,10 +343,24 @@ if ('ontouchstart' in document.documentElement){
 				console.log(resp);
 				if(resp.code!="0000"){
 
-					alert(resp.msg);
+					bootoast({
+						message : resp.msg,
+						type : "warning",
+						position : "top",
+						timeout : 2
+					});
+
+					 
 					return ;
 				}
 
+				 bootoast({
+					message : resp.msg,
+					type : "success",
+					position : "top",
+					timeout : 2
+				});
+                 
 				$("#modalImportCsv").modal("hide");
 
 
