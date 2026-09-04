@@ -38,6 +38,7 @@
 <script src="../js/bootoast.js"></script>
 <script src="../js/table2.js"></script>
 <script src="../js/user.searchbox.js"></script>
+<script src="../js/common.js"></script>
 <script type="text/javascript">
 if ('ontouchstart' in document.documentElement){
  document.write("<script src='../assets/js/jquery.mobile.custom.min.js'>"+ "<"+"/script>");
@@ -45,6 +46,7 @@ if ('ontouchstart' in document.documentElement){
 </script>
 <style>
 .frmQuery {	padding: 20px;}
+.preview-area{max-height:200px;overflow:auto;border:1px solid #ccc;padding:8px;background:#fff;}
 </style>
 </head>
 <body class="no-skin">
@@ -65,7 +67,6 @@ if ('ontouchstart' in document.documentElement){
 										onclick="reset();">
 										<i class="ace-icon fa fa-refresh"></i> 重置
 									</button>
-
 									<button class="btn btn-sm btn-primary pull-right"
 										onclick="table.loadObjs(1)">
 										<i class="ace-icon fa fa-search"></i> 查询
@@ -97,11 +98,9 @@ if ('ontouchstart' in document.documentElement){
 									</a>
 									<a id="total" class="btn btn-sm btn-circle   "> 0 </a>
 									<ul id="pagefooter" class="pagination pull-right no-margin">
-
 									</ul>
 								</div>
 							</div>
-
 							<!-- EDIT FORM  -->
 							<div id="modal-table" class="modal fade" tabindex="-1">
 								<div class="modal-dialog">
@@ -115,12 +114,10 @@ if ('ontouchstart' in document.documentElement){
 												修改 
 											</div>
 										</div>
-
 										<div class="modal-body  ">
 											<form class="form-horizontal" id="frmObj"></form>
 											<div class="clearfix"></div>											 
 										</div>
-
 										<div class="modal-footer no-margin-top">
 											<button class="btn btn-sm btn-primary pull-right"
 												onclick="table.saveObj()">
@@ -135,6 +132,53 @@ if ('ontouchstart' in document.documentElement){
 									<!-- /.modal-content -->
 								</div>
 								<!-- /.modal-dialog -->
+							</div>
+
+							<!-- ========= 新增：CSV导入弹窗 ========= -->
+							<div id="modalImportCsv" class="modal fade" tabindex="-1">
+								<div class="modal-dialog">
+									<div class="modal-content">
+										<div class="modal-header no-padding ">
+											<div class="table-header">
+												<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+													<span class="white">&times;</span>
+												</button>
+												批量导入促销码CSV
+											</div>
+										</div>
+										<div class="modal-body">
+											
+											<input type="hidden" id="import_activityId" value="">
+                                            <div class="form-group">
+												<label class="col-sm-3 control-label no-padding-right">Apple活动标志</label>
+												<div class="col-sm-9">
+													<input type="input" class="form-control" id="import_offerId" placeholder="苹果后台活动标志(对应参考名称)"> 
+												<div class="help-block">用于兑换后匹配</div>
+												</div>
+											</div>
+
+
+											<div class="form-group">
+												<label class="col-sm-3 control-label no-padding-right">选择CSV文件</label>
+												<div class="col-sm-9">
+													<input type="file" id="csvFileInput" accept=".csv" />
+													<div class="help-block">格式：第一列促销代码，第二列领取路径；可带表头promotion_code,receive_path</div>
+												</div>
+											</div>
+											<div class="form-group">
+												<label class="col-sm-3 control-label no-padding-right">预览解析</label>
+												<div class="col-sm-9">
+													<div id="csvPreviewBox" class="preview-area">未选择文件</div>
+												</div>
+											</div>
+											<div class="clearfix"></div>
+										</div>
+										<div class="modal-footer no-margin-top">
+											<button class="btn btn-sm btn-warning" data-dismiss="modal">关闭</button>
+											<button class="btn btn-sm btn-primary" id="btnDoImport">确认导入</button>
+										</div>
+									</div>
+								</div>
 							</div>
 						</div>
 						 
@@ -160,14 +204,17 @@ if ('ontouchstart' in document.documentElement){
 					<div class="hidden-sm hidden-xs action-buttons">
 						<a class="green" href="javascript:table.editObj('#objKey#')">
 							<i class="ace-icon fa fa-pencil bigger-130"></i>
-						</a> <a class="red" href="javascript:table.delObj('#objKey#')">
+						</a> 
+						<a class="blue" href="javascript:openImportCsv('#objKey#')" title="导入促销码CSV">
+							<i class="ace-icon fa fa-upload bigger-130"></i>
+						</a>
+						<a class="red" href="javascript:table.delObj('#objKey#')">
 							<i class="ace-icon fa fa-trash-o bigger-130"></i>
 						</a>  
 						<a class="red" href="promotionCodeList.html?activityId=#objKey#"> 
 							<i class="ace-icon fa fa-info bigger-130"></i>
 						</a>  
 					</div>
-
 					<div class="hidden-md hidden-lg">
 						<div class="inline pos-rel">
 							<button class="btn btn-minier btn-yellow dropdown-toggle"
@@ -177,22 +224,27 @@ if ('ontouchstart' in document.documentElement){
 							<ul
 								class="dropdown-menu dropdown-only-icon dropdown-yellow dropdown-menu-right dropdown-caret dropdown-close">
 								<li><a href="javascript:table.editObj('#objKey#')"
-									class="tooltip-success" data-rel="tooltip" title="Edit"> <span
+									class="tooltip-success" data-rel="tooltip" title="编辑"> <span
 										class="green"> <i
 											class="ace-icon fa fa-pencil-square-o bigger-120"></i>
 									</span>
 								</a></li>
-
+								<li><a href="javascript:openImportCsv('#objKey#')"
+									class="tooltip-success" data-rel="tooltip" title="导入CSV"> <span
+										class="blue"> <i
+											class="ace-icon fa fa-upload bigger-120"></i>
+									</span>
+								</a></li>
 								<li><a href="javascript:table.delObj('#objKey#')"
-									class="tooltip-error" data-rel="tooltip" title="Delete"> <span
+									class="tooltip-error" data-rel="tooltip" title="删除"> <span
 										class="red"> <i
 											class="ace-icon fa fa-trash-o bigger-120"></i>
 									</span>
 								</a></li>
 								<li><a href="promotionCodeList.html?activityId=#objKey#"
-									class="tooltip-error" data-rel="tooltip" title="查看"> <span
+									class="tooltip-error" data-rel="tooltip" title="查看券码"> <span
 										class="red"> <i
-											class="ace-icon fa fa-trash-o bigger-120">查看券码</i>
+											class="ace-icon fa fa-list bigger-120"></i>
 									</span>
 								</a></li>
 							</ul>
@@ -202,14 +254,12 @@ if ('ontouchstart' in document.documentElement){
 				</tr>
 		</tbody>
 	</table>
-
 	<div id="editFieldTpl" class="hide">
 		<div class="form-group #pclass#">
 			<label class="col-sm-3 control-label no-padding-right">#displayName#</label>
 			#component#
 		</div>
 	</div>
-
 	<div class="hide">
 		<ul class="pagination pull-right no-margin" id="pfTpl">
 			<li class="prev disabled"><a href="#"> <i class="ace-icon fa fa-angle-double-left"></i>
@@ -221,7 +271,91 @@ if ('ontouchstart' in document.documentElement){
 	</div>
 	
 	<script>
+		//全局缓存解析后的csv数组
+		var csvParsedItems = [];
+
+		//打开导入弹窗，传入activityId
+		function openImportCsv(activityId){
+			$("#import_activityId").val(activityId);
+			$("#csvFileInput").val("");
+			$("#csvPreviewBox").html("未选择文件");
+			csvParsedItems = [];
+			$("#modalImportCsv").modal("show");
+		}
+
+		//解析csv文件
+		$("#csvFileInput").on("change",function(e){
+			var file = e.target.files[0];
+			if(!file){
+				csvParsedItems = [];
+				$("#csvPreviewBox").html("未选择文件");
+				return;
+			}
+			var reader = new FileReader();
+			reader.onload = function(ev){
+				var text = ev.target.result;
+				var lines = text.split(/\r?\n/);
+				csvParsedItems = [];
+				var previewHtml = "";
+				for(var i=0;i<lines.length;i++){
+					var line = lines[i].trim();
+					if(!line) continue;
+					//跳过表头
+					if(i===0 && line.toLowerCase().indexOf("promotion_code")>=0){
+						continue;
+					}
+					var arr = line.split(",");
+					var code = (arr[0]||"").trim();
+					var path = (arr[1]||"").trim();
+					if(code){
+						csvParsedItems.push({promotionCode:code,receivePath:path});
+						previewHtml += (csvParsedItems.length)+". 码:"+code+" | 路径:"+path+"<br/>";
+					}
+				}
+				if(!previewHtml){
+					previewHtml = "没有解析到有效数据，请检查csv";
+				}
+				$("#csvPreviewBox").html(previewHtml);
+			};
+			reader.readAsText(file);
+		});
+
+		//确认导入按钮，调用后端 /promotionCode/importCsv
+		$("#btnDoImport").on("click",function(){
+			var activityId = $("#import_activityId").val();
+			var offerId =$("#import_offerId").val();
+			if(!activityId){
+				bootoast.toast({message:"activityId为空",type:"warning"});
+				return;
+			}
+			if(!csvParsedItems || csvParsedItems.length===0){
+				bootoast.toast({message:"请选择有效csv文件",type:"warning"});
+				return;
+			}
+			var payload = {
+				offerId:offerId,
+				activityId:Number(activityId),
+				items:csvParsedItems
+			};
+
+			postData(payload,"/promotionCode/importCsv",function(resp){
  
+				console.log(resp);
+				if(resp.code!="0000"){
+
+					alert(resp.msg);
+					return ;
+				}
+
+				$("#modalImportCsv").modal("hide");
+
+
+
+			});
+			 
+		});
+
+
 			table.op =  
          {
             "add":"promotionActivity/add",
@@ -350,10 +484,11 @@ if ('ontouchstart' in document.documentElement){
 	     });  
 	    	 
 	     });
+
+		 function firstcall(){
+
+		 }
 		
 		</script>
-
-
-
 </body>
 </html>
