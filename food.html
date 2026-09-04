@@ -456,6 +456,10 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ imageBase64: imageBase64Pure })
                 });
+              if(resp.status === 401){
+                goLogin();
+                return ;
+              }
                 const response = await resp.json();
                 rawJsonEl.value = JSON.stringify(response, null, 2);
                 if (response.code != "0000") {
