@@ -437,13 +437,15 @@ function postData(obj,url,callback,contentType,reqType){
 
     //默认为post
     var reqMethod = reqType?reqType:'POST'
+
+    var data = reqMethod == 'POST'?JSON.stringify(obj):$.param(obj);
     
     req++;
     showLoading();
     $.ajax({
            type: reqMethod,
            url: webapp+url,
-           data:JSON.stringify(obj) ,
+           data:data,
            dataType:"json",
            contentType:"application/json;charset=utf8",
 	           success: function(data){
