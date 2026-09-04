@@ -45,7 +45,7 @@ if (typeof nologin == "undefined") {//如果没有定义nologin则需要登录
 	//alert(JSON.stringify(reqObj));
 	postData(
 			reqObj,
-			'/rest/user/status',
+			'/service/user/userAccount/renewal',
 			function(data) {
 				if (data["CODE"] != "0000") {
 					if (isWeiXin()) {
