@@ -430,15 +430,18 @@ var tipInt=setInterval(function(){
 	toast(tip);
 },1700);
 
-function postData(obj,url,callback,contentType){
+function postData(obj,url,callback,contentType,reqType){
     if($(".loading").length==0){
         $("body").append('<div class="loading"><span></span><span></span><span></span> <span></span><span></span></div>');
     }
+
+    //默认为post
+    var reqMethod = reqType?reqType:'POST'
     
     req++;
     showLoading();
     $.ajax({
-           type: 'POST',
+           type: reqMethod,
            url: webapp+url,
            data:JSON.stringify(obj) ,
            dataType:"json",

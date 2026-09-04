@@ -76,7 +76,7 @@ if (typeof nologin == "undefined") {//如果没有定义nologin则需要登录
 
 					}
 				}
-			});
+			},"","GET");
 
 } else {
 
