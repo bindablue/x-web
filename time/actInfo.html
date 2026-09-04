@@ -495,9 +495,6 @@ function loadData(){
 
 }
 
-
-
- 
 const stateNormal = document.getElementById('stateNormal');
 const stateReceived = document.getElementById('stateReceived');
 const stateRedeemed = document.getElementById('stateRedeemed');
@@ -563,11 +560,24 @@ function confirmLogin(opt){
     if(opt.type === "register"){
         // 示例：window.location.href="/register";
         //showToast("跳转到注册页");
-        showregist();
+        if(byApp()){
+         showregist();
+        }else{
+            var download=confirm("注册需要请前往App Store 下载【极限任务】")
+            if(download){
+              window.open="https://itunes.apple.com/cn/app/ji-xian/id1190108058?mt=8"
+            }
+        }
     }else if(opt.type === "login"){
         // 示例：window.location.href="/login";
         //showToast("跳转到登录页");
-        showlogin(function(data){});
+        if(byApp()){
+           showlogin(function(data){});
+        }else{
+            window.open="https://dododido.cn/portal/index.html"
+   
+        }
+       
     }
 }
 
