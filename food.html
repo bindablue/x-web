@@ -1,9 +1,12 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>食物热量识别</title>
+    <script src="../assets/js/jquery-2.1.4.min.js"></script>
+    <script src="../js/common.js"></script>
     <style>
         * {
             margin: 0;
@@ -11,24 +14,28 @@
             box-sizing: border-box;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
         }
+
         body {
             background-color: #f5f7fa;
             padding: 24px;
             max-width: 900px;
             margin: 0 auto;
         }
+
         .container {
             background: #ffffff;
             border-radius: 16px;
             padding: 28px;
             box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
         }
+
         h1 {
             font-size: 22px;
             color: #1d2129;
             margin-bottom: 24px;
             text-align: center;
         }
+
         .upload-area {
             border: 2px dashed #c9cdd4;
             border-radius: 12px;
@@ -37,34 +44,42 @@
             cursor: pointer;
             transition: 0.25s;
         }
+
         .upload-area:hover {
             border-color: #4080ff;
             background-color: #f0f6ff;
         }
+
         .upload-area.drag-over {
             border-color: #4080ff;
             background-color: #e8f0ff;
         }
+
         #fileInput {
             display: none;
         }
+
         .tip-text {
             color: #6e7681;
             margin-top: 8px;
             font-size: 14px;
         }
+
         .preview-wrap {
             margin-top: 20px;
         }
+
         #previewImg {
             max-width: 100%;
             max-height: 360px;
             border-radius: 8px;
             display: none;
         }
+
         .btn-group {
             margin-top: 20px;
         }
+
         button {
             background-color: #4080ff;
             color: #fff;
@@ -75,35 +90,42 @@
             cursor: pointer;
             width: 100%;
         }
+
         button:disabled {
             background: #b4c7ee;
             cursor: not-allowed;
         }
+
         .result-wrap {
             margin-top: 28px;
         }
+
         .result-title {
             font-size: 18px;
             font-weight: 600;
             margin-bottom: 12px;
             color: #1d2129;
         }
+
         .dish-item {
             background: #f7f8fa;
             padding: 14px 16px;
             border-radius: 10px;
             margin-bottom: 10px;
         }
+
         .dish-name {
             font-weight: 600;
             font-size: 16px;
         }
+
         .dish-desc {
             margin-top: 6px;
             font-size: 14px;
             color: #4e5969;
             line-height: 1.6;
         }
+
         .warn-note {
             background: #fff7e6;
             border-left: 4px solid #ff9500;
@@ -113,15 +135,18 @@
             font-size: 13px;
             color: #875200;
         }
+
         .total-block {
             background: #e8f0ff;
             padding: 14px 16px;
             border-radius: 10px;
             margin-top: 14px;
         }
+
         .json-debug {
             margin-top: 20px;
         }
+
         textarea {
             width: 100%;
             min-height: 180px;
@@ -131,22 +156,25 @@
             font-size: 12px;
             resize: vertical;
         }
+
         .loading {
             display: none;
             margin-top: 12px;
             color: #4080ff;
         }
-         .buy-quota-btn{
-            margin-top:14px;
-            text-align:center;
+
+        .buy-quota-btn {
+            margin-top: 14px;
+            text-align: center;
         }
-        .buy-quota-btn>div{
-            display:inline-block;
-            background:#4080ff;
-            color:#fff;
-            padding:10px 24px;
-            border-radius:8px;
-            cursor:pointer;
+
+        .buy-quota-btn>div {
+            display: inline-block;
+            background: #4080ff;
+            color: #fff;
+            padding: 10px 24px;
+            border-radius: 8px;
+            cursor: pointer;
         }
 
         /* 登录选择弹窗样式 */
@@ -156,13 +184,14 @@
             top: 0;
             right: 0;
             bottom: 0;
-            background-color: rgba(0,0,0,0.55);
+            background-color: rgba(0, 0, 0, 0.55);
             z-index: 9999;
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 0 24px;
         }
+
         .login-modal-inner {
             width: 100%;
             max-width: 320px;
@@ -170,51 +199,60 @@
             border-radius: 16px;
             padding: 24px 20px;
         }
+
         .login-modal-title {
             font-size: 18px;
             font-weight: 600;
-            color:#1d2129;
-            text-align:center;
+            color: #1d2129;
+            text-align: center;
         }
+
         .login-modal-desc {
-            font-size:14px;
-            color:#6e7681;
-            text-align:center;
-            margin-top:10px;
-            line-height:1.5;
+            font-size: 14px;
+            color: #6e7681;
+            text-align: center;
+            margin-top: 10px;
+            line-height: 1.5;
         }
+
         .login-modal-buttons {
-            margin-top:22px;
-            display:flex;
-            flex-direction:column;
-            gap:10px;
+            margin-top: 22px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
         }
+
         .btn-modal {
-            width:100%;
-            padding:12px;
-            border-radius:8px;
-            font-size:15px;
-            border:none;
-            cursor:pointer;
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 15px;
+            border: none;
+            cursor: pointer;
         }
+
         .btn-modal-primary {
             background: #4080ff;
-            color:#fff;
+            color: #fff;
         }
+
         .btn-modal-outline {
-            border:1px solid #4080ff;
-            color:#4080ff;
-            background:#fff;
+            border: 1px solid #4080ff;
+            color: #4080ff;
+            background: #fff;
         }
+
         .btn-modal-cancel {
-            background:#f2f3f5;
-            color:#4e5969;
+            background: #f2f3f5;
+            color: #4e5969;
         }
+
         .hidden {
-            display:none !important;
+            display: none !important;
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <h1>🍱 食物热量识别</h1>
@@ -245,11 +283,11 @@
             <p style="margin-bottom:6px;font-size:14px;">原始返回JSON：</p>
             <textarea id="rawJson" readonly></textarea>
         </div>
-       
+
     </div>
- <div class="buy-quota-btn">
-                <a href="javascript:webGotoLocal('.','syncDetail.html?funcCode=caloryQuery100')"> 查询额度购买</a>
-        </div>
+    <div class="buy-quota-btn">
+        <a href="javascript:webGotoLocal('.','syncDetail.html?funcCode=caloryQuery100')"> 查询额度购买</a>
+    </div>
 
     <!-- 登录选择弹窗 -->
     <div id="loginModal" class="login-modal hidden">
@@ -283,37 +321,37 @@
         var btnModalLogin = document.getElementById('btnModalLogin');
         var btnModalCancel = document.getElementById('btnModalCancel');
 
-        function closeLoginModal(){
+        function closeLoginModal() {
             loginModal.classList.add('hidden');
         }
 
         /**
          * 唤起登录选择弹窗：注册 / 登录 / 取消
          */
-        function goLogin(){
+        function goLogin() {
             loginModal.classList.remove('hidden');
         }
 
         //去注册
-        btnModalRegister.addEventListener('click', function(){
+        btnModalRegister.addEventListener('click', function () {
             closeLoginModal();
-            showlogin({type:"register"});
+            confirmLogin({ type: "register" });
         });
 
         //去登录
-        btnModalLogin.addEventListener('click', function(){
+        btnModalLogin.addEventListener('click', function () {
             closeLoginModal();
-            showlogin({type:"login"});
+            confirmLogin({ type: "login" });
         });
 
         //取消
-        btnModalCancel.addEventListener('click', function(){
+        btnModalCancel.addEventListener('click', function () {
             closeLoginModal();
         });
 
         //点击遮罩关闭弹窗
-        loginModal.addEventListener('click', function(e){
-            if(e.target === loginModal){
+        loginModal.addEventListener('click', function (e) {
+            if (e.target === loginModal) {
                 closeLoginModal();
             }
         });
@@ -322,13 +360,32 @@
          * 登录/注册回调，业务自行实现跳转
          * @param opt {type:"register"|"login"}
          */
-        function showlogin(opt){
-            if(opt.type === "register"){
-                // 示例：webGotoLocal 或者 location.href跳转注册页
-                alert("跳转到注册页");
-            }else if(opt.type === "login"){
-                // 示例：webGotoLocal 或者 location.href跳转登录页
-                alert("跳转到登录页");
+        /**
+ * 登录/注册回调，业务自行实现跳转
+ * @param opt {type:"register"|"login"}
+ */
+        function confirmLogin(opt) {
+            if (opt.type === "register") {
+                // 示例：window.location.href="/register";
+                //showToast("跳转到注册页");
+                if (byApp()) {
+                    showregist();
+                } else {
+                    var download = confirm("注册需要请前往App Store 下载【极限任务】")
+                    if (download) {
+                        window.open("https://itunes.apple.com/cn/app/ji-xian/id1190108058?mt=8")
+                    }
+                }
+            } else if (opt.type === "login") {
+                // 示例：window.location.href="/login";
+                //showToast("跳转到登录页");
+                if (byApp()) {
+                    showlogin(function (data) { });
+                } else {
+                    window.open("https://dododido.cn/portal/index.html")
+
+                }
+
             }
         }
         // ==================================
@@ -450,7 +507,8 @@
             totalCalEl.innerText = totalSum.toFixed(1);
         }
     </script>
-<script src="js/jquery.min.js"></script>
-<script src="js/common.js"></script>
+    <script src="js/jquery.min.js"></script>
+    <script src="js/common.js"></script>
 </body>
+
 </html>
