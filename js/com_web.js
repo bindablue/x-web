@@ -47,7 +47,7 @@ if (typeof nologin == "undefined") {//如果没有定义nologin则需要登录
 			reqObj,
 			'/user/userAccount/renewal',
 			function(data) {
-				if (data["CODE"] != "0000") {
+				if (data["code"] != "0000") {
 					if (isWeiXin()) {
 						var proxy = 0;
 						if (GetRequest()["proxy"]) {
