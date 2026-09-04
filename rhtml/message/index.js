@@ -3,6 +3,6 @@ var messages =`
 <div class="text-center text-primary" style="padding:0px;margin:2px;" 
         onclick="webGotoRemote('https://dododido.cn/service/time/actInfo.html?id=3')">
     <span class="glyphicon glyphicon-cutlery"></span>
-    <span class="text-danger glyphicon glyphicon-fire"></span>开学季活动，开通年度会员，免费体验7天会员。不满意可以取消续期。
+    <span class="text-danger glyphicon glyphicon-fire"></span>开学季活动，开通年度会员，免费体验7天会员。
 </div>
 `
