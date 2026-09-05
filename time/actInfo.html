@@ -588,7 +588,10 @@ function confirmLogin(opt){
         if(byApp()){
            showlogin(function(data){});
         }else{
-            window.open("https://dododido.cn/portal/index.html")
+            var loginPage = "https://dododido.cn"
+								+ "/html/user/login.html?fromurl="
+								+ encodeURIComponent(window.location.href);
+            window.open(loginPage)
    
         }
        
