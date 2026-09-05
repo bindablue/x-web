@@ -483,7 +483,10 @@ function loadData(){
         }
 
         
+
+        
         activityData=resp.data
+        document.title =  activityData.activityName
 
         activityData.timeText=activityData.startTime+"~"+activityData.endTime
         activityData.activityImg=activityData.activityImgUrl
