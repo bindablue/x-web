@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta property="og:image" content="https://dododido.cn/img/teacher_640x224.jpg"/>
     <title>特别活动</title>
     <!--[if !IE]> -->
     <script src="../assets/js/jquery-2.1.4.min.js"></script>
@@ -492,6 +493,8 @@ function loadData(){
         activityData.activityImg=activityData.activityImgUrl
         //activityData.promotionCode ="******"
         renderPage(activityData);
+        let meta = document.querySelector('meta[property="og:image"]');
+        meta.setAttribute("content", activityData.activityImgUrl);
 
 
     })
