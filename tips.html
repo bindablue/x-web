@@ -7,10 +7,8 @@
     <meta name="msapplication-tap-highlight" content="no">
     <meta name="viewport"
         content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
-    <meta name="keywords"
-        content=" 时间管理 软件专家   dadadida.cn Task Plan Log Goal Management Time Money Finance">
-    <meta name="description"
-        content="   ">
+    <meta name="keywords" content=" 时间管理 软件专家   dadadida.cn Task Plan Log Goal Management Time Money Finance">
+    <meta name="description" content="   ">
 
     <title></title>
 
@@ -54,9 +52,7 @@
             text-align: center;
         }
     </style>
-      <style>
-        
-       
+    <style>
         .ai-weekly-card {
             width: 100%;
             max-width: 1000px;
@@ -67,6 +63,7 @@
             position: relative;
             overflow: hidden;
         }
+
         /* 背景装饰圆 */
         .ai-weekly-card::before {
             content: '';
@@ -78,6 +75,7 @@
             background: rgba(255, 255, 255, 0.1);
             border-radius: 50%;
         }
+
         .ai-weekly-card::after {
             content: '';
             position: absolute;
@@ -88,29 +86,35 @@
             background: rgba(255, 255, 255, 0.08);
             border-radius: 50%;
         }
+
         .card-header {
             display: flex;
             align-items: center;
             gap: 20px;
-            
+
         }
+
         .robot-icon {
             width: 120px;
             height: 120px;
         }
+
         .card-title {
             font-size: 24px;
             font-weight: 700;
 
         }
+
         .card-content {
             /* font-size: 32px; */
             line-height: 1.6;
             margin-bottom: 20px;
         }
+
         .card-footer {
             text-align: center;
         }
+
         .view-report-btn {
             /* font-size: 48px; */
             /* font-weight: 600; */
@@ -122,6 +126,7 @@
             align-items: center;
             gap: 12px;
         }
+
         .view-report-btn::after {
             content: '→';
             /* //font-size: 56px; */
@@ -137,12 +142,12 @@
         //create type
         function taskline(total, period) {
 
-           
+
 
             var endTime = moment().format("YYYY-MM-DD");
             var startTime = moment().subtract(total, period).format("YYYY-MM-DD");
 
-             $("#txtPeriod").html(startTime+" ~ "+endTime)
+            $("#txtPeriod").html(startTime + " ~ " + endTime)
             var obj = { "startTime": startTime, "endTime": endTime };
             obj["Class"] = "CommonDataEngine";
             obj["exeCode"] = "timeGroupName";
@@ -178,7 +183,7 @@
                     },
                     grid: {
                         left: '20%',
-                       // top: '40'
+                        // top: '40'
 
                     },
                     legend: {
@@ -251,61 +256,62 @@
 </head>
 
 <body style="padding-bottom:100px;background-color:#f0f8ff;">
-<div class="container">
-    <div class="ai-weekly-card" onclick="webGotoLocal('.','sync.html')">
-        <div class="card-header">
-            <!-- 机器人图标，可替换为实际图片 -->
-            <svg class="robot-icon" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="60" cy="30" r="6" fill="#C4C4C4"/>
-                <rect x="45" y="30" width="30" height="10" rx="2" fill="#C4C4C4"/>
-                <rect x="25" y="40" width="70" height="50" rx="25" fill="#E0E0E0"/>
-                <rect x="30" y="45" width="60" height="30" rx="15" fill="#333333"/>
-                <circle cx="45" cy="60" r="8" fill="#4FC3F7"/>
-                <circle cx="75" cy="60" r="8" fill="#4FC3F7"/>
-                <path d="M55 70 L 65 70" stroke="#E0E0E0" stroke-width="2" stroke-linecap="round"/>
-                <rect x="20" y="45" width="10" height="20" rx="5" fill="#4285F4"/>
-                <rect x="90" y="45" width="10" height="20" rx="5" fill="#4285F4"/>
-                <rect x="40" y="90" width="10" height="20" rx="5" fill="#E0E0E0"/>
-                <rect x="70" y="90" width="10" height="20" rx="5" fill="#E0E0E0"/>
-                <circle cx="60" cy="95" r="8" fill="#4FC3F7"/>
-            </svg>
-            <h1 class="card-title">AI 总结</h1>
-        </div>
-        <div class="card-content">
-            订阅会员，下载AI总结功能。
-        </div>
-        <div class="card-footer">
-            <button class="view-report-btn" >前往下载并查看完整报告</button>
-        </div>
-    </div>
- </div>
+<div style="width:100%;margin-top:0px;padding-top:10px;text-align:center;">
 
-    <div style="width:100%;margin-top:0px;padding-top:10px;text-align:center;">
- 
-        
         <div class="text-danger hide  small">以上为广告区域，如有需要可点击进行购买</div>
-       <div class="" >
-    <a onclick="webGotoRemote('https://dododido.cn/service/time/actInfo.html?id=3')" style="display:block;">
-        <img src="https://dododido.cn/img/act3_640x300.jpeg" 
-             alt="开学季活动，开通年度会员，免费体验7天会员。" 
-             style="width:100%;height:auto;display:block;border:none;">
-    </a>
+        <div class="">
+            <a onclick="webGotoRemote('https://dododido.cn/service/time/actInfo.html?id=3')" style="display:block;">
+                <img src="https://dododido.cn/img/act3_640x300.jpeg" alt="开学季活动，开通年度会员，免费体验7天会员。"
+                    style="width:100%;height:auto;display:block;border:none;">
+            </a>
+        </div>
+
 </div>
 
+    <div class="container">
+        <div class="ai-weekly-card" onclick="webGotoLocal('.','sync.html')">
+            <div class="card-header">
+                <!-- 机器人图标，可替换为实际图片 -->
+                <svg class="robot-icon" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="60" cy="30" r="6" fill="#C4C4C4" />
+                    <rect x="45" y="30" width="30" height="10" rx="2" fill="#C4C4C4" />
+                    <rect x="25" y="40" width="70" height="50" rx="25" fill="#E0E0E0" />
+                    <rect x="30" y="45" width="60" height="30" rx="15" fill="#333333" />
+                    <circle cx="45" cy="60" r="8" fill="#4FC3F7" />
+                    <circle cx="75" cy="60" r="8" fill="#4FC3F7" />
+                    <path d="M55 70 L 65 70" stroke="#E0E0E0" stroke-width="2" stroke-linecap="round" />
+                    <rect x="20" y="45" width="10" height="20" rx="5" fill="#4285F4" />
+                    <rect x="90" y="45" width="10" height="20" rx="5" fill="#4285F4" />
+                    <rect x="40" y="90" width="10" height="20" rx="5" fill="#E0E0E0" />
+                    <rect x="70" y="90" width="10" height="20" rx="5" fill="#E0E0E0" />
+                    <circle cx="60" cy="95" r="8" fill="#4FC3F7" />
+                </svg>
+                <h1 class="card-title">AI 总结</h1>
+            </div>
+            <div class="card-content">
+                订阅会员，下载AI总结功能。
+            </div>
+            <div class="card-footer">
+                <button class="view-report-btn">前往下载并查看完整报告</button>
+            </div>
+        </div>
     </div>
 
     
-        <div class="container">
-            <div class="text-center" style="padding:5px 0px;" onclick="webGotoRemote('https://dododido.cn/service/timeView.html')">
-                时间块分布图
-      </div>
-   
-    <div id="txtPeriod" class="text-center"></div>
 
-    <div >
-        
-           
-          
+
+    <div class="container">
+        <div class="text-center" style="padding:5px 0px;"
+            onclick="webGotoRemote('https://dododido.cn/service/timeView.html')">
+            时间块分布图
+        </div>
+
+        <div id="txtPeriod" class="text-center"></div>
+
+        <div>
+
+
+
             <div style="float:left;height:250px;width:40%;" id="tline"></div>
             <div style="float:left;height:250px;width:60%;" id="eline"></div>
 
@@ -318,7 +324,7 @@
                     <img width="40" height="40" src="img/bar.png" />
 
                 </div>
-                
+
                 <div class="col-xs-4" onclick="webGotoLocal('social','mychart.html')">
                     <img width="40" height="40" src="img/line.png" />
                 </div>
@@ -330,127 +336,137 @@
 
 
         </div>
-        
-           
-        
-        
-<div class="container">
-    <div class="text-center text-primary" style="padding:5px;margin:5px;" 
-        onclick="webGotoRemote('https://dododido.cn/service/food.html')">
-    <span class="glyphicon glyphicon-cutlery"></span>
-    <span class="text-danger glyphicon glyphicon-fire"></span> 食物热量🧮
-</div>
-             <h1>PDCA</h1>
-        <p class="subtitle">PDCA循环是一种持续改进的管理方法,包含计划(Plan)、<br>执行(Do)、检查(Check)和处理(Act)四个阶段</p>
-        
-        <div class="cycle-diagram">
-            <div class="cycle-segment segment-plan"></div>
-            <div class="cycle-segment segment-do"></div>
-            <div class="cycle-segment segment-check"></div>
-            <div class="cycle-segment segment-act"></div>
-            <div class="cycle-center">
-                <div class="cycle-arrow"></div>
-            </div>
-            <div class="cycle-label label-plan">计划<br>Plan</div>
-            <div class="cycle-label label-do">执行<br>Do</div>
-            <div class="cycle-label label-check">检查<br>Check</div>
-            <div class="cycle-label label-act">处理<br>Act</div>
-        </div>
 
-        <div class="step-card step-1">
-            <div class="step-number">1</div>
-            <div class="step-content">
-                <div class="step-title">计划 Plan</div>
-                <div class="step-desc">设定目标,拆解为可执行的任务和事项</div>
-                <div class="step-buttons">
-                    <button class="step-btn"  onclick="webGotoLocal('dist','index.html#/taskInfo-MODULE/taskEdit/:id?groupType=0')">创建目标</button>
-                    <button class="step-btn"  onclick="webGotoLocal('dist','index.html#/taskInfo-MODULE/newTask?groupType=1')" >创建任务</button>
+
+
+
+        <div class="container">
+            <div class="text-center text-primary" style="padding:5px;margin:5px;"
+                onclick="webGotoRemote('https://dododido.cn/service/food.html')">
+                <span class="glyphicon glyphicon-cutlery"></span>
+                <span class="text-danger glyphicon glyphicon-fire"></span> 食物热量🧮
+            </div>
+            <h1>PDCA</h1>
+            <p class="subtitle">PDCA循环是一种持续改进的管理方法,包含计划(Plan)、<br>执行(Do)、检查(Check)和处理(Act)四个阶段</p>
+
+            <div class="cycle-diagram">
+                <div class="cycle-segment segment-plan"></div>
+                <div class="cycle-segment segment-do"></div>
+                <div class="cycle-segment segment-check"></div>
+                <div class="cycle-segment segment-act"></div>
+                <div class="cycle-center">
+                    <div class="cycle-arrow"></div>
+                </div>
+                <div class="cycle-label label-plan">计划<br>Plan</div>
+                <div class="cycle-label label-do">执行<br>Do</div>
+                <div class="cycle-label label-check">检查<br>Check</div>
+                <div class="cycle-label label-act">处理<br>Act</div>
+            </div>
+
+            <div class="step-card step-1">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                    <div class="step-title">计划 Plan</div>
+                    <div class="step-desc">设定目标,拆解为可执行的任务和事项</div>
+                    <div class="step-buttons">
+                        <button class="step-btn"
+                            onclick="webGotoLocal('dist','index.html#/taskInfo-MODULE/taskEdit/:id?groupType=0')">创建目标</button>
+                        <button class="step-btn"
+                            onclick="webGotoLocal('dist','index.html#/taskInfo-MODULE/newTask?groupType=1')">创建任务</button>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div class="step-card step-2">
-            <div class="step-number">2</div>
-            <div class="step-content">
-                <div class="step-title">执行 Do</div>
-                <div class="step-desc">按每日安排逐项打卡,把计划变成行动</div>
-                <div class="step-buttons">
-                    <button class="step-btn"  onclick="webGotoLocal('dist','index.html#/taskInfo-MODULE/taskToday')" >今日任务</button>
-                    <button class="step-btn" onclick="webGotoLocal('dist','index.html#/taskInfo-MODULE/dayEventList')" >每日打卡</button>
+            <div class="step-card step-2">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                    <div class="step-title">执行 Do</div>
+                    <div class="step-desc">按每日安排逐项打卡,把计划变成行动</div>
+                    <div class="step-buttons">
+                        <button class="step-btn"
+                            onclick="webGotoLocal('dist','index.html#/taskInfo-MODULE/taskToday')">今日任务</button>
+                        <button class="step-btn"
+                            onclick="webGotoLocal('dist','index.html#/taskInfo-MODULE/dayEventList')">每日打卡</button>
+                    </div>
                 </div>
+            </div>
+
+            <div class="step-card step-3">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                    <div class="step-title">检查 Check</div>
+                    <div class="step-desc">用周/月/年维度复盘,看完成率和偏差</div>
+                    <div class="step-buttons">
+                        <button class="step-btn"
+                            onclick="webGotoLocal('dist','index.html#/taskInfo-MODULE/goallist')">目标清单</button>
+                        <button class="step-btn"
+                            onclick="webGotoLocal('dist','index.html#/taskInfo-MODULE/tasklist?groupType=1')">任务清单</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="step-card step-4">
+                <div class="step-number">4</div>
+                <div class="step-content">
+                    <div class="step-title">处理 Act</div>
+                    <div class="step-desc">根据复盘调整计划,优化下一轮执行</div>
+                    <div class="step-buttons">
+                        <button class="step-btn"
+                            onclick="webGotoLocal('dist','index.html#/taskInfo-MODULE/goallist')">调整目标</button>
+                        <button class="step-btn"
+                            onclick="webGotoLocal('dist','index.html#/taskInfo-MODULE/tasklist?groupType=1')">优化任务</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer">
+                <div class="footer-icon"></div>
+                <span></span>
             </div>
         </div>
 
-        <div class="step-card step-3">
-            <div class="step-number">3</div>
-            <div class="step-content">
-                <div class="step-title">检查 Check</div>
-                <div class="step-desc">用周/月/年维度复盘,看完成率和偏差</div>
-                <div class="step-buttons">
-                    <button class="step-btn"  onclick="webGotoLocal('dist','index.html#/taskInfo-MODULE/goallist')" >目标清单</button>
-                    <button class="step-btn"  onclick="webGotoLocal('dist','index.html#/taskInfo-MODULE/tasklist?groupType=1')" >任务清单</button>
-                </div>
-            </div>
-        </div>
-
-        <div class="step-card step-4">
-            <div class="step-number">4</div>
-            <div class="step-content">
-                <div class="step-title">处理 Act</div>
-                <div class="step-desc">根据复盘调整计划,优化下一轮执行</div>
-                <div class="step-buttons">
-                    <button class="step-btn" onclick="webGotoLocal('dist','index.html#/taskInfo-MODULE/goallist')">调整目标</button>
-                    <button class="step-btn"  onclick="webGotoLocal('dist','index.html#/taskInfo-MODULE/tasklist?groupType=1')">优化任务</button>
-                </div>
-            </div>
-        </div>
-
-        <div class="footer">
-            <div class="footer-icon"></div>
-            <span></span>
-        </div>
     </div>
-        
-    </div>
-    
-    
+
+
     <div style="margin-top: 20px;">
-      <div class="pull-left ">
-                <a onclick="preDel()">
-                    &lt;&lt; 账号永久注销
-                </a>
+        <div class="pull-left ">
+            <a onclick="preDel()">
+                &lt;&lt; 账号永久注销
+            </a>
 
-            </div>
-      
-     
-            <div class="pull-right">
-                <a
-                    onclick="webGotoRemote('https://dododido.cn/service/feedback.html?bundleId=cn.dadadida.planx')">
-                    APP使用意见反馈 &gt;&gt;
-                </a>
-            </div>
+        </div>
+
+
+        <div class="pull-right">
+            <a onclick="webGotoRemote('https://dododido.cn/service/feedback.html?bundleId=cn.dadadida.planx')">
+                APP使用意见反馈 &gt;&gt;
+            </a>
+        </div>
     </div>
 
     <script>
         var nologin = true;
     </script>
 
-     <style>
+    <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
         }
+
         body {
             background-color: #f8f9fa;
             padding: 10px;
         }
-        #txtPeriod{
+
+        #txtPeriod {
             padding: 5px;
             font-size: small;
             margin-top: 5px;
         }
+
         .container {
             max-width: 900px;
             margin: 0 auto;
@@ -459,6 +475,7 @@
             padding: 10px 0px;
             box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
         }
+
         .ai-badge {
             font-size: 14px;
             color: #8a8a8a;
@@ -468,6 +485,7 @@
             display: inline-block;
             margin-bottom: 20px;
         }
+
         h1 {
             text-align: center;
             font-size: 30px;
@@ -475,6 +493,7 @@
             color: #000000;
             margin-bottom: 20px;
         }
+
         .subtitle {
             text-align: center;
             font-size: 22px;
@@ -482,12 +501,14 @@
             line-height: 1.5;
             margin-bottom: 40px;
         }
+
         .cycle-diagram {
             width: 220px;
             height: 220px;
             margin: 0 auto 50px;
             position: relative;
         }
+
         .cycle-segment {
             position: absolute;
             width: 100%;
@@ -495,22 +516,27 @@
             border-radius: 50%;
             clip: rect(0, 110px, 220px, 0);
         }
+
         .segment-plan {
             background-color: #2185d0;
             transform: rotate(0deg);
         }
+
         .segment-do {
             background-color: #21ba45;
             transform: rotate(90deg);
         }
+
         .segment-check {
             background-color: #f2711c;
             transform: rotate(180deg);
         }
+
         .segment-act {
             background-color: #a333c8;
             transform: rotate(270deg);
         }
+
         .cycle-center {
             position: absolute;
             width: 80px;
@@ -524,6 +550,7 @@
             align-items: center;
             justify-content: center;
         }
+
         .cycle-arrow {
             width: 0;
             height: 0;
@@ -532,6 +559,7 @@
             border-top: 25px solid #000000;
             transform: rotate(45deg);
         }
+
         .cycle-label {
             position: absolute;
             color: #ffffff;
@@ -539,22 +567,27 @@
             font-weight: 500;
             text-align: center;
         }
+
         .label-plan {
             top: 30px;
             right: 30px;
         }
+
         .label-do {
             bottom: 30px;
             right: 30px;
         }
+
         .label-check {
             bottom: 30px;
             left: 30px;
         }
+
         .label-act {
             top: 30px;
             left: 30px;
         }
+
         .step-card {
             /* background-color: #ffffff; */
             border-radius: 12px;
@@ -563,6 +596,7 @@
             display: flex;
             overflow: hidden;
         }
+
         .step-number {
             width: 40px;
             display: flex;
@@ -572,26 +606,31 @@
             font-weight: 900;
             color: #ffffff;
         }
+
         .step-content {
             flex: 1;
             padding: 20px;
         }
+
         .step-title {
             font-size: 22px;
             font-weight: 700;
             color: #000000;
             margin-bottom: 8px;
         }
+
         .step-desc {
             font-size: 18px;
             color: #444444;
             margin-bottom: 16px;
             line-height: 1.4;
         }
+
         .step-buttons {
             display: flex;
             gap: 12px;
         }
+
         .step-btn {
             background-color: #2185d0;
             color: #ffffff;
@@ -602,10 +641,23 @@
             font-weight: 500;
             cursor: default;
         }
-        .step-1 .step-number { background-color: #2185d0; }
-        .step-2 .step-number { background-color: #21ba45; }
-        .step-3 .step-number { background-color: #f2711c; }
-        .step-4 .step-number { background-color: #a333c8; }
+
+        .step-1 .step-number {
+            background-color: #2185d0;
+        }
+
+        .step-2 .step-number {
+            background-color: #21ba45;
+        }
+
+        .step-3 .step-number {
+            background-color: #f2711c;
+        }
+
+        .step-4 .step-number {
+            background-color: #a333c8;
+        }
+
         .footer {
             text-align: right;
             margin-top: 30px;
@@ -616,6 +668,7 @@
             justify-content: flex-end;
             gap: 8px;
         }
+
         .footer-icon {
             width: 24px;
             height: 24px;
@@ -866,7 +919,7 @@
                 },
                 legend: { data: [] },//lgd
                 visualMap: {
-                    top:'middle',
+                    top: 'middle',
                     itemWidth: 8,
                     right: 0,
                     color: ['red', 'yellow']
