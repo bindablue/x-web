@@ -370,7 +370,7 @@
 
     <div class="content-wrap">
         <div class="card">
-            <h1 id="activityName" class="title">优惠活动即将开启</h1>
+            <h1 id="activityName" class="title"></h1>
             <div class="time-row">
                 <svg viewBox="0 0 24 24"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                 <span id="timeText">-</span>
@@ -383,7 +383,7 @@
             </div>
 
             <!-- 状态1：可领取 -->
-            <div id="stateNormal" class="mt24">
+            <div id="stateNormal" class="mt24 hidden">
                 <button id="btnReceive" class="btn-primary">立即领取优惠码</button>
                 <p class="tip-small">每个用户仅可领取一次优惠码</p>
             </div>
@@ -467,7 +467,7 @@ var activityData = {
     activityName:"特别活动",
     activityDesc:"敬请期待",
     activityImg:"",
-    status: "END", // NOT_START｜RUNNING｜END｜RECEIVED｜REDEEMED
+    status: "NOT_START", // NOT_START｜RUNNING｜END｜RECEIVED｜REDEEMED
     promotionCode:"",
     timeText:"2026‑09‑01 ~ 2026‑09‑30"
 };
