@@ -1,64 +1,65 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-<!--        <meta name="format-detection" content="telephone=no">-->
-<meta charset="UTF-8">
-<meta name="msapplication-tap-highlight" content="no">
-<meta name="viewport"
-	content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+    <!--        <meta name="format-detection" content="telephone=no">-->
+    <meta charset="UTF-8">
+    <meta name="msapplication-tap-highlight" content="no">
+    <meta name="viewport"
+        content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
 
-<title>我走过的足迹</title>
+    <title>我走过的足迹</title>
 
-<link rel="stylesheet" type="text/css" href="../../css/common.css" />
-<link rel="stylesheet" type="text/css"
-	href="../../mod/bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/common.css" />
+    <link rel="stylesheet" type="text/css" href="../../mod/bootstrap/css/bootstrap.min.css" />
 
-<script src="../../js/jquery.min.js"></script>
+    
 
-<script src="../../mod/bootstrap/js/bootstrap.min.js"></script>
+    <style>
+        input,
+        select,
+        textarea {
+            margin-top: 5px;
+            padding: 5px 0px;
+            line-height: 16px;
+            width: 100%;
+            -webkit-appearance: none;
+            border: 1px solid #87CEEB;
+        }
+    </style>
 
-<script src="../../js/common.js"></script>
-<script src="../../js/meta.js"></script>
-
-<style>
-input, select, textarea {
-	margin-top: 5px;
-	padding: 5px 0px;
-	line-height: 16px;
-	width: 100%;
-	-webkit-appearance: none;
-	border: 1px solid #87CEEB;
-}
-</style>
 <body>
 
-<div id="hh" >
-    
-    
-</div>
-	<div class="container">
+    <div id="hh">
 
-		 <img id="footprint" src="" style="width:100%;height:auto;">
-        
-       
-       
-	</div>
+
+    </div>
+    <div class="container">
+
+        <img id="footprint" src="" style="width:100%;height:auto;">
+
+
+
+    </div>
 
 
 
 
 </body>
 <script>
-    
-   
 
 
-        function firstcall(){
 
-            var base64 =GetRequest()["base64"];
-            $("#footprint").attr('src',base64);
 
-        }
 
- </script>       
-           
+
+    function firstcall() {
+
+        var base64 = GetRequest()["base64"];
+        $("#footprint").attr('src', base64);
+
+    }
+
+    firstcall();
+
+</script>
