@@ -257,14 +257,34 @@
 
 <body style="padding-bottom:100px;background-color:#f0f8ff;">
 <div style="width:100%;margin-top:0px;padding-top:10px;text-align:center;">
+ <!-- Swiper -->
+        <div class="swiper-container">
+            <div id="running" class="swiper-wrapper">
 
-        <div class="text-danger hide  small">以上为广告区域，如有需要可点击进行购买</div>
-        <div class="">
-            <a onclick="webGotoRemote('https://dododido.cn/service/time/actInfo.html?id=3')" style="display:block;">
-                <img src="https://dododido.cn/img/act3_705x300.jpeg" alt="开学季活动，开通年度会员，免费体验7天会员。"
-                    style="width:100%;height:auto;display:block;border:none;">
-            </a>
+            <div class="swiper-slide">
+                        <a onclick="webGotoRemote('https://dododido.cn/service/time/actInfo.html?id=3')" style="display:block;">
+                            <img src="https://dododido.cn/img/act3_705x300.jpeg" alt="开学季活动，开通年度会员，免费体验7天会员。"
+                                style="width:100%;height:auto;display:block;border:none;">
+                        </a>
+            </div>
+            <div class="swiper-slide">
+                        <a onclick="webGotoRemote('https://dododido.cn/service/time/actInfo.html?id=4')" style="display:block;">
+                            <img src="https://dododido.cn/img/act4_705x300.jpeg" alt=""
+                                style="width:100%;height:auto;display:block;border:none;">
+                        </a>
+            </div>
+
+            </div>
+            <!--           <div class="swiper-button-prev"></div>-->
+            <!--           <div class="swiper-button-next"></div>-->
+
+            <!-- Add Pagination -->
+            <div class="swiper-pagination">
+            </div>
+
         </div>
+
+         
 
 </div>
 
@@ -719,12 +739,29 @@
 </body>
 <script src="js/com_app.js"></script>
 <script>
+   function initSwiper(){
 
+    new Swiper('.swiper-container', {
+            pagination: '.swiper-pagination',
+            paginationClickable: true,
+            spaceBetween: 10,
+            centeredSlides: true,
+            autoplay: 10000,
+            slidesPerView: 1,
+            loop: false,
+            prevButton: '.swiper-button-prev', // 左按钮选择器
+            nextButton: '.swiper-button-next', // 右按钮选择器
+            autoplay: false,
+            initialSlide: 0,
+            autoplayDisableOnInteraction: true
+        });
+   }
 
     function firstcall() {
 
         taskline(1, 'weeks');
         loadIndex(1, 'weeks');
+        initSwiper();
 
     }
 
