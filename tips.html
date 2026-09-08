@@ -803,7 +803,7 @@
 
             }
             let list = resp.data;
-
+             var swipers =[]
             for (var i = 0; i < list.length; i++) {
                 var record = list[i]
                 var tpl = $("tplSlide").html();
@@ -812,7 +812,9 @@
                     let regex = new RegExp("#" + key + "#", "gi");
                     one = one.replace(regex, record[key]);
                 }
+                swipers.push(one)
             }
+            $("#running").html(swipers.join(""))
 
 
             initSwiper();
