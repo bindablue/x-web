@@ -62,7 +62,7 @@ if ('ontouchstart' in document.documentElement){
 							<div class="row ">
 								<div class="col-xs-12 frmQuery">
 									<form class="form-horizontal" id="frmQuery"></form>
-									<div class="col-sm-12">
+									<div class="col-sm-12 col-xs-12">
 									<button class="btn btn-sm btn-warning pull-left"
 										onclick="reset();">
 										<i class="ace-icon fa fa-refresh"></i> 重置
@@ -150,8 +150,8 @@ if ('ontouchstart' in document.documentElement){
 											
 											<input type="hidden" id="import_activityId" value="">
                                             <div class="form-group">
-												<label class="col-sm-3 control-label no-padding-right">Apple活动标志</label>
-												<div class="col-sm-9">
+												<label class="col-sm-3 col-xs-3 control-label no-padding-right">Apple活动标志</label>
+												<div class="col-sm-9 col-xs-9">
 													<input type="input" class="form-control" id="import_offerId" placeholder="苹果后台活动标志(对应参考名称)"> 
 												<div class="help-block">用于兑换后匹配</div>
 												</div>
@@ -159,15 +159,15 @@ if ('ontouchstart' in document.documentElement){
 
 
 											<div class="form-group">
-												<label class="col-sm-3 control-label no-padding-right">选择CSV文件</label>
-												<div class="col-sm-9">
+												<label class="col-sm-3 col-xs-3 control-label no-padding-right">选择CSV文件</label>
+												<div class="col-sm-9 col-xs-9">
 													<input type="file" id="csvFileInput" accept=".csv" />
 													<div class="help-block">格式：第一列促销代码，第二列领取路径；可带表头promotion_code,receive_path</div>
 												</div>
 											</div>
 											<div class="form-group">
-												<label class="col-sm-3 control-label no-padding-right">预览解析</label>
-												<div class="col-sm-9">
+												<label class="col-sm-3 col-xs-3 control-label no-padding-right">预览解析</label>
+												<div class="col-sm-9 col-xs-9">
 													<div id="csvPreviewBox" class="preview-area">未选择文件</div>
 												</div>
 											</div>
@@ -256,7 +256,7 @@ if ('ontouchstart' in document.documentElement){
 	</table>
 	<div id="editFieldTpl" class="hide">
 		<div class="form-group #pclass#">
-			<label class="col-sm-3 control-label no-padding-right">#displayName#</label>
+			<label class="col-sm-3 col-xs-3 control-label no-padding-right">#displayName#</label>
 			#component#
 		</div>
 	</div>
@@ -395,14 +395,14 @@ if ('ontouchstart' in document.documentElement){
 				"input":"input",
 				"displayName":"活动主键ID",
 				"placeholder":"活动主键ID",
-				"pclass":"col-sm-12  ",
+				"pclass":"col-sm-12 col-xs-12  ",
 				"attr":"class='form-control'"
 			}
 		      ,"activityName":{
 				"input":"input",
 				"displayName":"活动名称",
 				"placeholder":"活动名称",
-				"pclass":"col-sm-12  ",
+				"pclass":"col-sm-12 col-xs-12  ",
 				"attr":"class='form-control'"
 			}
 			
@@ -414,14 +414,14 @@ if ('ontouchstart' in document.documentElement){
 				"input":"input",
 				"displayName":"活动主键ID",
 				"placeholder":"活动主键ID",
-				"pclass":"col-sm-12  ",
+				"pclass":"col-sm-12 col-xs-12  ",
 				"attr":"class='form-control'"
 			}
 		      ,"activityName":{
 				"input":"input",
 				"displayName":"活动名称",
 				"placeholder":"活动名称",
-				"pclass":"col-sm-12  ",
+				"pclass":"col-sm-12 col-xs-12  ",
 				"attr":"class='form-control'"
 			}
 			,"home":{
@@ -429,49 +429,49 @@ if ('ontouchstart' in document.documentElement){
 				"options":{"Y":"是","N":"否"},
 				"displayName":"首页展示",
 				"placeholder":"活动名称",
-				"pclass":"col-sm-12  ",
+				"pclass":"col-sm-12 col-xs-12  ",
 				"attr":"class='form-control'"
 			}
 		      ,"activityDesc":{
 				"input":"textarea",
 				"displayName":"活动描述",
 				"placeholder":"活动描述",
-				"pclass":"col-sm-12  ",
+				"pclass":"col-sm-12 col-xs-12  ",
 				"attr":"class='form-control'"
 			}
 		      ,"activityRule":{
 				"input":"textarea",
 				"displayName":"活动规则",
 				"placeholder":"活动规则，多条规则以换行符分隔",
-				"pclass":"col-sm-12  ",
+				"pclass":"col-sm-12 col-xs-12  ",
 				"attr":"class='form-control'"
 			}
 		      ,"startTime":{
 				"input":"input",
 				"displayName":"活动开始时间",
 				"placeholder":"活动开始时间",
-				"pclass":"col-sm-12  ",
+				"pclass":"col-sm-12 col-xs-12  ",
 				"attr":"class='form-control' "
 			}
 		      ,"endTime":{
 				"input":"input",
 				"displayName":"活动结束时间",
 				"placeholder":"活动结束时间",
-				"pclass":"col-sm-12  ",
+				"pclass":"col-sm-12 col-xs-12  ",
 				"attr":"class='form-control'   "
 			}
 			,"banner":{
 				"input":"input",
 				"displayName":"Banner",
 				"placeholder":"Banner",
-				"pclass":"col-sm-12  ",
+				"pclass":"col-sm-12 col-xs-12  ",
 				"attr":"class='form-control'"
 			}
 		      ,"activityImgUrl":{
 				"input":"input",
 				"displayName":"活动图片链接",
 				"placeholder":"活动图片链接",
-				"pclass":"col-sm-12  ",
+				"pclass":"col-sm-12 col-xs-12  ",
 				"attr":"class='form-control'"
 			}
 		      
