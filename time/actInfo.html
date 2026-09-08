@@ -673,6 +673,7 @@ btnReceive.addEventListener('click',async ()=>{
             showToast("领取成功");
             activityData.status = "RECEIVED";
             activityData.promotionCode=data.promotionCode
+            activityData.redeemUrl = data.receivePath
             renderPage(activityData);
         });
  
