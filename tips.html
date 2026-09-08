@@ -256,27 +256,24 @@
 </head>
 
 <body style="padding-bottom:100px;background-color:#f0f8ff;">
-<div style="width:100%;margin-top:0px;padding-top:10px;text-align:center;">
- <!-- Swiper -->
+    <div id="tplSlide" class="hide">
+        <div class="swiper-slide">
+            <a onclick="webGotoRemote('https://dododido.cn/service/time/actInfo.html?id=#id#')" style="display:block;">
+                <img src="#banner#" alt="#activityName#" style="width:100%;height:auto;display:block;border:none;">
+            </a>
+        </div>
+
+    </div>
+    <div style="width:100%;margin-top:0px;padding-top:10px;text-align:center;">
+        <!-- Swiper -->
         <div class="swiper-container">
             <div id="running" class="swiper-wrapper">
 
-            <div class="swiper-slide">
-                        <a onclick="webGotoRemote('https://dododido.cn/service/time/actInfo.html?id=3')" style="display:block;">
-                            <img src="https://dododido.cn/img/act3_705x300.jpeg" alt="开学季活动，开通年度会员，免费体验7天会员。"
-                                style="width:100%;height:auto;display:block;border:none;">
-                        </a>
-            </div>
-            <div class="swiper-slide">
-                        <a onclick="webGotoRemote('https://dododido.cn/service/time/actInfo.html?id=4')" style="display:block;">
-                            <img src="https://dododido.cn/img/act4_705x300.jpeg" alt=""
-                                style="width:100%;height:auto;display:block;border:none;">
-                        </a>
-            </div>
+
 
             </div>
-                      <div class="swiper-button-prev"></div>
-                      <div class="swiper-button-next"></div>
+            <div class="swiper-button-prev"></div>
+            <div class="swiper-button-next"></div>
 
             <!-- Add Pagination -->
             <div class="swiper-pagination">
@@ -284,13 +281,13 @@
 
         </div>
 
-         
 
-</div>
 
-   
+    </div>
 
-    
+
+
+
 
 
     <div class="container">
@@ -333,12 +330,12 @@
 
 
 
-      
+
 
     </div>
 
 
-     <div class="container">
+    <div class="container">
         <div class="ai-weekly-card" onclick="webGotoLocal('.','sync.html')">
             <div class="card-header">
                 <!-- 机器人图标，可替换为实际图片 -->
@@ -367,90 +364,90 @@
         </div>
     </div>
 
-      <div class="container">
-            <div class="text-center text-primary" style="padding:5px;margin:5px;"
-                onclick="webGotoRemote('https://dododido.cn/service/food.html')">
-                <span class="glyphicon glyphicon-cutlery"></span>
-                <span class="text-danger glyphicon glyphicon-fire"></span> 食物热量🧮
-            </div>
-            <h1>PDCA</h1>
-            <p class="subtitle">PDCA循环是一种持续改进的管理方法,包含计划(Plan)、<br>执行(Do)、检查(Check)和处理(Act)四个阶段</p>
+    <div class="container">
+        <div class="text-center text-primary" style="padding:5px;margin:5px;"
+            onclick="webGotoRemote('https://dododido.cn/service/food.html')">
+            <span class="glyphicon glyphicon-cutlery"></span>
+            <span class="text-danger glyphicon glyphicon-fire"></span> 食物热量🧮
+        </div>
+        <h1>PDCA</h1>
+        <p class="subtitle">PDCA循环是一种持续改进的管理方法,包含计划(Plan)、<br>执行(Do)、检查(Check)和处理(Act)四个阶段</p>
 
-            <div class="cycle-diagram">
-                <div class="cycle-segment segment-plan"></div>
-                <div class="cycle-segment segment-do"></div>
-                <div class="cycle-segment segment-check"></div>
-                <div class="cycle-segment segment-act"></div>
-                <div class="cycle-center">
-                    <div class="cycle-arrow"></div>
+        <div class="cycle-diagram">
+            <div class="cycle-segment segment-plan"></div>
+            <div class="cycle-segment segment-do"></div>
+            <div class="cycle-segment segment-check"></div>
+            <div class="cycle-segment segment-act"></div>
+            <div class="cycle-center">
+                <div class="cycle-arrow"></div>
+            </div>
+            <div class="cycle-label label-plan">计划<br>Plan</div>
+            <div class="cycle-label label-do">执行<br>Do</div>
+            <div class="cycle-label label-check">检查<br>Check</div>
+            <div class="cycle-label label-act">处理<br>Act</div>
+        </div>
+
+        <div class="step-card step-1">
+            <div class="step-number">1</div>
+            <div class="step-content">
+                <div class="step-title">计划 Plan</div>
+                <div class="step-desc">设定目标,拆解为可执行的任务和事项</div>
+                <div class="step-buttons">
+                    <button class="step-btn"
+                        onclick="webGotoLocal('dist','index.html#/taskInfo-MODULE/taskEdit/:id?groupType=0')">创建目标</button>
+                    <button class="step-btn"
+                        onclick="webGotoLocal('dist','index.html#/taskInfo-MODULE/newTask?groupType=1')">创建任务</button>
                 </div>
-                <div class="cycle-label label-plan">计划<br>Plan</div>
-                <div class="cycle-label label-do">执行<br>Do</div>
-                <div class="cycle-label label-check">检查<br>Check</div>
-                <div class="cycle-label label-act">处理<br>Act</div>
-            </div>
-
-            <div class="step-card step-1">
-                <div class="step-number">1</div>
-                <div class="step-content">
-                    <div class="step-title">计划 Plan</div>
-                    <div class="step-desc">设定目标,拆解为可执行的任务和事项</div>
-                    <div class="step-buttons">
-                        <button class="step-btn"
-                            onclick="webGotoLocal('dist','index.html#/taskInfo-MODULE/taskEdit/:id?groupType=0')">创建目标</button>
-                        <button class="step-btn"
-                            onclick="webGotoLocal('dist','index.html#/taskInfo-MODULE/newTask?groupType=1')">创建任务</button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="step-card step-2">
-                <div class="step-number">2</div>
-                <div class="step-content">
-                    <div class="step-title">执行 Do</div>
-                    <div class="step-desc">按每日安排逐项打卡,把计划变成行动</div>
-                    <div class="step-buttons">
-                        <button class="step-btn"
-                            onclick="webGotoLocal('dist','index.html#/taskInfo-MODULE/taskToday')">今日任务</button>
-                        <button class="step-btn"
-                            onclick="webGotoLocal('dist','index.html#/taskInfo-MODULE/dayEventList')">每日打卡</button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="step-card step-3">
-                <div class="step-number">3</div>
-                <div class="step-content">
-                    <div class="step-title">检查 Check</div>
-                    <div class="step-desc">用周/月/年维度复盘,看完成率和偏差</div>
-                    <div class="step-buttons">
-                        <button class="step-btn"
-                            onclick="webGotoLocal('dist','index.html#/taskInfo-MODULE/goallist')">目标清单</button>
-                        <button class="step-btn"
-                            onclick="webGotoLocal('dist','index.html#/taskInfo-MODULE/tasklist?groupType=1')">任务清单</button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="step-card step-4">
-                <div class="step-number">4</div>
-                <div class="step-content">
-                    <div class="step-title">处理 Act</div>
-                    <div class="step-desc">根据复盘调整计划,优化下一轮执行</div>
-                    <div class="step-buttons">
-                        <button class="step-btn"
-                            onclick="webGotoLocal('dist','index.html#/taskInfo-MODULE/goallist')">调整目标</button>
-                        <button class="step-btn"
-                            onclick="webGotoLocal('dist','index.html#/taskInfo-MODULE/tasklist?groupType=1')">优化任务</button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="footer">
-                <div class="footer-icon"></div>
-                <span></span>
             </div>
         </div>
+
+        <div class="step-card step-2">
+            <div class="step-number">2</div>
+            <div class="step-content">
+                <div class="step-title">执行 Do</div>
+                <div class="step-desc">按每日安排逐项打卡,把计划变成行动</div>
+                <div class="step-buttons">
+                    <button class="step-btn"
+                        onclick="webGotoLocal('dist','index.html#/taskInfo-MODULE/taskToday')">今日任务</button>
+                    <button class="step-btn"
+                        onclick="webGotoLocal('dist','index.html#/taskInfo-MODULE/dayEventList')">每日打卡</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="step-card step-3">
+            <div class="step-number">3</div>
+            <div class="step-content">
+                <div class="step-title">检查 Check</div>
+                <div class="step-desc">用周/月/年维度复盘,看完成率和偏差</div>
+                <div class="step-buttons">
+                    <button class="step-btn"
+                        onclick="webGotoLocal('dist','index.html#/taskInfo-MODULE/goallist')">目标清单</button>
+                    <button class="step-btn"
+                        onclick="webGotoLocal('dist','index.html#/taskInfo-MODULE/tasklist?groupType=1')">任务清单</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="step-card step-4">
+            <div class="step-number">4</div>
+            <div class="step-content">
+                <div class="step-title">处理 Act</div>
+                <div class="step-desc">根据复盘调整计划,优化下一轮执行</div>
+                <div class="step-buttons">
+                    <button class="step-btn"
+                        onclick="webGotoLocal('dist','index.html#/taskInfo-MODULE/goallist')">调整目标</button>
+                    <button class="step-btn"
+                        onclick="webGotoLocal('dist','index.html#/taskInfo-MODULE/tasklist?groupType=1')">优化任务</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div class="footer-icon"></div>
+            <span></span>
+        </div>
+    </div>
 
 
     <div style="margin-top: 20px;">
@@ -482,19 +479,19 @@
         }
 
         /* Swiper 导航按钮 */
-.swiper-button-prev,
-.swiper-button-next,
-.swiper-button-prev-item,
-.swiper-button-next-item {
-  width: 24px !important;
-  height: 24px !important;
-  background-size: 10px 10px !important;
-  margin-top: -12px !important;
-  opacity: 0.5 !important;
-  background-color: rgba(255,255,255,0.9);
-  border-radius: 50%;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-}
+        .swiper-button-prev,
+        .swiper-button-next,
+        .swiper-button-prev-item,
+        .swiper-button-next-item {
+            width: 24px !important;
+            height: 24px !important;
+            background-size: 10px 10px !important;
+            margin-top: -12px !important;
+            opacity: 0.5 !important;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 50%;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        }
 
         body {
             background-color: #f8f9fa;
@@ -754,23 +751,32 @@
 </body>
 <script src="js/com_app.js"></script>
 <script>
-   function initSwiper(){
+    function initSwiper() {
 
-    new Swiper('.swiper-container', {
-            pagination: '.swiper-pagination',
-            paginationClickable: true,
-            spaceBetween: 10,
-            centeredSlides: true,
-            autoplay: 10000,
-            slidesPerView: 1,
-            loop: false,
-            prevButton: '.swiper-button-prev', // 左按钮选择器
-            nextButton: '.swiper-button-next', // 右按钮选择器
-            autoplay: false,
-            initialSlide: 0,
-            autoplayDisableOnInteraction: true
-        });
-   }
+
+        if (window.swiper) {
+            window.swiper.update()
+
+        } else {
+
+            window.swiper = new Swiper('.swiper-container', {
+                pagination: '.swiper-pagination',
+                paginationClickable: true,
+                spaceBetween: 10,
+                centeredSlides: true,
+                autoplay: 10000,
+                slidesPerView: 1,
+                loop: false,
+                prevButton: '.swiper-button-prev', // 左按钮选择器
+                nextButton: '.swiper-button-next', // 右按钮选择器
+                autoplay: false,
+                initialSlide: 0,
+                autoplayDisableOnInteraction: true
+            });
+
+        }
+
+    }
 
     function firstcall() {
 
@@ -783,7 +789,38 @@
     //登录成功后
     var domain = "https://dododido.cn/service";
     var hasConfirmLogin = false
+    loadActivities();
+    function loadActivities() {
 
+
+        postData({ id: id }, "/time/promotionActivity/ongoing", function (resp) {
+
+            console.log(resp);
+            if ("0000" != resp.code) {
+
+                alert(resp.msg);
+                return;
+
+            }
+            let list = resp.data;
+
+            for (var i = 0; i < list.length; i++) {
+                var record = list[i]
+                var tpl = $("tplSlide").html();
+                var one = tpl;
+                for (var key in record) {
+                    let regex = new RegExp("#" + key + "#", "gi");
+                    one = one.replace(regex, record[key]);
+                }
+            }
+
+
+            initSwiper();
+
+
+
+        });
+    }
     function userLogin(data) {
 
         if (!hasConfirmLogin) {
