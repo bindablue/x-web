@@ -806,7 +806,7 @@
              var swipers =[]
             for (var i = 0; i < list.length; i++) {
                 var record = list[i]
-                var tpl = $("tplSlide").html();
+                var tpl = $("#tplSlide").html();
                 var one = tpl;
                 for (var key in record) {
                     let regex = new RegExp("#" + key + "#", "gi");
