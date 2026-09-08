@@ -793,7 +793,7 @@
     function loadActivities() {
 
 
-        postData({ id: id }, "/time/promotionActivity/ongoing", function (resp) {
+        postData({ status:"RUNNING"}, "/time/promotionActivity/ongoing", function (resp) {
 
             console.log(resp);
             if ("0000" != resp.code) {
