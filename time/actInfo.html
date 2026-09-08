@@ -612,7 +612,7 @@ function showToast(msg){
 
 function renderPage(data){
     document.getElementById('activityName').innerText = data.activityName;
-    document.getElementById('activityDesc').innerText = data.activityDesc;
+    document.getElementById('activityDesc').innerHTML = data.activityDesc;
     document.getElementById('timeText').innerText = data.timeText;
     document.getElementById('activityImg').src = data.activityImg;
     showPromoCode.innerText = data.promotionCode;
