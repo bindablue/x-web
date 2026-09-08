@@ -8,8 +8,8 @@ var domain="https://dadadida.cn";
 domain=document.location.protocol+"//"+window.location.host;
 
 var pathName=window.document.location.pathname;
-var webapp="/sys";
-webapp=pathName.substring(0,pathName.substr(1).indexOf("/")+1);
+var webapp="/service";
+//webapp=pathName.substring(0,pathName.substr(1).indexOf("/")+1);
 console.log("webapp:"+webapp);
 //var domain="http://localhost:8080";
 var clvl=["default","info","warning","danger","success"];
