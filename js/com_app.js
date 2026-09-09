@@ -29,5 +29,5 @@ setTimeout(function(){
            if(typeof firstcall!="undefined"){
            firstcall();
            }
-           },10);
+           },100);
 
