@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WiFi连接</title>
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs2@0.0.2/qrcode.min.js"></script>
+    <style>
+        body{font-family:system-ui;text-align:center;padding:40px 20px;}
+        #qrcode{margin:30px auto;width:220px;height:220px;}
+        .tip{margin-top:20px;color:#666;font-size:15px;}
+    </style>
+</head>
+<body>
+    <h3>扫码连接WiFi</h3>
+    <div id="qrcode"></div>
+    <div class="tip">iPhone打开相机对准二维码，点击弹窗加入网络</div>
+
+    <script>
+        // 解析url query参数
+        function getQueryParam(name) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(name);
+        }
+
+        // WiFi字符串转义：\ ; : "
+        function escapeWifiStr(s){
+            if(!s) return "";
+            s = s.replace(/\\/g,"\\\\");
+            s = s.replace(/;/g,"\\;");
+            s = s.replace(/:/g,"\\:");
+            s = s.replace(/"/g,"\\\"");
+            return s;
+        }
+
+        const ssid = getQueryParam("ssid");
+        const pwd = getQueryParam("pwd");
+
+        if(!ssid || !pwd){
+            document.body.innerHTML="<h3>参数缺失</h3>";
+        }else{
+            const eSsid = escapeWifiStr(ssid);
+            const ePwd = escapeWifiStr(pwd);
+            // ⚠️ 苹果相机必须T:WPA，不要写WPA2，结尾;;
+            const wifiText = `WIFI:T:WPA;S:${eSsid};P:${ePwd};;`;
+
+            new QRCode(document.getElementById("qrcode"),{
+                text: wifiText,
+                width:220,
+                height:220,
+                correctLevel:QRCode.CorrectLevel.M
+            });
+        }
+    </script>
+</body>
+</html>
+<!-- （注：内容由AI生成） -->
