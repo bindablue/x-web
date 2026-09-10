@@ -42,7 +42,7 @@
             const eSsid = escapeWifiStr(ssid);
             const ePwd = escapeWifiStr(pwd);
             // ⚠️ 苹果相机必须T:WPA，不要写WPA2，结尾;;
-            const wifiText = `WIFI:T:WPA;S:${eSsid};P:${ePwd};;`;
+            const wifiText = `WIFI:T:WPA2;S:${eSsid};P:${ePwd};;`;
 
             new QRCode(document.getElementById("qrcode"),{
                 text: wifiText,
