@@ -145,7 +145,7 @@
     }
 
     // 加载地图
-    fetch('world.json')
+    fetch('world.simple.json')
       .then(res => res.json())
       .then(worldJson => {
         echarts.registerMap('world', worldJson);
