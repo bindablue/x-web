@@ -62,9 +62,9 @@
 
         if(ssid&&pwd){
             showQrcode(ssid,pwd);
-            return ;
+            
         }
-        if(id){
+        else if(id){
 
              postData({ code:id}, "/time/clip/wifi", function (resp) {
 
@@ -76,14 +76,14 @@
                 var wifi = resp.data 
                 showQrcode(wifi.ssid,wifi.pwd);
 
-
              });
+         
+        }else{
+             document.body.innerHTML="<h3>参数缺失</h3>";
 
-
-         return ;
         }
 
-          document.body.innerHTML="<h3>参数缺失</h3>";
+         
 
 
         
