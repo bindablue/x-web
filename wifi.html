@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.jsdelivr.net/npm/qrcodejs2@0.0.2/qrcode.min.js"></script>
+    <script src="js/jquery.min.js"></script>
+    <script src="js/common.js?v=1.0"></script>
     <style>
         body{font-family:system-ui;text-align:center;padding:40px 20px;}
         #qrcode{margin:30px auto;width:260px;height:260px;}
@@ -33,12 +35,8 @@
             return s;
         }
 
-        const ssid = getQueryParam("ssid");
-        const pwd = getQueryParam("pwd");
+        function showQrcode(ssid,pwd){
 
-        if(!ssid || !pwd){
-            document.body.innerHTML="<h3>参数缺失</h3>";
-        }else{
             const eSsid = escapeWifiStr(ssid);
             const ePwd = escapeWifiStr(pwd);
             const wifiText = `WIFI:T:WPA;S:${eSsid};P:${ePwd};;`;
@@ -53,6 +51,42 @@
                 useSVG: false
             });
         }
+        
+        function firstcall(){
+
+        }
+
+        const ssid = getQueryParam("ssid");
+        const pwd = getQueryParam("pwd");
+        const id = getQueryParam("id");
+
+        if(ssid&&pwd){
+            showQrcode(ssid,pwd);
+            return ;
+        }
+        if(id){
+
+             postData({ code:id}, "/time/clip/wifi", function (resp) {
+
+                if(resp.code !="0000"){
+
+                    return;
+
+                }
+                var wifi = resp.data 
+                showQrcode(wifi.ssid,wifi.pwd);
+
+
+             });
+
+
+         return ;
+        }
+
+          document.body.innerHTML="<h3>参数缺失</h3>";
+
+
+        
     </script>
 </body>
 </html>
